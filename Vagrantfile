@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
   # a mapped directory inside the VM will be created that contains these files.
   # This directory is used to maintain default database scripts as well as backed
   # up mysql dumps (SQL files) that are to be imported automatically on vagrant up
-  config.vm.synced_folder "database/", "/srv/database"
+  config.vm.synced_folder "../src/database/", "/srv/database"
   if vagrant_version >= "1.3.0"
     config.vm.synced_folder "database/data/", "/var/lib/mysql", :mount_options => [ "dmode=777", "fmode=777" ]
   else
@@ -117,8 +117,8 @@ Vagrant.configure("2") do |config|
   # inside the VM will be created that acts as the default location for nginx sites. Put all
   # of your project files here that you want to access through the web server
   config.vm.synced_folder "www", "/srv/www", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
-  config.vm.synced_folder "src/themes", "/home/vagrant/themes", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
-  config.vm.synced_folder "src/plugins", "/home/vagrant/plugins", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+  config.vm.synced_folder "../src/themes", "/home/vagrant/themes", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+  config.vm.synced_folder "../src/plugins", "/home/vagrant/plugins", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
 
   # Customfile - POSSIBLY UNSTABLE
   #

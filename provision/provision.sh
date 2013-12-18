@@ -540,7 +540,6 @@ ln -s /home/vagrant/themes /home/vagrant/wordpress-default/wp-content
 ln -s /home/vagrant/plugins /home/vagrant/wordpress-default/wp-content
 
 ## instalamos el naked 
-wp theme activate naked-wordpress
 
 end_seconds="$(date +%s)"
 echo "-----------------------------"
