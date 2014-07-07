@@ -37,5 +37,3 @@ cp $DIR/settings.py $DIR/../settings.py
 echo "Inicia maquina virtual"
 cd $DIR/../
 vagrant up
-fab vagrant bootstrap
-echo "Listo, por favor accede a wordpress-workflow.local"

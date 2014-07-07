@@ -33,14 +33,16 @@ end
 bash "Configure wordpress dir" do
     code <<-EOH
 mkdir /home/vagrant/wordpress
+chown vagrant /home/vagrant/wordpress
+chgrp vagrant /home/vagrant/wordpress
 cd /home/vagrant/
 sudo vagrant
 wget https://raw.github.com/wp-cli/wp-cli.github.com/master/installer.sh 
 chmod +x ./installer.sh
 export HOME=/home/vagrant/
-./installer.sh > ./wp.log
+./installer.sh 
 rm ./installer
-echo "alias wp='/root/.wp-cli/bin/wp' ">> /home/vagrant/.zshrc
+echo "alias wp='/home/vagrant/.wp-cli/bin/wp' ">> /home/vagrant/.zshrc
 EOH
 end
 

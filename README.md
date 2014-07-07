@@ -33,4 +33,4 @@ All your work should be place in src/themes and src/plugins.
 
 # Access
 
-In your browser go to http://vvv.dev there you can find you installation of wordpress
+In your browser go to http://wordpress-workflow.local there you can find you installation of wordpress

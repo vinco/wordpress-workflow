@@ -36,7 +36,7 @@ def bootstrap():
     require('site_dir')
     # Crea la base de datos
     run('''
-        echo "DROP DATABASE {0}; CREATE DATABASE {0}; 
+        echo "CREATE DATABASE {0}; 
         "|mysql --batch --user={1} --password={2} --host={3}
         '''.format(DATABASE, USER, PASSWORD, HOST)
     )
