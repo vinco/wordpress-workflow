@@ -1,0 +1,7 @@
+DEPENDENCIES
+  curl
+    path: .
+    metadata: true
+
+GRAPH
+  curl (2.0.0)

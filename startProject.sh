@@ -26,5 +26,10 @@ if [[ ! -d "$DIR/../src/init" ]]; then
 fi
 if [[ ! -d "$DIR/../src/database" ]]; then
     mkdir $DIR/../src/database
-    cp -r $DIR/database/* $DIR/../src/database
 fi
+
+echo "Enlaces simbolicos..."
+
+ln -s $DIR/Vagrantfile $DIR/../Vagrantfile
+ln -s $DIR/fabfile.py $DIR/../fabfile.py
+cp $DIR/settings.py $DIR/../settings.py
