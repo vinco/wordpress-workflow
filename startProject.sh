@@ -33,3 +33,9 @@ echo "Enlaces simbolicos..."
 ln -s $DIR/Vagrantfile $DIR/../Vagrantfile
 ln -s $DIR/fabfile.py $DIR/../fabfile.py
 cp $DIR/settings.py $DIR/../settings.py
+
+echo "Inicia maquina virtual"
+cd $DIR/../
+vagrant up
+fab vagrant bootstrap
+echo "Listo, por favor accede a wordpress-workflow.local"

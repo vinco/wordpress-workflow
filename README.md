@@ -6,6 +6,7 @@ you should go and checkout https://github.com/10up/varying-vagrant-vagrants wond
 # Requirements
 
     * Vagrant 2
+    * Fabric
 
 # Setup
 
@@ -23,8 +24,6 @@ $ cd my-new-project
 $ git init
 $ git clone https://github.com/vinco/wordpress-workflow.git vagrant
 $ vagrant/startProject.sh
-$ cd vagrant 
-$ sudo vagrant up
 
 ```
 
