@@ -2,6 +2,7 @@
 SITE_CONFIG = {
     'version': '3.9.1',
     'locale': 'es_ES',
+    'theme': 'yourtheme',
 
     'dev': {
         'url': 'wordpress-workflow.local',

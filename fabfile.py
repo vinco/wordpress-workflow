@@ -27,7 +27,6 @@ def bootstrap():
     '''
     Crea la base de datos, información de prueba y activa rewrite
     '''
-    require('site_dir')
     require('env')
     # Crea la base de datos
     run('''
@@ -49,6 +48,7 @@ def bootstrap():
 @task
 def wordpress_install():
     require("wordpress_dir")
+    require("site_dir")
     require('env')
     #Downloads wordpress
     run('''
@@ -84,6 +84,28 @@ def wordpress_install():
         env.wordpress_dir
         )
     )
+    #Creates simbolic link to themes
+    run('''
+       rm -rf {1}wp-content/themes &&
+       ln -s {0}themes {1}wp-content
+       '''.format(
+        env.site_dir,
+        env.wordpress_dir
+        )
+    )
+    activate_theme()
+
+@task
+def activate_theme():
+    require("wordpress_dir")
+
+    with cd(env.wordpress_dir):
+        run('''
+            wp theme activate {0}
+            '''.format(
+            SITE_CONFIG['theme']
+            )
+            )
 
 
 @task
