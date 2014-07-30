@@ -2,12 +2,6 @@
 from fabric.api import cd, env, local, run, task, require
 from settings import SITE_CONFIG
 
-USER = 'root'
-PASSWORD = 'password'
-HOST = 'localhost'
-DATABASE = 'wordpress_workflow'
-
-
 @task
 def vagrant():
     '''
@@ -25,7 +19,7 @@ def vagrant():
     # Directorio del sitio tuguia
     env.site_dir = '/home/vagrant/wordpress-workflow/'
     env.wordpress_dir = '/home/vagrant/www/'
-    env.wp = '/home/vagrant/.wp-cli/bin/wp'
+    env.env = 'dev'
 
 
 @task
@@ -34,11 +28,18 @@ def bootstrap():
     Crea la base de datos, información de prueba y activa rewrite
     '''
     require('site_dir')
+    require('env')
     # Crea la base de datos
     run('''
-        echo "CREATE DATABASE {0}; 
+        echo "DROP DATABASE IF EXISTS {0}; CREATE DATABASE {0};
         "|mysql --batch --user={1} --password={2} --host={3}
-        '''.format(DATABASE, USER, PASSWORD, HOST)
+        '''.
+        format(
+            SITE_CONFIG[env.env]['dbname'],
+            SITE_CONFIG[env.env]['dbuser'],
+            SITE_CONFIG[env.env]['dbpassword'],
+            SITE_CONFIG[env.env]['dbhost']
+        )
     )
     # Activa modulo de apache
     run('a2enmod rewrite')
@@ -48,12 +49,11 @@ def bootstrap():
 @task
 def wordpress_install():
     require("wordpress_dir")
-    require("wp")
+    require('env')
     #Downloads wordpress
     run('''
-        {0} core download --version={1} --path={2} --locale={3} --force
+        wp core download --version={0} --path={1} --locale={2} --force
         '''.format(
-        env.wp,
         SITE_CONFIG['version'],
         env.wordpress_dir,
         SITE_CONFIG['locale']
@@ -61,28 +61,26 @@ def wordpress_install():
     )
     #creates config
     run('''
-        {0} core config --dbname={1} --dbuser={2} \
-            --dbpass={3} --path={4}
+        wp core config --dbname={0} --dbuser={1} \
+            --dbpass={2} --path={3}
         '''.format(
-        env.wp,
-        SITE_CONFIG['dev']['dbname'],
-        SITE_CONFIG['dev']['dbuser'],
-        SITE_CONFIG['dev']['dbpass'],
+        SITE_CONFIG[env.env]['dbname'],
+        SITE_CONFIG[env.env]['dbuser'],
+        SITE_CONFIG[env.env]['dbpassword'],
         env.wordpress_dir
         )
     )
     #Installs into db
     run('''
-        {0} core install --url="{1}" --title="{2}" \
-        --admin_user="{3}" --admin_password="{4}" \
-        --admin_email="{5}" --path={6}
+        wp core install --url="{0}" --title="{1}" \
+        --admin_user="{2}" --admin_password="{3}" \
+        --admin_email="{4}" --path={5}
         '''.format(
-        env.wp,
-        SITE_CONFIG['dev']['url'],
-        SITE_CONFIG['dev']['title'],
-        SITE_CONFIG['dev']['admin_user'],
-        SITE_CONFIG['dev']['admin_password'],
-        SITE_CONFIG['dev']['admin_email'],
+        SITE_CONFIG[env.env]['url'],
+        SITE_CONFIG[env.env]['title'],
+        SITE_CONFIG[env.env]['admin_user'],
+        SITE_CONFIG[env.env]['admin_password'],
+        SITE_CONFIG[env.env]['admin_email'],
         env.wordpress_dir
         )
     )
@@ -92,9 +90,15 @@ def wordpress_install():
 def resetdb():
     '''Elimina la base de datos y la vuelve a crear'''
     require('site_dir')
+    require('env')
     run('''
         echo "DROP DATABASE IF EXISTS {0};
         CREATE DATABASE {0};
         "|mysql --batch --user={1} --password={2} --host={3}
-        '''.format(DATABASE, USER, PASSWORD, HOST)
+        '''.format(
+        SITE_CONFIG[env.env]['dbname'],
+        SITE_CONFIG[env.env]['dbuser'],
+        SITE_CONFIG[env.env]['dbpassword'],
+        SITE_CONFIG[env.env]['dbhost']
+        )
     )

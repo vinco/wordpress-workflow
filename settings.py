@@ -13,6 +13,7 @@ SITE_CONFIG = {
         #database config 
         'dbname': 'wordpress_workflow',
         'dbuser': 'root',
-        'dbpass': 'password'
+        'dbpassword': 'password',
+        'dbhost': 'localhost'
     }
 }
