@@ -97,6 +97,7 @@ def wordpress_install():
 
     activate_theme()
     install_plugins()
+    import_data()
 
 
 @task
@@ -170,6 +171,37 @@ def install_plugins():
 
 
 @task
+def import_data():
+    require("site_dir")
+    require("wordpress_dir")
+    require("env")
+    run('''
+        mysql -u {0} -p{1} {2} --host={3} < {4}database/data.sql
+        '''.format(
+        SITE_CONFIG[env.env]['dbuser'],
+        SITE_CONFIG[env.env]['dbpassword'],
+        SITE_CONFIG[env.env]['dbname'],
+        SITE_CONFIG[env.env]['dbhost'],
+        env.site_dir
+        ))
+    with cd(env.wordpress_dir):  # Changes the domain
+        run('''
+            wp option update home http://{0} &&
+            wp option update siteurl http://{0}
+            '''.format(
+            SITE_CONFIG[env.env]['url']
+            ))
+        #changes the user
+        run('''
+            wp user update {0} --user_pass={1} --user_email={2}
+            '''.format(
+            SITE_CONFIG[env.env]['admin_user'],
+            SITE_CONFIG[env.env]['admin_password'],
+            SITE_CONFIG[env.env]['admin_email']
+            ))
+
+
+@task
 def resetdb():
     '''Elimina la base de datos y la vuelve a crear'''
     require('site_dir')
@@ -184,4 +216,4 @@ def resetdb():
         SITE_CONFIG[env.env]['dbpassword'],
         SITE_CONFIG[env.env]['dbhost']
         )
-    )
+        )
