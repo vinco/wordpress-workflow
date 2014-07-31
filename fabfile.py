@@ -39,8 +39,7 @@ def bootstrap():
             SITE_CONFIG[env.env]['dbuser'],
             SITE_CONFIG[env.env]['dbpassword'],
             SITE_CONFIG[env.env]['dbhost']
-        )
-    )
+        ))
     # Activa modulo de apache
     run('a2enmod rewrite')
     wordpress_install()
@@ -58,8 +57,7 @@ def wordpress_install():
         SITE_CONFIG['version'],
         env.wordpress_dir,
         SITE_CONFIG['locale']
-        )
-    )
+        ))
     #creates config
     run('''
         wp core config --dbname={0} --dbuser={1} \
@@ -69,8 +67,7 @@ def wordpress_install():
         SITE_CONFIG[env.env]['dbuser'],
         SITE_CONFIG[env.env]['dbpassword'],
         env.wordpress_dir
-        )
-    )
+        ))
     #Installs into db
     run('''
         wp core install --url="{0}" --title="{1}" \
@@ -83,8 +80,7 @@ def wordpress_install():
         SITE_CONFIG[env.env]['admin_password'],
         SITE_CONFIG[env.env]['admin_email'],
         env.wordpress_dir
-        )
-    )
+        ))
     #Creates simbolic link to themes
     run('''
        rm -rf {1}wp-content/themes &&
@@ -92,8 +88,13 @@ def wordpress_install():
        '''.format(
         env.site_dir,
         env.wordpress_dir
-        )
-    )
+        ))
+    run('''
+        rm -rf {1}wp-content/plugins
+        '''.format(
+        env.site_dir
+        ))
+
     activate_theme()
     install_plugins()
 
@@ -107,17 +108,40 @@ def activate_theme():
             wp theme activate {0}
             '''.format(
             SITE_CONFIG['theme']
-            )
-        )
+            ))
 
 
 @task
 def install_plugins():
     require("wordpress_dir")
     # Installs 3rd party plugins
-    custom_plugins = local('ls src/plugins | grep -v settings.py',
-                           capture=True)
-    print custom_plugins
+    with cd(env.wordpress_dir):
+        for plugin, config in PLUGINS_CONFIG.iteritems():
+            version = ""
+            activate = "activate"
+
+            if config['version'] != 'stable':
+                version = ' --version=' + config['version']
+
+            run('''
+                if ! wp plugin is-installed {0};
+                then
+                    wp plugin install {0} {1};
+                fi
+                '''.format(
+                plugin,
+                version
+                ))
+
+            if not config['active']:
+                activate = "deactivate"
+
+            run('''
+                wp plugin {0} {1}
+                '''.format(
+                activate,
+                plugin
+                ))
 
 
 @task
