@@ -20,6 +20,7 @@ fi
 
 if [[ ! -d "$DIR/../src/plugins" ]]; then
     mkdir $DIR/../src/plugins
+    cp $DIR/plugins_settings.py $DIR/../src/plugins/settings.py
 fi
 if [[ ! -d "$DIR/../src/init" ]]; then
     mkdir $DIR/../src/init
