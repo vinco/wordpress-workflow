@@ -90,7 +90,7 @@ def wordpress_install():
         env.wordpress_dir
         ))
     run('''
-        rm -rf {1}wp-content/plugins
+        rm -rf {0}wp-content/plugins
         '''.format(
         env.site_dir
         ))
