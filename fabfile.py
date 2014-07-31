@@ -1,6 +1,6 @@
 # encoding: utf-8
 from fabric.api import cd, env, local, run, task, require
-from settings import SITE_CONFIG, PLUGINS_CONFIG
+from settings import SITE_CONFIG, PLUGINS_CONFIG, CUSTOM_PLUGINS_CONFIG
 
 
 @task
@@ -114,6 +114,31 @@ def activate_theme():
 @task
 def install_plugins():
     require("wordpress_dir")
+    require("site_dir")
+
+    for custom_plugin, config in CUSTOM_PLUGINS_CONFIG.iteritems():
+        with cd(env.wordpress_dir):
+            run('''
+                if ! wp plugin is-installed {0};
+                then
+                    ln -s {1}plugins/{0} {2}wp-content/plugins/;
+                fi
+                '''.format(
+                custom_plugin,
+                env.site_dir,
+                env.wordpress_dir
+                ))
+
+            activate = "activate"
+            if not config['active']:
+                activate = "deactivate"
+
+            run('''
+                wp plugin {0} {1}
+                '''.format(
+                activate,
+                custom_plugin
+                ))
     # Installs 3rd party plugins
     with cd(env.wordpress_dir):
         for plugin, config in PLUGINS_CONFIG.iteritems():

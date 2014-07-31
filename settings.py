@@ -34,3 +34,10 @@ PLUGINS_CONFIG = {
         'version': 'stable'
     },
 }
+
+# Own plugins
+CUSTOM_PLUGINS_CONFIG = {
+    'jetpack': {
+        'active': True
+    }
+}
