@@ -1,6 +1,7 @@
 # encoding: utf-8
 from fabric.api import cd, env, local, run, task, require
-from settings import SITE_CONFIG
+from settings import SITE_CONFIG, PLUGINS_CONFIG
+
 
 @task
 def vagrant():
@@ -94,6 +95,8 @@ def wordpress_install():
         )
     )
     activate_theme()
+    install_plugins()
+
 
 @task
 def activate_theme():
@@ -105,7 +108,16 @@ def activate_theme():
             '''.format(
             SITE_CONFIG['theme']
             )
-            )
+        )
+
+
+@task
+def install_plugins():
+    require("wordpress_dir")
+    # Installs 3rd party plugins
+    custom_plugins = local('ls src/plugins | grep -v settings.py',
+                           capture=True)
+    print custom_plugins
 
 
 @task
