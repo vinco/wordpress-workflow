@@ -171,6 +171,21 @@ def install_plugins():
 
 
 @task
+def export_data():
+    require("site_dir")
+    require("wordpress_dir")
+    require("env")
+    run('''
+       mysqldump -u {0} -p{1} {2} --host={3} --no-create-info  > {4}database/data.sql
+       '''.format(
+       SITE_CONFIG[env.env]['dbuser'],
+       SITE_CONFIG[env.env]['dbpassword'],
+       SITE_CONFIG[env.env]['dbname'],
+       SITE_CONFIG[env.env]['dbhost'],
+       env.site_dir
+       ))
+
+@task
 def import_data():
     require("site_dir")
     require("wordpress_dir")
@@ -200,6 +215,20 @@ def import_data():
             SITE_CONFIG[env.env]['admin_email']
             ))
 
+@task
+def export_data():
+    require("site_dir")
+    require("wordpress_dir")
+    require("env")
+    run('''
+       mysqldump -u {0} -p{1} {2} --host={3} --no-create-info  > {4}database/data.sql
+       '''.format(
+       SITE_CONFIG[env.env]['dbuser'],
+       SITE_CONFIG[env.env]['dbpassword'],
+       SITE_CONFIG[env.env]['dbname'],
+       SITE_CONFIG[env.env]['dbhost'],
+       env.site_dir
+       ))
 
 @task
 def resetdb():
