@@ -205,13 +205,9 @@ def export_data():
     require("wordpress_dir")
     require("env")
     run('''
-       mysqldump -u {0} -p{1} {2} --host={3} --no-create-info  > {4}database/data.sql
+       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} --no-create-info  > {sitedir}database/data.sql
        '''.format(
-       SITE_CONFIG[env.env]['dbuser'],
-       SITE_CONFIG[env.env]['dbpassword'],
-       SITE_CONFIG[env.env]['dbname'],
-       SITE_CONFIG[env.env]['dbhost'],
-       env.site_dir
+       sitedir=env.site_dir, **SITE_CONFIG[env.env]
        ))
 
 @task
