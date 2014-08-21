@@ -117,7 +117,7 @@ def install_plugins():
     require("wordpress_dir")
     require("site_dir")
 
-    for custom_plugin, config in CUSTOM_PLUGINS_CONFIG.iteritems():
+    for custom_plugin in CUSTOM_PLUGINS_CONFIG:
         with cd(env.wordpress_dir):
             run('''
                 if ! wp plugin is-installed {0};
@@ -125,29 +125,29 @@ def install_plugins():
                     ln -s {1}plugins/{0} {2}wp-content/plugins/;
                 fi
                 '''.format(
-                custom_plugin,
+                custom_plugin['name'],
                 env.site_dir,
                 env.wordpress_dir
                 ))
 
             activate = "activate"
-            if not config['active']:
+            if not custom_plugin['active']:
                 activate = "deactivate"
 
             run('''
                 wp plugin {0} {1}
                 '''.format(
                 activate,
-                custom_plugin
+                custom_plugin['name']
                 ))
     # Installs 3rd party plugins
     with cd(env.wordpress_dir):
-        for plugin, config in PLUGINS_CONFIG.iteritems():
+        for plugin in PLUGINS_CONFIG:
             version = ""
             activate = "activate"
 
-            if config['version'] != 'stable':
-                version = ' --version=' + config['version']
+            if plugin['version'] != 'stable':
+                version = ' --version=' + plugin['version']
 
             run('''
                 if ! wp plugin is-installed {0};
@@ -155,18 +155,18 @@ def install_plugins():
                     wp plugin install {0} {1};
                 fi
                 '''.format(
-                plugin,
+                plugin['name'],
                 version
                 ))
 
-            if not config['active']:
+            if not plugin['active']:
                 activate = "deactivate"
 
             run('''
                 wp plugin {0} {1}
                 '''.format(
                 activate,
-                plugin
+                plugin['name']
                 ))
 
 
@@ -217,3 +217,12 @@ def resetdb():
         SITE_CONFIG[env.env]['dbhost']
         )
         )
+
+
+@task
+def reset_all():
+    '''Borra toda la instación de wordpress e incia de cero'''
+    require('wordpress_dir')
+    run('''rm -rf {0}*'''.format(env.wordpress_dir))
+    resetdb()
+    bootstrap()

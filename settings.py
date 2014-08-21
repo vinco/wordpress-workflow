@@ -20,24 +20,28 @@ SITE_CONFIG = {
 }
 # 3rd party plugins
 
-PLUGINS_CONFIG = {
-    'wordpress-seo': {
+PLUGINS_CONFIG = (
+    {
+        'name': 'wordpress-seo',
         'active': True,
         'version': 'stable'
     },
-    'contact-form-7': {
+    {
+        'name': 'contact-form-7',
         'active': True,
         'version': 'stable'
     },
-    'wp-super-cache': {
+    {
+        'name': 'wp-super-cache',
         'active': True,
         'version': 'stable'
     },
-}
+)
 
 # Own plugins
-CUSTOM_PLUGINS_CONFIG = {
-    'jetpack': {
+CUSTOM_PLUGINS_CONFIG = (
+    {
+        'name': 'jetpack',
         'active': True
     }
-}
+)
