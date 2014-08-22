@@ -1,5 +1,7 @@
 # encoding: utf-8
 from fabric.api import cd, env, local, run, task, require
+from fabric.contrib.project import rsync_project
+from fabric.colors import green
 from settings import SITE_CONFIG, PLUGINS_CONFIG, CUSTOM_PLUGINS_CONFIG
 
 
@@ -17,7 +19,7 @@ def vagrant():
     result = local('vagrant ssh-config | grep IdentityFile', capture=True)
     env.key_filename = result.split()[1].replace('"', '')
 
-    # Directorio del sitio tuguia
+    # Directorio del sitio wordpress
     env.site_dir = '/home/vagrant/wordpress-workflow/'
     env.wordpress_dir = '/home/vagrant/www/'
     env.env = 'dev'
@@ -47,6 +49,9 @@ def bootstrap():
 
 @task
 def wordpress_install():
+    '''
+    Descarga la version de wordpress escrita en settings en instala la base de datos
+    '''
     require("wordpress_dir")
     require("site_dir")
     require('env')
@@ -97,11 +102,13 @@ def wordpress_install():
 
     activate_theme()
     install_plugins()
-    import_data()
 
 
 @task
 def activate_theme():
+    '''
+    Activa el tema seleccionado en la instalacion de wordpress
+    '''
     require("wordpress_dir")
 
     with cd(env.wordpress_dir):
@@ -114,6 +121,9 @@ def activate_theme():
 
 @task
 def install_plugins():
+    '''
+    Instala plugins e inicializa segun el archivo settings
+    '''
     require("wordpress_dir")
     require("site_dir")
 
@@ -172,6 +182,9 @@ def install_plugins():
 
 @task
 def import_data():
+    '''
+    Importa la informacion de database/data.sql
+    '''
     require("site_dir")
     require("wordpress_dir")
     require("env")
@@ -203,7 +216,9 @@ def import_data():
 
 @task
 def resetdb():
-    '''Elimina la base de datos y la vuelve a crear'''
+    '''
+    Elimina la base de datos y la vuelve a crear
+    '''
     require('site_dir')
     require('env')
     run('''
@@ -221,8 +236,25 @@ def resetdb():
 
 @task
 def reset_all():
-    '''Borra toda la instación de wordpress e incia de cero'''
+    '''
+    Borra toda la instación de wordpress e inicia de cero
+    '''
     require('wordpress_dir')
     run('''rm -rf {0}*'''.format(env.wordpress_dir))
     resetdb()
     bootstrap()
+
+
+@task
+def deploy():
+    '''
+    Sincroniza los archivos modificados y activa los plugins al entorno señalado
+    '''
+    require("wordpress_dir")
+    require("site_dir")
+    rsync_project(
+        remote_dir=env.site_dir,
+        local_dir='src/',
+        delete=False
+    )
+    print green('Deploy exitoso.')
