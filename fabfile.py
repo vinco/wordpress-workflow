@@ -179,7 +179,6 @@ def install_plugins():
                 plugin['name']
                 ))
 
-
 @task
 def import_data():
     '''
@@ -213,6 +212,16 @@ def import_data():
             SITE_CONFIG[env.env]['admin_email']
             ))
 
+@task
+def export_data():
+    require("site_dir")
+    require("wordpress_dir")
+    require("env")
+    run('''
+       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} --no-create-info  > {sitedir}database/data.sql
+       '''.format(
+       sitedir=env.site_dir, **SITE_CONFIG[env.env]
+       ))
 
 @task
 def resetdb():
