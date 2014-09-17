@@ -44,8 +44,8 @@ end
 
 # Defines host
 web_app "wordpress-workflow" do
-  server_name "wordpress-workflow.local"
-  server_aliases ["www.wordpress-workflow.local"]
+  server_name "wordpress.local"
+  server_aliases ["www.wordpress.local"]
   docroot "/home/vagrant/www"
   allow_override "All"
 end
