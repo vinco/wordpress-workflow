@@ -1,7 +1,8 @@
 # encoding: utf-8
+import re
 from fabric.api import cd, env, local, run, task, require
 from fabric.contrib.project import rsync_project
-from fabric.colors import green
+from fabric.colors import green, red
 from settings import SITE_CONFIG, PLUGINS_CONFIG, CUSTOM_PLUGINS_CONFIG
 
 
@@ -23,6 +24,31 @@ def vagrant():
     env.site_dir = '/home/vagrant/wordpress-workflow/'
     env.wordpress_dir = '/home/vagrant/www/'
     env.env = 'dev'
+
+
+@task
+def envverify():
+    '''
+    Verifica que las carpetas dadas de alta en el ambiente esten bien formadas
+    '''
+    require('site_dir')
+    require('wordpress_dir')
+    ok = True
+
+    if not re.search('/$', env.site_dir):
+        print red('La variable de entorno env.site_dir debe ser un folder (Terminar en / )')
+        ok = False
+
+    if not re.search('/$', env.wordpress_dir):
+        ok = False
+        print red('La variable de entorno env.wordpress_dir debe ser un folder (Terminar en / )')
+
+    if env.wordpress_dir == env.site_dir:
+        ok = False
+        print red('Los directorios site_dir y wordpress_dir no pueden ser el mismo')
+
+    if ok:
+        print green('El entorno tiene bien configurados los directorios')
 
 
 @task
