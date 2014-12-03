@@ -7,6 +7,18 @@ you should go and checkout https://github.com/10up/varying-vagrant-vagrants wond
 
     * Vagrant 2
     * Fabric
+    * Vagrant omnibus
+    * Vagrant hostsupdater 
+
+## vagrant plugins
+
+In order to install the needed vagrant plugins run these commands
+
+```
+$ vagrant plugin install vagrant-omnibus
+$ vagrant plugin install vagrant-hostsupdater
+
+```
 
 # Setup
 
