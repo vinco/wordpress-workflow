@@ -43,5 +43,5 @@ CUSTOM_PLUGINS_CONFIG = (
     {
         'name': 'jetpack',
         'active': True
-    }
+    },
 )
