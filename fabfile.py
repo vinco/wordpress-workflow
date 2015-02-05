@@ -293,3 +293,49 @@ def deploy():
         delete=False
     )
     print green('Deploy exitoso.')
+
+
+@task
+def wordpress_upgrade():
+    '''
+    Descarga la nueva version de wordpress escrita en settings y hace el upgrade
+    '''
+    require("wordpress_dir")
+    require("site_dir")
+    require('env')
+    #Upgrades wordpress based on settings.py options
+    run('''
+        wp core update --version={0} --path={1} --locale={2} --force
+        '''.format(
+        SITE_CONFIG['version'],
+        env.wordpress_dir,
+        SITE_CONFIG['locale']
+        ))
+    print green('Upgrade exitoso.')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
