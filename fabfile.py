@@ -313,29 +313,3 @@ def wordpress_upgrade():
         ))
     print green('Upgrade exitoso.')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
