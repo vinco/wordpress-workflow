@@ -315,7 +315,7 @@ def wordpress_upgrade():
             env.wordpress_dir,
             SITE_CONFIG['locale']
             ))
-        print green('Upgrade exitoso.')
+        print green('Upgrade a versión '+ request_ver + ' exitoso.')
     else:
         print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser mayor que la versión actual (" + current_ver + ")")
 
@@ -339,7 +339,7 @@ def wordpress_downgrade():
             env.wordpress_dir,
             SITE_CONFIG['locale']
             ))
-        print green('Downgrade exitoso.')
+        print green('Downgrade a versión '+ request_ver + ' exitoso.')
     else:
         print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser inferior a la versión actual (" + current_ver + ")")
 
