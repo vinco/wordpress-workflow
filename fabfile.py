@@ -333,7 +333,7 @@ def wordpress_downgrade():
     if request_ver < current_ver:
         #Upgrades wordpress based on settings.py options
         run('''
-            wp core update --version={0} --path={1} --locale={2} 
+            wp core update --version={0} --path={1} --locale={2} --force
             '''.format(
             SITE_CONFIG['version'],
             env.wordpress_dir,
@@ -344,4 +344,3 @@ def wordpress_downgrade():
         print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser inferior a la versión actual (" + current_ver + ")")
 
 
-        
