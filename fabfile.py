@@ -303,13 +303,45 @@ def wordpress_upgrade():
     require("wordpress_dir")
     require("site_dir")
     require('env')
-    #Upgrades wordpress based on settings.py options
-    run('''
-        wp core update --version={0} --path={1} --locale={2} --force
-        '''.format(
-        SITE_CONFIG['version'],
-        env.wordpress_dir,
-        SITE_CONFIG['locale']
-        ))
-    print green('Upgrade exitoso.')
+    with cd(env.wordpress_dir):
+        current_ver = run(''' wp core version''')
+        request_ver = SITE_CONFIG['version']
+    if request_ver > current_ver:
+        #Upgrades wordpress based on settings.py options
+        run('''
+            wp core update --version={0} --path={1} --locale={2} 
+            '''.format(
+            SITE_CONFIG['version'],
+            env.wordpress_dir,
+            SITE_CONFIG['locale']
+            ))
+        print green('Upgrade exitoso.')
+    else:
+        print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser mayor que la versión actual (" + current_ver + ")")
 
+@task
+def wordpress_downgrade():
+    '''
+    Descarga la nueva version de wordpress escrita en settings y hace el downgrade
+    '''
+    require("wordpress_dir")
+    require("site_dir")
+    require('env')
+    with cd(env.wordpress_dir):
+        current_ver = run(''' wp core version''')
+        request_ver = SITE_CONFIG['version']
+    if request_ver < current_ver:
+        #Upgrades wordpress based on settings.py options
+        run('''
+            wp core update --version={0} --path={1} --locale={2} 
+            '''.format(
+            SITE_CONFIG['version'],
+            env.wordpress_dir,
+            SITE_CONFIG['locale']
+            ))
+        print green('Downgrade exitoso.')
+    else:
+        print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser inferior a la versión actual (" + current_ver + ")")
+
+
+        
