@@ -36,11 +36,7 @@ def enviro(ambiente):
         env.wordpress_dir = config['SITE_CONFIG']['environments'][ambiente]['wordpress_dir']
         print green('Directorio del proyecto configurado: '+env.wordpress_dir)
         env.env = ambiente
-        
-
         env.title = config['SITE_CONFIG']['environments'][ambiente]['title'],
-
-
 
         # verificar las carpetas del ambiente 
         envverify()
@@ -376,27 +372,3 @@ def wordpress_downgrade():
         print green('Downgrade a versión '+ request_ver + ' exitoso.')
     else:
         print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser inferior a la versión actual (" + current_ver + ")")
-
-    
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
