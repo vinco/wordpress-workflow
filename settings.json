@@ -1,0 +1,78 @@
+{
+   "SITE_CONFIG" :{
+            "version": "4.1",
+            "locale": "es_ES",
+            "theme": "twentyfourteen",
+
+        "environments": {
+            "local":{
+                    "url": "wordpress.local",
+                    "title": "WP Project",
+                    "site_dir": "/home/vagrant/wordpress-workflow/",
+                    "wordpress_dir": "/home/vagrant/www/",
+                    "hosts": ["127.0.0.1:2222"],
+                    "admin_user": "admin",
+                    "admin_password": "password",
+                    "admin_email": "admin@email.com",
+                    "dbname": "wordpress_workflow",
+                    "dbuser": "root",
+                    "dbpassword": "password",
+                    "dbhost": "localhost"
+            },
+
+            "staging":{
+                    "url": "wordpress.local",
+                    "title": "WP Project",
+                    "site_dir": "/home/vagrant/wordpress-workflow/",
+                    "wordpress_dir": "/home/vagrant/www/",
+                    "ssh_user": "wpflow",
+                    "hosts": ["127.0.0.1:2222"],
+                    "admin_user": "admin",
+                    "admin_password": "password",
+                    "admin_email": "admin@email.com",
+                    "dbname": "wordpress_workflow",
+                    "dbuser": "root",
+                    "dbpassword": "password",
+                    "dbhost": "localhost"
+            },
+
+            "production":{
+                    "url": "wordpress.local",
+                    "title": "WP Project",
+                    "site_dir": "/home/vagrant/wordpress-workflow/",
+                    "wordpress_dir": "/home/vagrant/www/",
+                    "ssh_user": "wpflow",
+                    "hosts": ["127.0.0.1:2222"],
+                    "admin_user": "admin",
+                    "admin_password": "password",
+                    "admin_email": "admin@email.com",
+                    "dbname": "wordpress_workflow",
+                    "dbuser": "root",
+                    "dbpassword": "password",
+                    "dbhost": "localhost"
+            }
+        }
+    },
+
+    "PLUGINS_CONFIG" : [
+        {
+            "name": "wordpress-seo",
+            "active": "TRUE",
+            "version": "stable"
+        },
+        {
+            "name": "contact-form-7",
+            "active": "TRUE",
+            "version": "stable"
+        },
+        {
+            "name": "wp-super-cache",
+            "active": "TRUE",
+            "version": "stable"
+        }
+    ],
+
+    "CUSTOM_PLUGINS_CONFIG" : [
+       
+    ]
+}

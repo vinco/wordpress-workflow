@@ -1,29 +1,64 @@
 # encoding: utf-8
-import re
+import re, json
 from fabric.api import cd, env, local, run, task, require
 from fabric.contrib.project import rsync_project
 from fabric.colors import green, red
-from settings import SITE_CONFIG, PLUGINS_CONFIG, CUSTOM_PLUGINS_CONFIG
-
+with open('settings.json') as json_data:
+    config = json.load(json_data)
+    json_data.close()
 
 @task
-def vagrant():
+def enviro(ambiente):
     '''
-    Ambiente local de desarrollo (máquina virtual Vagrant).
+    Carga los datos del ambiente definido en settings.json (local,staging o production).
     '''
-    # Usuario
-    env.user = 'vagrant'
-    # Se conecta al ssh local
-    env.hosts = ['127.0.0.1:2222']
+    # validate ambiente variable
+    if ambiente in ['local','staging','production']:
+        print 'Cargando configuración de ambiente: '+ambiente
+        try:
+            env.user = config['SITE_CONFIG']['environments'][ambiente]['ssh_user']
+            env.hosts = config['SITE_CONFIG']['environments'][ambiente]['ssh_hosts']
+            print green('Credenciales de SSH '+ambiente+' configurados user : '+env.user+' host: '+env.hosts[0])
+        except:# si no hay un usuario ssh definido, es local y se usa la llave creada por vagrant
+            # Usuario
+            env.user = 'vagrant'
+            # Se conecta al ssh local
+            env.hosts = ['127.0.0.1:2222']
+            # Llave ssh creada por Vagrant
+            result = local('vagrant ssh-config | grep IdentityFile', capture=True)
+            env.key_filename = result.split()[1].replace('"', '')
+            print green('Llave SSH Local configurada')
 
-    # Llave ssh creada por Vagrant
-    result = local('vagrant ssh-config | grep IdentityFile', capture=True)
-    env.key_filename = result.split()[1].replace('"', '')
+        # Directorio del sitio wordpress
+        env.site_dir = config['SITE_CONFIG']['environments'][ambiente]['site_dir']
+        print green('Directorio del sitio configurado: '+env.site_dir)
+        # Directorio del proyecto (themes,plugins,etc.) 
+        env.wordpress_dir = config['SITE_CONFIG']['environments'][ambiente]['wordpress_dir']
+        print green('Directorio del proyecto configurado: '+env.wordpress_dir)
+        env.env = ambiente
+        
 
-    # Directorio del sitio wordpress
-    env.site_dir = '/home/vagrant/wordpress-workflow/'
-    env.wordpress_dir = '/home/vagrant/www/'
-    env.env = 'dev'
+        env.title = config['SITE_CONFIG']['environments'][ambiente]['title'],
+
+
+
+        # verificar las carpetas del ambiente 
+        envverify()
+        # definir los variables de WP-Admin
+        env.admin_user = config['SITE_CONFIG']['environments'][ambiente]['admin_user']
+        env.admin_password = config['SITE_CONFIG']['environments'][ambiente]['admin_password']
+        env.admin_email = config['SITE_CONFIG']['environments'][ambiente]['admin_email']
+        print green('Usuario de WP-Admin configurado')
+
+        # definir los variables de MySql
+        env.dbname = config['SITE_CONFIG']['environments'][ambiente]['dbname']
+        env.dbuser = config['SITE_CONFIG']['environments'][ambiente]['dbuser']
+        env.dbpassword = config['SITE_CONFIG']['environments'][ambiente]['dbpassword']
+        env.dbhost = config['SITE_CONFIG']['environments'][ambiente]['dbhost']
+        print green('Variables de MySql configurados')
+
+    else:# El ambiente no existe
+        print red('El ambiente '+ambiente+' no existe.')
 
 
 @task
@@ -60,15 +95,15 @@ def bootstrap():
     # Crea la base de datos
     run('''
         echo "DROP DATABASE IF EXISTS {0}; CREATE DATABASE {0};
-        "|mysql --batch --user={1} --password={2} --host={3}
+        "|mysql --batch --user={1} --password={2} --host=localhost
         '''.
         format(
-            SITE_CONFIG[env.env]['dbname'],
-            SITE_CONFIG[env.env]['dbuser'],
-            SITE_CONFIG[env.env]['dbpassword'],
-            SITE_CONFIG[env.env]['dbhost']
+           env.dbname,
+           env.dbuser,
+           env.dbpassword,
+           env.dbhost
         ))
-    # Activa modulo de apache
+    #Activa modulo de apache
     run('a2enmod rewrite')
     wordpress_install()
 
@@ -85,19 +120,19 @@ def wordpress_install():
     run('''
         wp core download --version={0} --path={1} --locale={2} --force
         '''.format(
-        SITE_CONFIG['version'],
+        config['SITE_CONFIG']['version'],
         env.wordpress_dir,
-        SITE_CONFIG['locale']
+        config['SITE_CONFIG']['locale'],
         ))
     #creates config
     run('''
         wp core config --dbname={0} --dbuser={1} \
             --dbpass={2} --path={3}
         '''.format(
-        SITE_CONFIG[env.env]['dbname'],
-        SITE_CONFIG[env.env]['dbuser'],
-        SITE_CONFIG[env.env]['dbpassword'],
-        env.wordpress_dir
+        env.dbname,
+        env.dbuser,
+        env.dbpassword,
+        env.wordpress_dir,
         ))
     #Installs into db
     run('''
@@ -105,14 +140,14 @@ def wordpress_install():
         --admin_user="{2}" --admin_password="{3}" \
         --admin_email="{4}" --path={5}
         '''.format(
-        SITE_CONFIG[env.env]['url'],
-        SITE_CONFIG[env.env]['title'],
-        SITE_CONFIG[env.env]['admin_user'],
-        SITE_CONFIG[env.env]['admin_password'],
-        SITE_CONFIG[env.env]['admin_email'],
-        env.wordpress_dir
+        config['SITE_CONFIG']['environments'][env.env]['url'],
+        config['SITE_CONFIG']['environments'][env.env]['title'],
+        env.admin_user,
+        env.admin_password,
+        env.admin_email,
+        env.wordpress_dir,
         ))
-    #Creates simbolic link to themes
+    #Creates simbolic link to themes and plugins
     run('''
        rm -rf {1}wp-content/themes &&
        ln -s {0}themes {1}wp-content
@@ -141,7 +176,7 @@ def activate_theme():
         run('''
             wp theme activate {0}
             '''.format(
-            SITE_CONFIG['theme']
+            config['SITE_CONFIG']['theme']
             ))
 
 
@@ -153,7 +188,7 @@ def install_plugins():
     require("wordpress_dir")
     require("site_dir")
 
-    for custom_plugin in CUSTOM_PLUGINS_CONFIG:
+    for custom_plugin in config['CUSTOM_PLUGINS_CONFIG']:
         with cd(env.wordpress_dir):
             run('''
                 if ! wp plugin is-installed {0};
@@ -178,7 +213,7 @@ def install_plugins():
                 ))
     # Installs 3rd party plugins
     with cd(env.wordpress_dir):
-        for plugin in PLUGINS_CONFIG:
+        for plugin in config['PLUGINS_CONFIG']:
             version = ""
             activate = "activate"
 
@@ -261,10 +296,10 @@ def resetdb():
         CREATE DATABASE {0};
         "|mysql --batch --user={1} --password={2} --host={3}
         '''.format(
-        SITE_CONFIG[env.env]['dbname'],
-        SITE_CONFIG[env.env]['dbuser'],
-        SITE_CONFIG[env.env]['dbpassword'],
-        SITE_CONFIG[env.env]['dbhost']
+        env.dbname,
+        env.dbuser,
+        env.dbpassword,
+        env.dbhost,
         )
         )
 
@@ -293,7 +328,6 @@ def deploy():
         delete=False
     )
     print green('Deploy exitoso.')
-
 
 @task
 def wordpress_upgrade():
@@ -342,5 +376,27 @@ def wordpress_downgrade():
         print green('Downgrade a versión '+ request_ver + ' exitoso.')
     else:
         print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser inferior a la versión actual (" + current_ver + ")")
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
