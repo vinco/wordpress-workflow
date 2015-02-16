@@ -12,8 +12,8 @@ def enviro(env_key):
     # import the json file
     try:
         with open('settings.json') as json_data:
-        config = json.load(json_data)
-        json_data.close()
+            config = json.load(json_data)
+            json_data.close()
     except:
         print red("Error reading the file settings.json. Please verify that the file exists.")
 
@@ -27,6 +27,9 @@ def enviro(env_key):
         env.version = config['SITE_CONFIG']['version']
         env.locale = config['SITE_CONFIG']['locale']
         env.theme = config['SITE_CONFIG']['theme']
+        env.plugins = config['PLUGINS_CONFIG']
+        env.custom_plugins = config['CUSTOM_PLUGINS_CONFIG']
+
         # Wordpress site directory path
         env.site_dir = config['SITE_CONFIG']['environments'][env_key]['site_dir']
         print green('Site directory configured as: ' + env.site_dir)
@@ -183,7 +186,7 @@ def activate_theme():
         run('''
             wp theme activate {0}
             '''.format(
-            config['SITE_CONFIG']['theme']
+            env.theme
             ))
 
 
@@ -195,7 +198,7 @@ def install_plugins():
     require("wordpress_dir")
     require("site_dir")
 
-    for custom_plugin in config['CUSTOM_PLUGINS_CONFIG']:
+    for custom_plugin in env.custom_plugins:
         with cd(env.wordpress_dir):
             run('''
                 if ! wp plugin is-installed {0};
@@ -220,7 +223,7 @@ def install_plugins():
                 ))
     # Installs 3rd party plugins
     with cd(env.wordpress_dir):
-        for plugin in config['PLUGINS_CONFIG']:
+        for plugin in env.plugins:
             version = ""
             activate = "activate"
 
