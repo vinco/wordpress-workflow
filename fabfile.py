@@ -331,7 +331,7 @@ def reset_all():
 @task
 def deploy():
     '''
-    Syncs modified files ans activates plugins in the enviroment specified
+    Syncs modified files and activates plugins in the enviroment specified
     '''
     require("wordpress_dir")
     require("site_dir")
@@ -341,12 +341,14 @@ def deploy():
         local_dir='src/',
         delete=False
     )
+    install_plugins()
     print green('Deploy was successful.')
+
 
 @task
 def wordpress_upgrade():
     '''
-    Downloads new version specified in settings.py and upgrades WordPress
+    Downloads new version specified in settings.json and upgrades WordPress
     '''
     require("wordpress_dir")
     require("site_dir")
@@ -370,7 +372,7 @@ def wordpress_upgrade():
 @task
 def wordpress_downgrade():
     '''
-    Downloads new version specified in settings.py and downgrades WordPress
+    Downloads new version specified in settings.json and downgrades WordPress
     '''
     require("wordpress_dir")
     require("site_dir")
