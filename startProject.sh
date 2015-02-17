@@ -32,7 +32,7 @@ echo "Enlaces simbolicos..."
 
 ln -s $DIR/Vagrantfile $DIR/../Vagrantfile
 ln -s $DIR/fabfile.py $DIR/../fabfile.py
-cp $DIR/settings.py $DIR/../settings.py
+cp $DIR/settings.json $DIR/../settings.json
 
 echo "Inicia maquina virtual"
 cd $DIR/../
