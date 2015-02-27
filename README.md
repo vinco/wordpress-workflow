@@ -1,6 +1,6 @@
 # Wordpress workflow
 
-This project intents to give a standarized way to develop pages on wordpress. It never aims to develop plugins for diferent wordpress versions, to do that
+This project intends to give a standarized way to develop pages on wordpress. It never aims to develop plugins for diferent wordpress versions, to do that
 you should go and checkout https://github.com/10up/varying-vagrant-vagrants wonderfull project. Actually this project is a mod of varying vagrant vagrants
 
 # Requirements
@@ -38,52 +38,55 @@ $ vagrant/startProject.sh
 
 ```
 
-## settings.py
+## settings.json
 
 This file contains the general project configuration, you need to set it before
 installing wordpress or running the fabric commands
 
-Be sure to set the [url] of your site to "wordpress.local" in settings.py
+For your local environment, be sure to set the [url] of your site to "wordpress.local" in settings.json
 
 ```
-'dev': {
-        'url': 'wordpress.local',
-        'title': 'New Project',
+"environments": {
+            "local":{
+                    "url": "wordpress.local",
+                    "title": "WP Project",
         ...
 ```
 
-also comment out or remove the example custom plugin 'jetpak' as this will cause errors when installing wordpress
+Make sure that any custom plugins specified in your settings.json actually exist in /src/plugins or this will cause errors when installing wordpress
 
 ```
-    # 'name': 'jetpack',
-    # 'active': True
+   "CUSTOM_PLUGINS_CONFIG" : [
+       {
+            "name": "plugin-name" 
+            "active: TRUE"
+       }
 ```
 
-Before you can run the install command you need to download your theme or create a new custom theme folder in your local /src/themes/ directory.
-For example if you want to use the worpress default "Twenty Fouteen" theme you would download and extract the theme as /src/themes/twentyfourteen
-then in your settings.py file set your site config as follows:
+Before you can run the install command you need to set your theme or create a new custom theme folder in your local /src/themes/ directory.
+Then set your custom theme in the settings.json or use the default that comes with your version of WordPress as follows:
 
 ```
-SITE_CONFIG = {
-    'version': '4.1',
-    'locale': 'es_ES',
-    'theme': 'twentyfourteen',
+"SITE_CONFIG" :{
+    "version": "4.1",
+    "locale": "es_ES",
+    "theme": "twentyfourteen"
 ```
 (You can set the version and locale to whatever you need for your project)
 
 Now you can install wordpress on your vagrant machine by running the following command:
 
 ```
-$ fab vagrant bootstrap
+$ fab enviro:local bootstrap
 ```
-This will Create the database, install the version of wordpress you specified, activate all plugins, and set the theme. 
-If you get any errors durring the setup processes you will have to fix the error and then run "$ fab vagrant reset_all" which will clean up the failed installation and automatically re-run bootstrap.
+This will Create the database, install the version of wordpress you specified, install and activate all plugins, and set the theme. 
+If you get any errors durring the setup processes you will have to fix the error and then run "$ fab enviro:local reset_all" which will clean up the failed installation and automatically re-run bootstrap.
 
 
 # Access
 
 You can now browse to http://wordpress.local where you can find you installation of wordpress.
-Use the username and password from your settings.py file to access the admin desktop http://wordpress.local/wp-admin
+Use the username and password from your settings.json file to access the admin desktop http://wordpress.local/wp-admin
 
 ## fabfile.py
 
@@ -93,27 +96,30 @@ these tasks need to be executed in the general form:
 
 ``$ fab environment task1 task2 ... task3``
 
-For example if you want to sync files to dev and the install plugins the command would be
+For example if you want to sync files to staging and the install plugins the command would be
 
 ```
-$ fab dev deploy install_plugins
+$ fab enviro:staging deploy install_plugins
 
 Available commands:
 
-activate_theme     Activates wordpress theme given in settings
-bootstrap          Sets up wordpress installation for the first time
-deploy             Syncs files to enviroment
-envverify          Verifies the environment is created correctly
-export_data        Exports current database to database/data.sql
-import_data        Imports database from database/data.sql
-install_plugins    Installs plugins and activates them according to settings
-reset_all          Deletes all wordpress installment and runs bootstrap
-resetdb            Drops database and creates it again (without data or structure)
-vagrant            Local development environment (Vagrant virtual machine).
-wordpress_install  Downloads wordpress version written in settings and creates database
+enviro              Selects the environment configuration you wish to use (local,staging,production).
+envverify           Verifies that the directories provided in settings are well formed
+bootstrap           Creates the database with test data, activates apache rewrite module, and starts wordpress install
+wordpress_install   Downloads specified version of WordPress, creates wp-config file, installs into db, and sets up themes and plugins
+activate_theme      Activates theme specified in settings.json for wordpress installation
+install_plugins     Installs all plugins and initializes per the settings.json parameters
+import_data         Imports data from database/data.sql
+export_data         Exports current database to database/data.sql
+resetdb             Deletes database and recreates it
+reset_all           Deletes entire wordpress installation and database and re-installs from scratch
+deploy              Syncs modified files and activates plugins in the enviroment specified
+wordpress_upgrade   Downloads new version specified in settings.json and upgrades WordPress
+wordpress_downgrade Downloads new version specified in settings.json and downgrades WordPress
+
 ```
 
-You can list the available enviroments and task by running ``fab --list``
+You can list the available tasks by running ``fab --list``
 
 
 # Workflow
@@ -123,7 +129,7 @@ The default structure in your root directory will be as follows:
  ```
  . 
  ├── fabfile.py 
- ├── settings.py
+ ├── settings.json
  ├── src
  │   ├── database
  │   ├── init
