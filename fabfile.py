@@ -22,7 +22,7 @@ def vagrant():
 
     # Directorio del sitio wordpress
     env.site_dir = '/home/vagrant/wordpress-workflow/'
-    env.wordpress_dir = '/home/vagrant/www/'
+    env.wordpress_dir = '/home/vagrant/public_www/'
     env.env = 'dev'
 
 
@@ -69,7 +69,7 @@ def bootstrap():
             SITE_CONFIG[env.env]['dbhost']
         ))
     # Activa modulo de apache
-    run('a2enmod rewrite')
+    run('sudo a2enmod rewrite')
     wordpress_install()
 
 
