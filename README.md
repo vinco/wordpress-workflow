@@ -1,13 +1,11 @@
 # Wordpress workflow
 
-This project intents to give a standarized way to develop pages on wordpress. It never aims to develop plugins for diferent wordpress versions, to do that
-you should go and checkout https://github.com/10up/varying-vagrant-vagrants wonderfull project. Actually this project is a mod of varying vagrant vagrants
+This project intents to give a standarized way to develop pages on wordpress. 
 
 # Requirements
 
     * Vagrant 2
     * Fabric
-    * Vagrant omnibus
     * Vagrant hostsupdater 
 
 ## vagrant plugins
@@ -15,7 +13,6 @@ you should go and checkout https://github.com/10up/varying-vagrant-vagrants wond
 In order to install the needed vagrant plugins run these commands
 
 ```
-$ vagrant plugin install vagrant-omnibus
 $ vagrant plugin install vagrant-hostsupdater
 
 ```
@@ -60,12 +57,12 @@ also comment out or remove the example custom plugin 'jetpak' as this will cause
 ```
 
 Before you can run the install command you need to download your theme or create a new custom theme folder in your local /src/themes/ directory.
-For example if you want to use the worpress default "Twenty Fouteen" theme you would download and extract the theme as /src/themes/twentyfourteen
+For example if you want to use the worpress default "Twenty Fourteen" theme you would download and extract the theme as /src/themes/twentyfourteen
 then in your settings.py file set your site config as follows:
 
 ```
 SITE_CONFIG = {
-    'version': '4.1',
+    'version': '4.1.1',
     'locale': 'es_ES',
     'theme': 'twentyfourteen',
 ```

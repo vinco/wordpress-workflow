@@ -5,7 +5,7 @@ SITE_CONFIG = {
     'theme': 'yourtheme',
 
     'dev': {
-        'url': 'wordpress-workflow.local',
+        'url': 'wordpress.local',
         'title': 'New Project',
         #Admin config
         'admin_user': 'admin',
@@ -21,27 +21,27 @@ SITE_CONFIG = {
 # 3rd party plugins
 
 PLUGINS_CONFIG = (
-    {
-        'name': 'wordpress-seo',
-        'active': True,
-        'version': 'stable'
-    },
-    {
-        'name': 'contact-form-7',
-        'active': True,
-        'version': 'stable'
-    },
-    {
-        'name': 'wp-super-cache',
-        'active': True,
-        'version': 'stable'
-    },
+    #{
+        #'name': 'wordpress-seo',
+        #'active': True,
+        #'version': 'stable'
+    #},
+    #{
+        #'name': 'contact-form-7',
+        #'active': True,
+        #'version': 'stable'
+    #},
+    #{
+        #'name': 'wp-super-cache',
+        #'active': True,
+        #'version': 'stable'
+    #},
 )
 
 # Own plugins
 CUSTOM_PLUGINS_CONFIG = (
-    {
-        'name': 'jetpack',
-        'active': True
-    },
+    #{
+        #'name': 'jetpack',
+        #'active': True
+    #},
 )
