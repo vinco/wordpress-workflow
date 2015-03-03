@@ -30,8 +30,8 @@ In linux it should look something like this:
 $ mkdir my-new-project
 $ cd my-new-project
 $ git init
-$ git clone https://github.com/vinco/wordpress-workflow.git vagrant
-$ vagrant/startProject.sh
+$ git clone https://github.com/vinco/wordpress-workflow.git
+$ wordpress-workflow/startProject.sh
 
 ```
 

@@ -7,8 +7,8 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
   #provisioning
-  config.vm.provision "file", source:"vagrant/provision/templates/wordpress.apache", destination: "/home/vagrant/wordpress"
-  config.vm.provision "shell", path: "vagrant/provision/provision.sh"
+  config.vm.provision "file", source:"wordpress-workflow/provision/templates/wordpress.apache", destination: "/home/vagrant/wordpress"
+  config.vm.provision "shell", path: "wordpress-workflow/provision/provision.sh"
 
   # Private IP  
   config.vm.network :private_network, ip: "192.168.33.77"
