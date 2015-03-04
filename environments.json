@@ -1,0 +1,9 @@
+{
+    "vagrant": {
+        "user": "vagrant",
+        "hosts": ["127.0.0.1:2222"],
+        "site_dir": "/home/vagrant/wordpress-workflow/",
+        "wordpress_dir": "/home/vagrant/public_www/",
+        "env": "dev"
+    }
+}
