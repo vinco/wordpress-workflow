@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
-import re
-
+import sys
 from fabric.api import cd, env, run, task, require
 from fabric.colors import green, red, white
 
-from fabutils.env import set_env
-from fabutils.tasks import ursync_project
-
-from settings import SITE_CONFIG, PLUGINS_CONFIG, CUSTOM_PLUGINS_CONFIG
+from fabutils.env import set_env_from_json_file
+from fabutils.tasks import ursync_project, ulocal
 
 
 @task
@@ -16,34 +12,32 @@ def environment(env_name):
     """
     Crea la configuración para el entorno en el que correrán las tareas.
     """
-    set_env(env_name, os.path.realpath(os.path.join(
-        os.path.dirname(__file__), 'environments.json'
-    )))
+    schemas_dir = "wordpress-workflow/json_schemas/"
+    try:
+        set_env_from_json_file(
+            'environments.json',
+            env_name,
+            schemas_dir + "environment_schema.json"
+        )
+        if env_name == "vagrant":
+            result = ulocal('vagrant ssh-config | grep IdentityFile',
+                            capture=True)
+            env.key_filename = result.split()[1].replace('"', '')
 
+    except ValueError:
+        print red("El archivo environments.json está mal formado.", bold=True)
+        sys.exit(1)
 
-@task
-def envverify():
-    """
-    Verifica que las carpetas dadas de alta en el ambiente esten bien formadas
-    """
-    require('site_dir')
-    require('wordpress_dir')
-    ok = True
+    try:
+        set_env_from_json_file(
+            'settings.json',
+            schema_path=schemas_dir + "settings_schema.json"
+        )
 
-    if not re.search('/$', env.site_dir):
-        print red('La variable de entorno env.site_dir debe ser un folder (Terminar en / )')
-        ok = False
+    except ValueError:
 
-    if not re.search('/$', env.wordpress_dir):
-        ok = False
-        print red('La variable de entorno env.wordpress_dir debe ser un folder (Terminar en / )')
-
-    if env.wordpress_dir == env.site_dir:
-        ok = False
-        print red('Los directorios site_dir y wordpress_dir no pueden ser el mismo')
-
-    if ok:
-        print green('El entorno tiene bien configurados los directorios')
+        print red("El archivo settings.json está mal formado.", bold=True)
+        sys.exit(1)
 
 
 @task
@@ -51,18 +45,12 @@ def bootstrap():
     """
     Crea la base de datos, información de prueba y activa rewrite
     """
-    require('env')
+    require('dbname', 'dbuser', 'dbpassword', 'dbhost')
     # Crea la base de datos
     run("""
-        echo "DROP DATABASE IF EXISTS {0}; CREATE DATABASE {0};
-        "|mysql --batch --user={1} --password={2} --host={3}
-        """.
-        format(
-            SITE_CONFIG[env.env]['dbname'],
-            SITE_CONFIG[env.env]['dbuser'],
-            SITE_CONFIG[env.env]['dbpassword'],
-            SITE_CONFIG[env.env]['dbhost']
-        ))
+        echo "DROP DATABASE IF EXISTS {dbname}; CREATE DATABASE {dbname};
+        "|mysql --batch --user={dbuser} --password={dbpassword} --host={dbhost}
+        """.format(**env))
     # Activa modulo de apache
     run('sudo a2enmod rewrite')
     wordpress_install()
@@ -74,36 +62,25 @@ def wordpress_install():
     Descarga la version de wordpress escrita en settings en instala la base
     de datos.
     """
-    require('env', 'site_dir', 'wordpress_dir')
+    require('wpworkflow_dir', 'public_dir', 'dbname', 'dbuser', 'dbpassword')
+    require('url', 'title', 'admin_user', 'admin_password', 'admin_email')
 
     #Downloads wordpress
-    run('wp core download --version={0} --path={1} --locale={2} '
-        '--force'.format(
-            SITE_CONFIG['version'],
-            env.wordpress_dir,
-            SITE_CONFIG['locale']
-        ))
+    run('wp core download --version={version} --path={public_dir} '
+        '--locale={locale} --force'.format(**env))
+
     #creates config
-    run('wp core config --dbname={0} --dbuser={1} --dbpass={2} '
-        '--path={3}'.format(
-            SITE_CONFIG[env.env]['dbname'],
-            SITE_CONFIG[env.env]['dbuser'],
-            SITE_CONFIG[env.env]['dbpassword'],
-            env.wordpress_dir
-        ))
+    run('wp core config --dbname={dbname} --dbuser={dbuser} '
+        '--dbpass={dbpassword} --path={public_dir}'.format(**env))
+
     #Installs into db
-    run('wp core install --url="{0}" --title="{1}" --admin_user="{2}" '
-        '--admin_password="{3}" --admin_email="{4}" --path={5}'.format(
-            SITE_CONFIG[env.env]['url'],
-            SITE_CONFIG[env.env]['title'],
-            SITE_CONFIG[env.env]['admin_user'],
-            SITE_CONFIG[env.env]['admin_password'],
-            SITE_CONFIG[env.env]['admin_email'],
-            env.wordpress_dir
-        ))
+    run('wp core install --url="{url}" --title="{title}" '
+        '--admin_user="{admin_user}" --admin_password="{admin_password}" '
+        ' --admin_email="{admin_email}" --path={public_dir}'.format(**env))
+
     #Creates simbolic link to themes
-    run('rm -rf {1}wp-content/themes && ln -s {0}themes {1}wp-content'.format(
-        env.site_dir, env.wordpress_dir))
+    run('rm -rf {public_dir}wp-content/themes &&  '
+        'ln -s {wpworkflow_dir}themes {public_dir}wp-content'.format(**env))
 
     activate_theme()
     install_plugins()
@@ -114,11 +91,10 @@ def activate_theme():
     """
     Activa el tema seleccionado en la instalacion de wordpress
     """
-    require("wordpress_dir")
+    require('public_dir', 'theme')
 
-    with cd(env.wordpress_dir):
-        run('wp theme activate {0}'.format(
-            SITE_CONFIG['theme']))
+    with cd(env.public_dir):
+        run('wp theme activate {0}'.format(env.theme))
 
 
 @task
@@ -126,11 +102,10 @@ def install_plugins():
     """
     Instala plugins e inicializa segun el archivo settings
     """
-    require("wordpress_dir")
-    require("site_dir")
+    require('public_dir', 'wpworkflow_dir', 'plugins', 'custom_plugins')
 
-    for custom_plugin in CUSTOM_PLUGINS_CONFIG:
-        with cd(env.wordpress_dir):
+    for custom_plugin in env.custom_plugins:
+        with cd(env.public_dir):
             run("""
                 if ! wp plugin is-installed {0};
                 then
@@ -138,8 +113,8 @@ def install_plugins():
                 fi
                 """.format(
                 custom_plugin['name'],
-                env.site_dir,
-                env.wordpress_dir
+                env.wpworkflow_dir,
+                env.public_dir
                 ))
 
             activate = "activate"
@@ -153,8 +128,8 @@ def install_plugins():
                 custom_plugin['name']
                 ))
     # Installs 3rd party plugins
-    with cd(env.wordpress_dir):
-        for plugin in PLUGINS_CONFIG:
+    with cd(env.public_dir):
+        for plugin in env.plugins:
             version = ""
             activate = "activate"
 
@@ -187,45 +162,31 @@ def import_data():
     """
     Importa la informacion de database/data.sql
     """
-    require("site_dir")
-    require("wordpress_dir")
-    require("env")
+    require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbhost')
+    require('admin_user', 'admin_password', 'admin_email', 'url')
+
     run("""
-        mysql -u {0} -p{1} {2} --host={3} < {4}database/data.sql
-        """.format(
-        SITE_CONFIG[env.env]['dbuser'],
-        SITE_CONFIG[env.env]['dbpassword'],
-        SITE_CONFIG[env.env]['dbname'],
-        SITE_CONFIG[env.env]['dbhost'],
-        env.site_dir
-        ))
+        mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <
+        {wpworkflow_dir}database/data.sql """.format(**env))
+
     with cd(env.wordpress_dir):  # Changes the domain
         run("""
-            wp option update home http://{0} &&
-            wp option update siteurl http://{0}
-            """.format(
-            SITE_CONFIG[env.env]['url']
-            ))
+            wp option update home http://{url} &&
+            wp option update siteurl http://{url}
+            """.format(**env))
         #changes the user
         run("""
-            wp user update {0} --user_pass={1} --user_email={2}
-            """.format(
-            SITE_CONFIG[env.env]['admin_user'],
-            SITE_CONFIG[env.env]['admin_password'],
-            SITE_CONFIG[env.env]['admin_email']
-            ))
+            wp user update {admin_user} --user_pass={admin_password}
+            --user_email={admin_email}
+            """.format(**env))
 
 
 @task
 def export_data():
-    require("site_dir")
-    require("wordpress_dir")
-    require("env")
+    require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbname', 'dbhost')
     run("""
-       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} --no-create-info  > {sitedir}database/data.sql
-       """.format(
-       sitedir=env.site_dir, **SITE_CONFIG[env.env]
-       ))
+       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}
+       --no-create-info  > {wpworkflow_dir}database/data.sql """.format(**env))
 
 
 @task
@@ -233,19 +194,13 @@ def resetdb():
     """
     Elimina la base de datos y la vuelve a crear
     """
-    require('site_dir')
-    require('env')
+    require('dbname', 'dbuser', 'dbpassword', 'dbhost')
+
     run("""
-        echo "DROP DATABASE IF EXISTS {0};
-        CREATE DATABASE {0};
-        "|mysql --batch --user={1} --password={2} --host={3}
-        """.format(
-        SITE_CONFIG[env.env]['dbname'],
-        SITE_CONFIG[env.env]['dbuser'],
-        SITE_CONFIG[env.env]['dbpassword'],
-        SITE_CONFIG[env.env]['dbhost']
-        )
-        )
+        echo "DROP DATABASE IF EXISTS {dbname};
+        CREATE DATABASE {dbname};
+        "|mysql --batch --user={dbuser} --password={dbpassword} --host={dbhost}
+        """.format(**env))
 
 
 @task
@@ -253,35 +208,34 @@ def reset_all():
     """
     Borra toda la instación de wordpress e inicia de cero
     """
-    require('wordpress_dir')
-    run("""rm -rf {0}*""".format(env.wordpress_dir))
+    require('public_dir')
+    run("""rm -rf {0}*""".format(env.public_dir))
     resetdb()
-    bootstrap()
 
 
 @task
-def deploy():
+def sync_files():
     """
     Sincroniza los archivos modificados y establece los permisos necesarios en
     el entorno señalado.
     """
-    require('group', 'site_dir', 'wordpress_dir')
+    require('group', 'wpworkflow_dir', 'public_dir')
 
     print white("Subiendo código al servidor...", bold=True)
     ursync_project(
         local_dir='./src/',
-        remote_dir=env.site_dir,
+        remote_dir=env.wpworkflow_dir,
         delete=True,
         default_opts='-chrtvzP'
     )
 
     print white("Estableciendo permisos...", bold=True)
-    run('chmod -R o-rwx {0}'.format(env.site_dir))
-    run('chmod -R o-rwx {0}'.format(env.wordpress_dir))
-    run('chgrp -R {0} {1}'.format(env.group, env.site_dir))
-    run('chgrp -R {0} {1}'.format(env.group, env.wordpress_dir))
+    run('chmod -R o-rwx {0}'.format(env.wpworkflow_dir))
+    run('chmod -R o-rwx {0}'.format(env.public_dir))
+    run('chgrp -R {0} {1}'.format(env.group, env.wpworkflow_dir))
+    run('chgrp -R {0} {1}'.format(env.group, env.public_dir))
 
-    print green('Deploy exitoso.')
+    print green(u'Sincronización exitosa.')
 
 
 @task
@@ -289,48 +243,45 @@ def wordpress_upgrade():
     """
     Descarga la nueva version de wordpress escrita en settings y hace el upgrade
     """
-    require("wordpress_dir")
-    require("site_dir")
-    require('env')
-    with cd(env.wordpress_dir):
+    require('public_dir', 'wpworkflow_dir', 'version', 'locale')
+    with cd(env.public_dir):
         current_ver = run(""" wp core version""")
-        request_ver = SITE_CONFIG['version']
+        request_ver = env.version
+
     if request_ver > current_ver:
-        #Upgrades wordpress based on settings.py options
         run("""
-            wp core update --version={0} --path={1} --locale={2}
-            """.format(
-            SITE_CONFIG['version'],
-            env.wordpress_dir,
-            SITE_CONFIG['locale']
-            ))
-        print green('Upgrade a versión '+ request_ver + ' exitoso.')
+            wp core update --version={version} --path={public_dir}
+            --locale={locale} """.format(**env))
+
+        print green('Upgrade a versión ' + request_ver + ' exitoso.')
+
     else:
-        print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser mayor que la versión actual (" + current_ver + ")")
+        print red("""
+                  La version de wordpress en settings {0}
+                  debe ser mayor que la versión actual {1}
+                  """.format(request_ver, current_ver))
 
 
 @task
 def wordpress_downgrade():
     """
-    Descarga la nueva version de wordpress escrita en settings y hace el downgrade
+    Descarga la nueva version de wordpress escrita en settings y
+    hace el downgrade
     """
-    require("wordpress_dir")
-    require("site_dir")
-    require('env')
-    with cd(env.wordpress_dir):
+    require('version', 'public_dir', 'locale')
+
+    with cd(env.public_dir):
         current_ver = run(""" wp core version""")
-        request_ver = SITE_CONFIG['version']
+        request_ver = env.version
+
     if request_ver < current_ver:
-        #Upgrades wordpress based on settings.py options
         run("""
-            wp core update --version={0} --path={1} --locale={2} --force
-            """.format(
-            SITE_CONFIG['version'],
-            env.wordpress_dir,
-            SITE_CONFIG['locale']
-            ))
-        print green('Downgrade a versión '+ request_ver + ' exitoso.')
+            wp core update --version={version} --path={public_dir}
+            --locale={locale} --force """.format(**env))
+
+        print green('Downgrade a versión ' + request_ver + ' exitoso.')
     else:
-        print red("La version de wordpress en settings.py ("+ request_ver + ") debe ser inferior a la versión actual (" + current_ver + ")")
-
-
+        print red("""
+                  La version de wordpress en settings.py {0}
+                  debe ser inferior a la versión actual {1}
+                  """.format(request_ver, current_ver))
