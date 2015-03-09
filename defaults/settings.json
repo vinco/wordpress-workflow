@@ -1,0 +1,20 @@
+{
+    "version": "4.1.1",
+    "locale": "es_ES",
+    "theme": "twentyfourteen",
+    "plugins": [
+        {
+            "name": "wordpress-seo",
+            "active": true,
+            "version": "stable"
+        }
+    ],
+    "custom_plugins" : [
+        {
+            "name": "myPlugin",
+            "active": true
+        }
+    ]
+
+}
+
