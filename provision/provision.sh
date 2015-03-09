@@ -8,6 +8,9 @@ apt-get update
 # Configurations
 
 PACKAGES="php5 mysql-client mysql-server php5-mysql apache2 tree vim curl"
+PACKAGES="$PACKAGES nginx-full php5-fpm php5-cgi spawn-fcgi php-pear php5-gd"
+PACKAGES="$PACKAGES php-apc php5-curl php5-mcrypt php5-memcached fcgiwrap"
+
 PUBLIC_DIRECTORY="/home/vagrant/public_www"
 
 # Sets mysql pasword
@@ -17,6 +20,10 @@ debconf-set-selections <<< 'mysql-server mysql-server/root_password_again passwo
 echo "Installing packages $PACKAGES ..."
 
 apt-get install $PACKAGES --assume-yes
+
+# Makes apache not init in start
+update-rc.d -f  apache2 remove
+update-rc.d php5-fpm defaults
 
 # Wordpress client and public folder
 if [ ! -d "$PUBLIC_DIRECTORY" ]; then
@@ -32,7 +39,19 @@ chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp
 
 # Activates site
-mv /home/vagrant/wordpress /etc/apache2/sites-available/
+
+# Apache
+mv /home/vagrant/wordpress.apache /etc/apache2/sites-available/wordpress
+mv /home/vagrant/httpd.conf /etc/apache2/conf.d/httpd.conf
+a2enmod actions
 a2dissite default
 a2ensite wordpress
-service apache2 restart
+service apache2 stop
+
+# Nginx
+mv /home/vagrant/wordpress.nginx /etc/nginx/sites-available/wordpress
+mv /home/vagrant/www.conf /etc/php5/fpm/pool.d/www.conf
+rm  /etc/nginx/sites-enabled/*
+ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+service php5-fpm restart
+service nginx restart

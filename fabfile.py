@@ -285,3 +285,19 @@ def wordpress_downgrade():
                   La version de wordpress en settings.py {0}
                   debe ser inferior a la versión actual {1}
                   """.format(request_ver, current_ver))
+
+
+@task
+def set_webserver(webserver="nginx"):
+    """
+    Cambia el servidor web del proyecto, opciones nginx o apache2
+    """
+    if webserver == "apache2":
+        run("sudo service php5-fpm stop")
+        run("sudo service nginx stop")
+        run("sudo service apache2 start")
+    else:
+        run("sudo service apache2 stop")
+        run("sudo service php5-fpm start")
+        run("sudo service nginx start")
+        run("sudo chown www-data:www-data /var/run/php5-fpm.sock")
