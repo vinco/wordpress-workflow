@@ -1,0 +1,62 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Wordpress workflow settings",
+    "description": "wordpress' project wide settings",
+    "type": "object",
+    "properties": {
+        "version": {
+            "description": "wordpress' version",
+            "type": "string"
+        },
+        "locale": {
+            "description": "wordpress' languaje setting",
+            "type": "string"
+        },
+        "theme": {
+            "description": "wordpress' theme to be used (must exist in src)",
+            "type": "string"
+        },
+        "plugins": {
+            "description": "wordpress' plugins to be downloaded and install",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "plugin's name used to download",
+                        "type": "string"
+                    },
+                    "active": {
+                        "description": "if the plugin should be active",
+                        "type": "boolean"
+                    },
+                    "version": {
+                        "description": "plugin's version or stable to get the latest",
+                        "type": "string"
+                    }
+
+                },
+                "required": [ "name", "active", "version" ]
+            }
+        },
+        "custom_plugins": {
+            "description": "wordpress' plugins to be install from src",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "plugin's name used to download",
+                        "type": "string"
+                    },
+                    "active": {
+                        "description": "if the plugin should be active",
+                        "type": "boolean"
+                    }
+                },
+                "required": [ "name", "active" ]
+            }
+        }
+    },
+    "required": [ "version", "locale", "theme", "plugins", "custom_plugins" ]
+}
