@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
 
   # Shared folders.
   config.vm.synced_folder "src", "/home/vagrant/wordpress-workflow"
+  config.vm.synced_folder "wordpress-workflow/documentation", "/home/vagrant/workflow-documentation"
 
   # Provider
   config.vm.provider "virtualbox" do |v|

@@ -183,6 +183,9 @@ def import_data():
 
 @task
 def export_data():
+    """
+    Exporta la base de datos a database/data.sql
+    """
     require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbname', 'dbhost')
     run("""
        mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}
@@ -300,4 +303,3 @@ def set_webserver(webserver="nginx"):
         run("sudo service apache2 stop")
         run("sudo service php5-fpm start")
         run("sudo service nginx start")
-        run("sudo chown www-data:www-data /var/run/php5-fpm.sock")

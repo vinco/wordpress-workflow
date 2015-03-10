@@ -30,7 +30,7 @@ This project intents to give a standarized way to develop pages on wordpress.
 3. Clone this repo in your project's root directory
 
     ```bash
-    $ git clone https://github.com/vinco/wordpress-workflow.git
+    $ git submodule add https://github.com/vinco/wordpress-workflow.git
     ```
 
 4. Run the `startProject.sh` script to create the WordPress Workflow scaffolding
@@ -46,8 +46,8 @@ After runing the setup, the default structure in your root directory will be as 
 ```bash
  . 
  ├── environments.json
+ ├── settings.json
  ├── fabfile.py
- ├── settings.py
  ├── src
  │   ├── database
  │   ├── init
@@ -103,42 +103,41 @@ $ fab environment:devel ...
 ```
 
 
-### settings.py
+### settings.json
 
 This file contains the general project configuration, you need to set it before
 installing wordpress or running the fabric commands.
 
-Be sure to set the [url] of your site to "wordpress.local" in settings.py
+```json
+{
+    "version": "4.1.1",
+    "locale": "es_ES",
+    "theme": "yourtheme",
+    "plugins": [
+        {
+            "name": "wordpress-seo",
+            "active": true,
+            "version": "stable"
+        }
+    ],
+    "custom_plugins" : [
+        {
+            "name": "myPlugin",
+            "active": true
+        }
+    ]
 
-```python
-'dev': {
-    ...
-    'url': 'wordpress.local',
-    'title': 'New Project',
-    ...
 }
+
 ```
 
-also comment out or remove the example custom plugin 'jetpak' as this will cause errors when installing wordpress
+You need to have the `theme` in `src/themes/` otherwise the installation will fail.
 
-```python
-    # 'name': 'jetpack',
-    # 'active': True
-```
+Every plugin you specify in `plugins` must be a official plugin in wordpress.org/plugins,
+and will be installed for you.
 
-Before you can run the install command you need to download your theme or create a new custom theme directory in your local /src/themes/ directory.
-For example if you want to use the worpress default "Twenty Fourteen" theme you would download and extract the theme as /src/themes/twentyfourteen
-then in your settings.py file set your site config as follows:
-
-```python
-SITE_CONFIG = {
-    ...
-    'version': '4.1.1',
-    'locale': 'es_ES',
-    'theme': 'twentyfourteen',
-    ...
-}
-```
+Any plugin in `custom_plugins` must be placed on `src/plugins/` sinces the plugins
+won't be downloaded and are intended for your code.
 
 (You can set the version and locale to whatever you need for your project)
 
@@ -202,3 +201,8 @@ src/themes:   All the themes needed for your project, if you're not using it
 
 You can now browse to http://wordpress.local where you can find you installation of wordpress.
 Use the username and password from your settings.py file to access the admin desktop http://wordpress.local/wp-admin
+
+## Documentation
+
+Just after `startProject.sh` has finished you can enter to http://wordpress-workflow.local to see the entire
+project documentation.
