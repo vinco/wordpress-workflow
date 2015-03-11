@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
+import json
 from fabric.api import cd, env, run, task, require
-from fabric.colors import green, red, white
+from fabric.colors import green, red, white, yellow
+from fabric.contrib.console import confirm
 
 from fabutils.env import set_env_from_json_file
 from fabutils.tasks import ursync_project, ulocal
@@ -102,9 +104,10 @@ def install_plugins():
     """
     Instala plugins e inicializa segun el archivo settings
     """
-    require('public_dir', 'wpworkflow_dir', 'plugins', 'custom_plugins')
+    require('public_dir', 'wpworkflow_dir')
 
-    for custom_plugin in env.custom_plugins:
+    clean_plugins()
+    for custom_plugin in env.get("custom_plugins", []):
         with cd(env.public_dir):
             run("""
                 if ! wp plugin is-installed {0};
@@ -129,7 +132,7 @@ def install_plugins():
                 ))
     # Installs 3rd party plugins
     with cd(env.public_dir):
-        for plugin in env.plugins:
+        for plugin in env.get("plugins", []):
             version = ""
             activate = "activate"
 
@@ -303,3 +306,54 @@ def set_webserver(webserver="nginx"):
         run("sudo service apache2 stop")
         run("sudo service php5-fpm start")
         run("sudo service nginx start")
+
+
+@task
+def clean_plugins():
+    """
+    Verifica si hay plugins instalados no usados y los elimina
+    """
+    require('public_dir')
+    installed_plugins = json.loads(
+        run('wp plugin list --format=json --path={0}'.  format(env.public_dir))
+    )
+    plugins_to_delete = []
+    for installed_plugin in installed_plugins:
+        if not search_plugin(installed_plugin['name']):
+            plugins_to_delete.append(installed_plugin['name'])
+    if plugins_to_delete:
+        print yellow(
+            u'Se encontraron plugins no especificados en settings.json, '
+            u'que sin embargo están instalados en wordpress. '
+            u'Estos plugins deberán ser desinstalados antes de poder '
+            u'instalar, actualizar o sincronizar nuevos plugins\n'
+            u'Lista de plugins que no están presentes en settings.json'
+        )
+        count = 1
+        for plugin in plugins_to_delete:
+            print yellow(str(count) + ".- " + plugin)
+            count = count + 1
+        if confirm(yellow('Desea borrar estos plugins?')):
+            for plugin in plugins_to_delete:
+                run('wp plugin deactivate {0} --path={1}'.
+                    format(plugin, env.public_dir))
+                run('wp plugin uninstall {0} --path={1}'.
+                    format(plugin, env.public_dir))
+        else:
+            sys.exit(0)
+
+
+@task
+def search_plugin(plugin_searched):
+    """
+    Busca un plugin en settings.json
+    """
+    for plugin in env.get("plugins", []):
+        if plugin['name'] == plugin_searched:
+            return True
+
+    for plugin in env.get("custom_plugins", []):
+        if plugin['name'] == plugin_searched:
+            return True
+
+    return False

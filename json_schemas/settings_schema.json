@@ -58,5 +58,5 @@
             }
         }
     },
-    "required": [ "version", "locale", "theme", "plugins", "custom_plugins" ]
+    "required": [ "version", "locale", "theme" ]
 }
