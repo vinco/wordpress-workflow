@@ -53,6 +53,7 @@
                         <pre>
 $ mkdir new-project
 $ cd new-project
+$ git init
 $ git submodule add git@github.com:vinco/wordpress-workflow.git
 $ wordpress-workflow/startProject.sh
                         </pre>
