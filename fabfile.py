@@ -4,6 +4,7 @@ import json
 from fabric.api import cd, env, run, task, require
 from fabric.colors import green, red, white, yellow
 from fabric.contrib.console import confirm
+from fabric import state
 
 from fabutils.env import set_env_from_json_file
 from fabutils.tasks import ursync_project, ulocal
@@ -15,6 +16,9 @@ def environment(env_name):
     Crea la configuración para el entorno en el que correrán las tareas.
     """
     schemas_dir = "wordpress-workflow/json_schemas/"
+    state.output['running'] = False
+    state.output['stdout'] = False
+    print "Estableciendo ambiente"
     try:
         set_env_from_json_file(
             'environments.json',
@@ -48,6 +52,7 @@ def bootstrap():
     Crea la base de datos, información de prueba y activa rewrite
     """
     require('dbname', 'dbuser', 'dbpassword', 'dbhost')
+    print "Creando entorno local"
     # Crea la base de datos
     run("""
         echo "DROP DATABASE IF EXISTS {dbname}; CREATE DATABASE {dbname};
@@ -67,19 +72,23 @@ def wordpress_install():
     require('wpworkflow_dir', 'public_dir', 'dbname', 'dbuser', 'dbpassword')
     require('url', 'title', 'admin_user', 'admin_password', 'admin_email')
 
+    print "Descargando wordpress"
     #Downloads wordpress
     run('wp core download --version={version} --path={public_dir} '
         '--locale={locale} --force'.format(**env))
 
+    print "Creando configuraciones de wordpress"
     #creates config
     run('wp core config --dbname={dbname} --dbuser={dbuser} '
         '--dbpass={dbpassword} --path={public_dir}'.format(**env))
 
+    print "Instalando wordpress"
     #Installs into db
     run('wp core install --url="{url}" --title="{title}" '
         '--admin_user="{admin_user}" --admin_password="{admin_password}" '
         ' --admin_email="{admin_email}" --path={public_dir}'.format(**env))
 
+    print "Instalando wordpress-workflow"
     #Creates simbolic link to themes
     run('rm -rf {public_dir}wp-content/themes &&  '
         'ln -s {wpworkflow_dir}themes {public_dir}wp-content'.format(**env))
@@ -95,6 +104,7 @@ def activate_theme():
     """
     require('public_dir', 'theme')
 
+    print "Activando tema " + env.theme
     with cd(env.public_dir):
         run('wp theme activate {0}'.format(env.theme))
 
@@ -106,8 +116,10 @@ def install_plugins():
     """
     require('public_dir', 'wpworkflow_dir')
 
-    clean_plugins()
+    check_plugins()
+    print "Instalando plugins"
     for custom_plugin in env.get("custom_plugins", []):
+        print "Procesando: " + custom_plugin['name']
         with cd(env.public_dir):
             run("""
                 if ! wp plugin is-installed {0};
@@ -133,6 +145,7 @@ def install_plugins():
     # Installs 3rd party plugins
     with cd(env.public_dir):
         for plugin in env.get("plugins", []):
+            print "Procesando: " + plugin['name']
             version = ""
             activate = "activate"
 
@@ -170,6 +183,7 @@ def import_data(file_name="data.sql"):
 
     env.file_name = file_name
 
+    print "Importando datos del archivo: " + file_name
     run("""
         mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <\
         {wpworkflow_dir}database/{file_name} """.format(**env))
@@ -199,6 +213,7 @@ def export_data(file_name="data.sql", just_data=False):
     else:
         env.just_data = " "
 
+    print "Exportando datos al archivo: " + file_name
     run("""
        mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}\
        {just_data} > {wpworkflow_dir}database/{file_name} """.format(**env))
@@ -210,7 +225,7 @@ def resetdb():
     Elimina la base de datos y la vuelve a crear
     """
     require('dbname', 'dbuser', 'dbpassword', 'dbhost')
-
+    print "Eliminando base de datos"
     run("""
         echo "DROP DATABASE IF EXISTS {dbname};
         CREATE DATABASE {dbname};
@@ -224,6 +239,7 @@ def reset_all():
     Borra toda la instación de wordpress e inicia de cero
     """
     require('public_dir')
+    print "Elmininando contenido de la carpeta: " + env.public_dir
     run("""rm -rf {0}*""".format(env.public_dir))
     resetdb()
 
@@ -316,6 +332,77 @@ def set_webserver(webserver="nginx"):
         run("sudo service php5-fpm start")
         run("sudo service nginx start")
 
+    print "Servidor de desarrollo puesto en " + webserver
+
+
+@task
+def upgrade_plugin(plugin_name=None):
+    """
+    Actualiza un plugin hasta la versión especificada en settings.json
+    """
+    require('public_dir')
+    if not plugin_name:
+        print red("Se requiere del nombre del plugin a actualizar")
+        sys.exit(0)
+
+    installed_plugins = json.loads(
+        run('wp plugin list --format=json --path={0}'.  format(env.public_dir))
+    )
+    installed_plugin = search_plugin(plugin_name, installed_plugins)
+    plugin = search_plugin(plugin_name)
+    if plugin:
+        print (
+            u'Actualizando plugin ' + plugin_name + u' de versión ' +
+            installed_plugin['version'] + u' a versión ' + plugin['version']
+        )
+        run('wp plugin update {0} --version={1} --path={2}'.
+            format(plugin_name, plugin['version'], env.public_dir))
+        print green("Plugin " + plugin_name + " actualizado")
+
+
+@task
+def check_plugins():
+    """
+    Verifica las versiones instaladas de los plugins
+    """
+    require('public_dir')
+    clean_plugins()
+    installed_plugins = json.loads(
+        run('wp plugin list --format=json --path={0}'.  format(env.public_dir))
+    )
+    # Verifies wich plugins have `stable` to give a warning
+    stable_plugins = []
+    for plugin in env.get("plugins", []):
+        if plugin['version'] == 'stable':
+            stable_plugins.append(plugin)
+    if stable_plugins:
+        print yellow(
+            u'Se han encontrado plugins en `settings.json` que no tienen'
+            u' versión especificada. Esto no es un error pero puede atraer'
+            u' problemas. Se recomienda especificar la versión en el archivo\n'
+        )
+        for plugin in stable_plugins:
+            installed_plugin = search_plugin(plugin['name'], installed_plugins)
+            if(installed_plugin):
+                version = installed_plugin['version']
+            else:
+                version = 'No instalado'
+            print yellow(
+                'Plugin: ' + plugin['name'] + u', Versión '
+                u'instalada: ' + version
+            )
+    # Verifies upgrade-able
+    upgrade = run('wp plugin update --dry-run --all --path={0}'.
+                  format(env.public_dir))
+    if upgrade != "No plugin updates available.":
+        print yellow(
+            u'Se han encontrado plugins que pueden ser actualizados'
+            u' esto se puede hacer cambiando la versión en settings.json'
+            u' y ejecutando el comando'
+            u'  `fab environment:ambiente upgrade_plugin:plugin_name`'
+        )
+        print yellow(upgrade)
+
 
 @task
 def clean_plugins():
@@ -327,6 +414,7 @@ def clean_plugins():
         run('wp plugin list --format=json --path={0}'.  format(env.public_dir))
     )
     plugins_to_delete = []
+    print "Verificando plugins instalados"
     for installed_plugin in installed_plugins:
         if not search_plugin(installed_plugin['name']):
             plugins_to_delete.append(installed_plugin['name'])
@@ -353,16 +441,22 @@ def clean_plugins():
 
 
 @task
-def search_plugin(plugin_searched):
+def search_plugin(plugin_searched, search_list=None):
     """
     Busca un plugin en settings.json
     """
+    if search_list:
+        for plugin in search_list:
+            if plugin['name'] == plugin_searched:
+                return plugin
+        return None
+
     for plugin in env.get("plugins", []):
         if plugin['name'] == plugin_searched:
-            return True
+            return plugin
 
     for plugin in env.get("custom_plugins", []):
         if plugin['name'] == plugin_searched:
-            return True
+            return plugin
 
     return False
