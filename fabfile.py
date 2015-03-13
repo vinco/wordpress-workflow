@@ -161,38 +161,47 @@ def install_plugins():
 
 
 @task
-def import_data():
+def import_data(file_name="data.sql"):
     """
     Importa la informacion de database/data.sql
     """
     require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbhost')
     require('admin_user', 'admin_password', 'admin_email', 'url')
 
-    run("""
-        mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <
-        {wpworkflow_dir}database/data.sql """.format(**env))
+    env.file_name = file_name
 
-    with cd(env.wordpress_dir):  # Changes the domain
+    run("""
+        mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <\
+        {wpworkflow_dir}database/{file_name} """.format(**env))
+
+    with cd(env.public_dir):  # Changes the domain
         run("""
-            wp option update home http://{url} &&
+            wp option update home http://{url} &&\
             wp option update siteurl http://{url}
             """.format(**env))
         #changes the user
         run("""
-            wp user update {admin_user} --user_pass={admin_password}
+            wp user update {admin_user} --user_pass={admin_password}\
             --user_email={admin_email}
             """.format(**env))
 
 
 @task
-def export_data():
+def export_data(file_name="data.sql", just_data=False):
     """
     Exporta la base de datos a database/data.sql
     """
     require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbname', 'dbhost')
+
+    env.file_name = file_name
+    if just_data:
+        env.just_data = "--no-create-info"
+    else:
+        env.just_data = " "
+
     run("""
-       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}
-       --no-create-info  > {wpworkflow_dir}database/data.sql """.format(**env))
+       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}\
+       {just_data} > {wpworkflow_dir}database/{file_name} """.format(**env))
 
 
 @task
