@@ -2,7 +2,7 @@
 import sys
 import json
 from fabric.api import cd, env, run, task, require
-from fabric.colors import green, red, white, yellow
+from fabric.colors import green, red, white, yellow, blue
 from fabric.contrib.console import confirm
 from fabric import state
 
@@ -18,7 +18,7 @@ def environment(env_name):
     schemas_dir = "wordpress-workflow/json_schemas/"
     state.output['running'] = False
     state.output['stdout'] = False
-    print "Estableciendo ambiente"
+    print "Estableciendo ambiente " + blue(env_name, bold=True)
     try:
         set_env_from_json_file(
             'environments.json',
@@ -104,7 +104,7 @@ def activate_theme():
     """
     require('public_dir', 'theme')
 
-    print "Activando tema " + env.theme
+    print "Activando tema " + blue(env.theme, bold=True)
     with cd(env.public_dir):
         run('wp theme activate {0}'.format(env.theme))
 
@@ -119,7 +119,7 @@ def install_plugins():
     check_plugins()
     print "Instalando plugins"
     for custom_plugin in env.get("custom_plugins", []):
-        print "Procesando: " + custom_plugin['name']
+        print "Procesando: " + blue(custom_plugin['name'], bold=True)
         with cd(env.public_dir):
             run("""
                 if ! wp plugin is-installed {0};
@@ -145,7 +145,7 @@ def install_plugins():
     # Installs 3rd party plugins
     with cd(env.public_dir):
         for plugin in env.get("plugins", []):
-            print "Procesando: " + plugin['name']
+            print "Procesando: " + blue(plugin['name'], bold=True)
             version = ""
             activate = "activate"
 
@@ -183,7 +183,7 @@ def import_data(file_name="data.sql"):
 
     env.file_name = file_name
 
-    print "Importando datos del archivo: " + file_name
+    print "Importando datos del archivo: " + blue(file_name, bold=True)
     run("""
         mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <\
         {wpworkflow_dir}database/{file_name} """.format(**env))
@@ -213,7 +213,7 @@ def export_data(file_name="data.sql", just_data=False):
     else:
         env.just_data = " "
 
-    print "Exportando datos al archivo: " + file_name
+    print "Exportando datos al archivo: " + blue(file_name, bold=True)
     run("""
        mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}\
        {just_data} > {wpworkflow_dir}database/{file_name} """.format(**env))
@@ -239,7 +239,7 @@ def reset_all():
     Borra toda la instación de wordpress e inicia de cero
     """
     require('public_dir')
-    print "Elmininando contenido de la carpeta: " + env.public_dir
+    print "Elmininando contenido de la carpeta: " + blue(env.public_dir, bold=True)
     run("""rm -rf {0}*""".format(env.public_dir))
     resetdb()
 
@@ -332,7 +332,7 @@ def set_webserver(webserver="nginx"):
         run("sudo service php5-fpm start")
         run("sudo service nginx start")
 
-    print "Servidor de desarrollo puesto en " + webserver
+    print "Servidor de desarrollo puesto en " + blue(webserver, bold=True)
 
 
 @task
