@@ -82,7 +82,9 @@ $ rm -rf vagrant
 $ git submodule add git@github.com:vinco/wordpress-workflow.git
 $ cp wordpress-workflow/defaults/environments.json ./
 $ cp wordpress-workflow/defaults/settings.json ./
-$ vagrant up
+$ rm Vagrantfile
+$ rm fabfile.py
+$ wordpress-workflow/startProject.sh
                         </pre>
                         <p>
                             Ahora copiaremos nuestro <code>settings.py</code> en los nuevos archivos
