@@ -84,7 +84,7 @@ $ cp wordpress-workflow/defaults/environments.json ./
 $ cp wordpress-workflow/defaults/settings.json ./
 $ rm Vagrantfile
 $ rm fabfile.py
-$ vagrant up
+$ wordpress-workflow/startProject.sh
                         </pre>
                         <p>
                             Ahora copiaremos nuestro <code>settings.py</code> en los nuevos archivos
