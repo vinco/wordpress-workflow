@@ -84,7 +84,6 @@ $ cp wordpress-workflow/defaults/environments.json ./
 $ cp wordpress-workflow/defaults/settings.json ./
 $ rm Vagrantfile
 $ rm fabfile.py
-$ wordpress-workflow/startProject.sh
 $ vagrant up
                         </pre>
                         <p>

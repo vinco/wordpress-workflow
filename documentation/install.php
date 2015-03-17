@@ -54,7 +54,7 @@
 $ mkdir new-project
 $ cd new-project
 $ git submodule add git@github.com:vinco/wordpress-workflow.git
-$ wordpress-workflow/startProject.sh
+$ vagrant up
                         </pre>
                         <p>
                             Después de esto se debe de colocar el tema que usará en el proyecto en la carpeta src/themes
