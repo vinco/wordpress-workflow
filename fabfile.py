@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import sys
 import json
+import os
 from fabric.api import cd, env, run, task, require
 from fabric.colors import green, red, white, yellow, blue
 from fabric.contrib.console import confirm
+from fabric.contrib.files import exists
 from fabric import state
 
 from fabutils.env import set_env_from_json_file
-from fabutils.tasks import ursync_project, ulocal
+from fabutils.tasks import ursync_project, ulocal, urun
 
 
 @task
@@ -460,3 +462,102 @@ def search_plugin(plugin_searched, search_list=None):
             return plugin
 
     return False
+
+
+@task
+def make_tarball(target_environment="test", tar_name="wordpress-dist"):
+    """
+    Genera un tarball para subir a servidores sin ssh
+    """
+    environment('vagrant')
+    env.tmp_dir = "/home/vagrant/wordpress-dist/"
+    env.tmp_dir_name = "wordpress-dist"
+    env.host_string = env.hosts[0]
+
+    check_plugins()
+
+    if not os.path.exists('./dist/'):
+        print "Creando carpeta dist"
+        os.makedirs('./dist/')
+
+    # Creates necesary dirs
+    print "Creando estructura de directorios "
+    if exists(env.tmp_dir):
+        urun('rm -rf {tmp_dir}'.format(**env))
+
+    urun('mkdir {tmp_dir}'.format(**env))
+
+    # Downloads
+    print "Descargando y generando configuracion wordpress"
+    #Downloads wordpress
+    urun('wp core download --version={version} --path={tmp_dir} '
+         '--locale={locale} --force'.format(**env))
+    #creates config
+    with open('environments.json', 'r') as json_file:
+        db_config = json.load(json_file)[target_environment]
+        db_config['tmp_dir'] = env.tmp_dir
+        urun('wp core config --dbname={dbname} --dbuser={dbuser} '
+             '--dbpass={dbpassword} --skip-check --path={tmp_dir}'.format(**db_config))
+
+    # Configure temp database
+    create_database_command = '''
+         echo "
+             CREATE DATABASE {dbname};
+             CREATE USER '{dbuser}'@'localhost' IDENTIFIED BY '{dbpassword}';
+             GRANT ALL PRIVILEGES ON *.* TO '{dbuser}'@'localhost';
+             FLUSH PRIVILEGES;
+         "'''.format(**db_config)
+    print "Configurando base de datos temporal"
+    urun(
+        create_database_command +
+        '|mysql --batch --user={dbuser} --password={dbpassword}'.format(**env)
+    )
+    # Install wodpress
+    print "Instalando wordpress temporal"
+    urun('wp core install --url="{url}" --title="{title}" '
+         '--admin_user="{admin_user}" --admin_password="{admin_password}" '
+         ' --admin_email="{admin_email}" --path={tmp_dir}'.format(**db_config))
+    # Cleans default wordpress files
+    urun('rm -rf {tmp_dir}wp-content/themes/*'.format(**env))
+    urun('rm -rf {tmp_dir}wp-content/plugins/*'.format(**env))
+    # Copy theme
+    urun('cp -rf {wpworkflow_dir}themes/* {tmp_dir}wp-content/themes/'.
+         format(**env))
+    # Download all require plugins
+    with cd(env.tmp_dir):
+        for plugin in env.get("plugins", []):
+            print "Descargando plugin: " + blue(plugin['name'], bold=True)
+            urun(""" wp plugin install {0} """.format(plugin['name']))
+    # Copy custom plugins
+    for plugin in env.get("custom_plugins", []):
+        env.plugin = plugin['name']
+        print "Copiando plugin: " + blue(plugin['name'], bold=True)
+        urun(
+            """
+            cp -rf {wpworkflow_dir}plugins/{plugin} \
+            {tmp_dir}wp-content/plugins
+            """.format(**env)
+        )
+    # Download all require plugins
+    print "Generando empaquetado"
+    env.tar_name = tar_name
+    with cd(env.tmp_dir + ".."):
+        urun('tar -czf {wpworkflow_dir}{tar_name}.tar.gz {tmp_dir_name}/*'
+             .format(**env))
+        os.rename(
+            './src/{tar_name}.tar.gz'.format(**env),
+            './dist/{tar_name}.tar.gz'.format(**env)
+        )
+    # Delete temp database
+    print "Limpiando datos temporales"
+    clean_database_command = '''
+        echo "
+            DROP USER '{dbuser}'@'localhost';
+            DROP DATABASE {dbname};
+        "'''.format(**db_config)
+    urun(
+        clean_database_command +
+        '|mysql --batch --user={dbuser} --password={dbpassword}'.format(**env)
+    )
+    urun('rm -rf {tmp_dir}'.format(**env))
+    print green("Empequetado generado en dist/{tar_name}.tar.gz".format(**env))
