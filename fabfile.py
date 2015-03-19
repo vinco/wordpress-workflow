@@ -95,8 +95,8 @@ def wordpress_install():
     run('rm -rf {public_dir}wp-content/themes &&  '
         'ln -s {wpworkflow_dir}themes {public_dir}wp-content'.format(**env))
 
-    activate_theme()
     install_plugins()
+    activate_theme()
 
 
 @task
