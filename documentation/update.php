@@ -53,7 +53,7 @@ $ git fetch origin
 $ git pull origin master
 $ cd ..
 $ git add wordpress-workflow
-$ git commit -m "Update Wordpress Workflow to last version"
+$ git commit -m "Update Wordpress Workflow to the last version"
                         </pre>
                     </div>
                 </div>
