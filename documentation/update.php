@@ -45,11 +45,15 @@
                         <p> 
                             Para obtener las nuevas características del proyecto
                             sólo se debe actualizar el submódulo por lo tanto
-                            con estos dos comandos debería ser suficiente:
+                            con estos comandos será suficiente:
                         </p>
                         <pre>
 $ cd wordpress-workflow
-$ git submodule update --remote
+$ git fetch origin
+$ git pull origin master
+$ cd ..
+$ git add wordpress-workflow
+$ git commit -m "Update Wordpress Workflow to last version"
                         </pre>
                     </div>
                 </div>
