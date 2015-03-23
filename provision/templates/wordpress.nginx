@@ -11,8 +11,7 @@ server {
     server_name www.wordpress.local;
 
     location / {
-        try_files $uri $uri/ /index.php?q=$uri&$args;
-
+        try_files $uri $uri/ /index.php?$args;
     }
 
     location ~ /(\.|wp-config.php|readme.html|license.txt|licencia.txt) {
