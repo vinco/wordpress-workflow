@@ -1,3 +1,9 @@
+# Version 0.2.1 (2015-03-23)
+
+    * Changes tasks description to english
+    * Fixes [issue #14] (https://github.com/vinco/wordpress-workflow/issues/14)
+    * Adds method set_debug_mode
+
 # Version 0.2.0 (2015-03-17)
 
     * Replaces Chef with shell script
