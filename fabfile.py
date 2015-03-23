@@ -7,6 +7,7 @@ from fabric.colors import green, red, white, yellow, blue
 from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
 from fabric import state
+from fabutils import boolean
 
 from fabutils.env import set_env_from_json_file
 from fabutils.tasks import ursync_project, ulocal, urun
@@ -66,6 +67,41 @@ def bootstrap():
 
 
 @task
+def create_config(debug=False):
+    """
+    Writes wordpress' configurations
+    """
+    require('public_dir', 'dbname', 'dbuser', 'dbpassword')
+
+    debug_text = ""
+    if boolean(debug):
+        debug_text = """--extra-php <<PHP
+                define( 'WP_DEBUG', true );
+                define( 'WP_DEBUG_LOG', true );
+                """
+
+    env['debug_text'] = debug_text
+
+    print "Setting debug mode to: {0}".format(debug)
+
+    if exists("{public_dir}wp-config.php".format(**env)):
+        run("rm {public_dir}wp-config.php".format(**env))
+
+    run("""
+        wp core config --dbname={dbname} --dbuser={dbuser} \
+        --dbpass={dbpassword} --path={public_dir} {debug_text}
+        """.format(**env))
+
+
+@task
+def set_debug_mode(debug=False):
+    """
+    Changes debug mode, false by default
+    """
+    create_config(debug)
+
+
+@task
 def wordpress_install():
     """
     Downloads the wordpress version specified in settings.json and installs the database.
@@ -79,9 +115,8 @@ def wordpress_install():
         '--locale={locale} --force'.format(**env))
 
     print "Creating wordpress configurations..."
-    #Creates config
-    run('wp core config --dbname={dbname} --dbuser={dbuser} '
-        '--dbpass={dbpassword} --path={public_dir}'.format(**env))
+    #creates config
+    create_config()
 
     print "Installing wordpress..."
     #Installs into db
