@@ -2,7 +2,7 @@
 import sys
 import json
 import os
-from fabric.api import cd, env, run, task, require
+from fabric.api import cd, env, run, task, require, sudo
 from fabric.colors import green, red, white, yellow, blue
 from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
@@ -357,14 +357,22 @@ def set_webserver(webserver="nginx"):
     """
     Changes project's web server, nginx or apache2 available, nginx by default.
     """
+    require('public_dir')
+
     if webserver == "apache2":
-        run("sudo service php5-fpm stop")
-        run("sudo service nginx stop")
-        run("sudo service apache2 start")
+        sudo("service nginx stop")
+        sudo("a2enmod rewrite")
+        with open('wordpress-workflow/defaults/htaccess') as htaccess:
+            urun(" echo '{0}' > {1}.htaccess".
+                 format(htaccess.read(), env.public_dir))
+
+        sudo("service apache2 start", pty=False)
+
     else:
-        run("sudo service apache2 stop")
-        run("sudo service php5-fpm restart")
-        run("sudo service nginx start")
+        sudo("service apache2 stop")
+        if exists("{0}.htaccess".format(env.public_dir)):
+            urun("rm {0}.htaccess".format(env.public_dir))
+        sudo("service nginx start")
 
     print "Web server switched to " + blue(webserver, bold=True) + "."
 
