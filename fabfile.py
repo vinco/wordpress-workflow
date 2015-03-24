@@ -14,13 +14,13 @@ from fabutils.tasks import ursync_project, ulocal, urun
 
 
 @task
-def environment(env_name):
+def environment(env_name, debug=False):
     """
     Creates the configurations for the environment in which tasks will run.
     """
     schemas_dir = "wordpress-workflow/json_schemas/"
-    state.output['running'] = False
-    state.output['stdout'] = False
+    state.output['running'] = boolean(debug)
+    state.output['stdout'] = boolean(debug)
     print "Establishing environment " + blue(env_name, bold=True) + "..."
     try:
         set_env_from_json_file(
