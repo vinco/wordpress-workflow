@@ -363,7 +363,7 @@ def set_webserver(webserver="nginx"):
         run("sudo service apache2 start")
     else:
         run("sudo service apache2 stop")
-        run("sudo service php5-fpm start")
+        run("sudo service php5-fpm restart")
         run("sudo service nginx start")
 
     print "Web server switched to " + blue(webserver, bold=True) + "."
