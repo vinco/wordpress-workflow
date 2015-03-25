@@ -73,14 +73,20 @@ def create_config(debug=False):
     """
     require('public_dir', 'dbname', 'dbuser', 'dbpassword')
 
-    debug_text = ""
-    if boolean(debug):
-        debug_text = """--extra-php <<PHP
-                define( 'WP_DEBUG', true );
-                define( 'WP_DEBUG_LOG', true );
-                """
+    block_wordpress_php = """--extra-php <<PHP
+                          define('DISALLOW_FILE_EDIT', true);
+                          define('DISALLOW_FILE_MODS', true);
+                          define('WP_AUTO_UPDATE_CORE', false);
+                          """
 
-    env['debug_text'] = debug_text
+    debug_php = ""
+    if boolean(debug):
+        debug_php = """
+                    define('WP_DEBUG', true);
+                    define('WP_DEBUG_LOG', true);
+                    """
+
+    env['extra_php'] = block_wordpress_php + debug_php
 
     print "Setting debug mode to: {0}".format(debug)
 
@@ -89,7 +95,7 @@ def create_config(debug=False):
 
     run("""
         wp core config --dbname={dbname} --dbuser={dbuser} \
-        --dbpass={dbpassword} --path={public_dir} {debug_text}
+        --dbpass={dbpassword} --path={public_dir} {extra_php}
         """.format(**env))
 
 
