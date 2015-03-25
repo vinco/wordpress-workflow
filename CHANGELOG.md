@@ -1,3 +1,9 @@
+# Version 0.2.2 (2015-03-25)
+
+    * Fixes bug in set_webserver
+    * Disables theme editor in wp-admin
+    * Disables plugin updater in wp-admin
+
 # Version 0.2.1 (2015-03-23)
 
     * Changes tasks description to english
