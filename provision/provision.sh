@@ -41,16 +41,18 @@ mv wp-cli.phar /usr/local/bin/wp
 # Activates site
 
 # Apache
-mv /home/vagrant/wordpress.apache /etc/apache2/sites-available/wordpress
-mv /home/vagrant/httpd.conf /etc/apache2/conf.d/httpd.conf
+cp /home/vagrant/templates/wordpress.apache /etc/apache2/sites-available/wordpress
+cp /home/vagrant/templates/httpd.conf /etc/apache2/conf.d/httpd.conf
 a2enmod actions
 a2dissite default
 a2ensite wordpress
 service apache2 stop
 
 # Nginx
-mv /home/vagrant/wordpress.nginx /etc/nginx/sites-available/wordpress
-mv /home/vagrant/www.conf /etc/php5/fpm/pool.d/www.conf
+cp /home/vagrant/templates/wordpress.nginx /etc/nginx/sites-available/wordpress
+cp /home/vagrant/templates/www.conf /etc/php5/fpm/pool.d/www.conf
+cp /home/vagrant/templates/nginx.conf /etc/nginx/nginx.conf
+cp /home/vagrant/templates/nginx.conf /home/vagrant/nginx.conf
 rm  /etc/nginx/sites-enabled/*
 ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 service php5-fpm restart
