@@ -6,6 +6,7 @@ from fabric.api import cd, env, run, task, require, sudo
 from fabric.colors import green, red, white, yellow, blue
 from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
+from fabric.operations import get
 from fabric import state
 from fabutils import boolean
 
@@ -612,3 +613,59 @@ def make_tarball(target_environment="test", tar_name="wordpress-dist"):
     )
     urun('rm -rf {tmp_dir}'.format(**env))
     print green("Packaging generated in dist/{tar_name}.tar.gz".format(**env))
+
+
+@task
+def backup(tarball_name='backup', just_data=False):
+    """
+    Generates a backup copy of database and uploads
+    """
+    require('wpworkflow_dir', 'public_dir')
+
+    env.tarball_name = tarball_name
+
+    print 'Preparing backup directory...'
+
+    if not os.path.exists('./backup/'):
+        os.makedirs('./backup/')
+
+    if exists('{wpworkflow_dir}backup/'):
+        run('rm -rf {wpworkflow}backup/')
+
+    if not exists('{wpworkflow_dir}backup/'.format(**env)):
+        run('mkdir {wpworkflow_dir}backup/'.format(**env))
+
+    if not exists('{wpworkflow_dir}backup/database/'.format(**env)):
+        run('mkdir {wpworkflow_dir}backup/database/'.format(**env))
+
+    if not exists('{wpworkflow_dir}backup/uploads/'.format(**env)):
+        run('mkdir {wpworkflow_dir}backup/uploads/'.format(**env))
+
+    export_data(tarball_name + '.sql', just_data)
+    run(
+        'mv {wpworkflow_dir}/database/{tarball_name}.sql '.format(**env)
+        +
+        '{wpworkflow_dir}/backup/database/'.format(**env)
+    )
+
+    print 'Copying uploads...'
+    run('cp -r {public_dir}wp-content/uploads/* {wpworkflow_dir}backup/uploads/'.
+        format(**env))
+
+    print 'Creating tarball...'
+    with cd(env.wpworkflow_dir):
+        urun('tar -czf {tarball_name}.tar.gz backup/*'.format(**env))
+
+    print 'Downloading backup...'
+
+    get(
+        '{wpworkflow_dir}{tarball_name}.tar.gz'.format(**env),
+        './backup/{tarball_name}.tar.gz'.format(**env)
+    )
+
+    print 'Cleaning working directory...'
+    run('rm -rf {wpworkflow_dir}backup/'.format(**env))
+    run('rm {wpworkflow_dir}{tarball_name}.tar.gz'.format(**env))
+
+    print green('Backup succesfully created at ./backup/{tarball_name}.tar.gz'.
+                format(**env))
