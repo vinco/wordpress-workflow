@@ -1,3 +1,9 @@
+# Version 0.2.3 (2015-04-13)
+
+    * Fixes nginx cache files
+    * Fixes nginx buffer_size
+    * Adds backup method
+
 # Version 0.2.2 (2015-03-25)
 
     * Fixes bug in set_webserver
