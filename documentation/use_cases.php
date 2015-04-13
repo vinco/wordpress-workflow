@@ -59,7 +59,7 @@
                             Instalamos el nuevo sitio en desarrollo
                         </p>
                         <pre>
-$ fab environment:fab activate_theme
+$ fab environment:vagrant activate_theme
                         </pre>
                         <p>
                             Una vez comprobado que el tema funciona y realizar
