@@ -250,16 +250,34 @@ def export_data(file_name="data.sql", just_data=False):
     """
     require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbname', 'dbhost')
 
+    export = True
+
     env.file_name = file_name
     if just_data:
         env.just_data = "--no-create-info"
     else:
         env.just_data = " "
 
-    print "Exporting data to file: " + blue(file_name, bold=True) + "..."
-    run("""
-       mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}\
-       {just_data} > {wpworkflow_dir}database/{file_name} """.format(**env))
+    if exists('{wpworkflow_dir}database/{file_name}'.format(**env)):
+        export = confirm(
+            yellow(
+                '{wpworkflow_dir}database/{file_name} '.format(**env)
+                +
+                'already exists, Do you want to overwrite it?'
+            )
+        )
+
+    if export:
+        print "Exporting data to file: " + blue(file_name, bold=True) + "..."
+        run(
+            """
+            mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}\
+            {just_data} > {wpworkflow_dir}database/{file_name}
+            """.format(**env)
+        )
+    else:
+        print 'Export canceled by user'
+        sys.exit(0)
 
 
 @task
@@ -624,6 +642,8 @@ def backup(tarball_name='backup', just_data=False):
 
     env.tarball_name = tarball_name
 
+    export_data(tarball_name + '.sql', just_data)
+
     print 'Preparing backup directory...'
 
     if not os.path.exists('./backup/'):
@@ -641,7 +661,6 @@ def backup(tarball_name='backup', just_data=False):
     if not exists('{wpworkflow_dir}backup/uploads/'.format(**env)):
         run('mkdir {wpworkflow_dir}backup/uploads/'.format(**env))
 
-    export_data(tarball_name + '.sql', just_data)
     run(
         'mv {wpworkflow_dir}/database/{tarball_name}.sql '.format(**env)
         +
