@@ -8,7 +8,7 @@ if [[ ! -d "$DIR"  ]]; then DIR="$PWD"; fi
 
 # create every folder needed
 
-echo "Creando estructura de directorios"
+echo "Creating directory structure"
 
 if [[ ! -d "$DIR/../src" ]]; then
     mkdir $DIR/../src
@@ -21,20 +21,46 @@ fi
 if [[ ! -d "$DIR/../src/plugins" ]]; then
     mkdir $DIR/../src/plugins
 fi
+
 if [[ ! -d "$DIR/../src/init" ]]; then
     mkdir $DIR/../src/init
 fi
+
 if [[ ! -d "$DIR/../src/database" ]]; then
     mkdir $DIR/../src/database
 fi
 
-echo "Enlaces simbolicos..."
+echo "Setting configuration files"
 
-ln -s $DIR/Vagrantfile $DIR/../Vagrantfile
-ln -s $DIR/fabfile.py $DIR/../fabfile.py
-cp $DIR/defaults/environments.json $DIR/../environments.json
-cp $DIR/defaults/settings.json $DIR/../settings.json
+if [[ ! -f  "$DIR/../Vagrantfile" ]]; then
+    ln -s $DIR/Vagrantfile $DIR/../Vagrantfile
+fi
 
-echo "Inicia maquina virtual"
+if [[ ! -f  "$DIR/../fabfile.py" ]]; then
+    ln -s $DIR/fabfile.py $DIR/../fabfile.py
+fi
+
+if [[ ! -f  "$DIR/../environments.json" ]]; then
+    cp $DIR/defaults/environments.json $DIR/../environments.json
+fi
+
+if [[ ! -f  "$DIR/../settings.json" ]]; then
+    cp $DIR/defaults/settings.json $DIR/../settings.json
+fi
+
+echo "writing new values to .gitigonre"
+
+if [[ ! -f  "$DIR/../.gitignore" ]]; then
+    cat $DIR/defaults/git.gitignore >> $DIR/../.gitignore
+else 
+    while read line
+    do
+        if ! grep -q "$line"  "$DIR/../.gitignore"; then
+            echo "$line" >> $DIR/../.gitignore
+        fi
+    done < $DIR/defaults/git.gitignore
+fi
+
+
 cd $DIR/../
 vagrant up
