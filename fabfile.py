@@ -676,15 +676,31 @@ def backup(tarball_name='backup', just_data=False):
         urun('tar -czf {tarball_name}.tar.gz backup/*'.format(**env))
 
     print 'Downloading backup...'
+    download = True
+    if os.path.exists('./backup/{tarball_name}.tar.gz'.format(**env)):
+        download = confirm(
+            yellow(
+                './backup/{tarball_name}.tar.gz'.format(**env)
+                +
+                ' already exists, Do you want to overwrite it?'
+            )
+        )
 
-    get(
-        '{wpworkflow_dir}{tarball_name}.tar.gz'.format(**env),
-        './backup/{tarball_name}.tar.gz'.format(**env)
-    )
+    if download:
+        get(
+            '{wpworkflow_dir}{tarball_name}.tar.gz'.format(**env),
+            './backup/{tarball_name}.tar.gz'.format(**env)
+        )
+    else:
+        print red('Backup canceled by user')
 
     print 'Cleaning working directory...'
     run('rm -rf {wpworkflow_dir}backup/'.format(**env))
     run('rm {wpworkflow_dir}{tarball_name}.tar.gz'.format(**env))
 
-    print green('Backup succesfully created at ./backup/{tarball_name}.tar.gz'.
-                format(**env))
+    if download:
+        print green(
+            'Backup succesfully created at'
+            +
+            ' ./backup/{tarball_name}.tar.gz'.  format(**env)
+        )
