@@ -43,17 +43,16 @@
                     <div class="col-lg-12">
                         <h1> Actualización </h1>
                         <p> 
-                            Para obtener las nuevas características del proyecto
-                            sólo se debe actualizar el submódulo por lo tanto
-                            con estos comandos será suficiente:
+                            Para obtener las nuevas características del proyecto se debe ejecutar el comando wordpress_workflow_upgrade
                         </p>
                         <pre>
-$ cd wordpress-workflow
-$ git fetch origin
-$ git pull origin master
-$ cd ..
-$ git add wordpress-workflow
-$ git commit -m "Update Wordpress Workflow to the last version"
+$ fab wordpress_workflow_upgrade
+                        </pre>
+                        <p>
+                            El comando permite indicar el repositorio y branch a utilizar, por ejemplo
+                        </p>
+                        <pre>
+$ fab wordpress_workflow_upgrade:vinco,development
                         </pre>
                     </div>
                 </div>
