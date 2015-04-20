@@ -41,14 +41,14 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1> Instalación </h1>
+                        <h1> Installation </h1>
                         <p>
-                            La instalación es muy sencilla, sólo se debe de crear la carpeta donde llevaremos el proyecto
-                            y agregar como submódulo wordpress workflow. Justo después se debe ejecutar el script de shell
-                            startProject.sh que se encarga de generar la estructura básica del proyecto.
+                            The installation is very simple, you only should create the folder where we will take the project
+                            and add wordpress-workflow as a submodule. Just after that you must run the shell script
+                            <code>startProject.sh</code> that is responsible for generating the basic structure of the project.
                         </p>
                         <p>
-                            <strong> Todos los comandos deben ser ejecutados como usuario normal, nunca como root </strong>
+                            <strong> All commands must be executed as a regular user, never as root </strong>
                         </p>
                         <pre>
 $ mkdir new-project
@@ -58,30 +58,31 @@ $ git submodule add git@github.com:vinco/wordpress-workflow.git
 $ wordpress-workflow/startProject.sh
                         </pre>
                         <p>
-                            Después de esto se debe de colocar el tema que usará en el proyecto en la carpeta src/themes
+                            After this, you must place the theme that you will use in the project in the folder <code>src/theme</code>
                         </p>
                         <p>
-                            Wordpress-workflow viene integrado ya con el ambiente default de desarrollo <code> vagrant </code>
-                            por lo que no se deberá modificar hasta que sea necesario generar un nuevo ambiente.
+                            Wordpress-workflow comes already integrated with a default development environment called <code> vagrant </code>
+                            so you must not modify it until it is necessary to generate a new environment.
                         </p>
                         <p>
-                            Se debe modificar el archivo de configuración <code>settings.json</code>
-                            con la información específica del proyecto. <br/>
-                            La variable <code>plugins</code> deberá contener los plugins que deseamos usar
-                            directamente y sin modificaciones desde la página de wordpress. <br/>
-                            La variable <code>custom_plugins</code> contiene los plugins que nosotros hemos modificado
-                            o que no se encuentran en el repositorio oficial de wordpress y deberán estar
-                            disponibles en <code>src/plugins/</code>
+                            You must modify the configuration file <code>settings.json</code>
+                            with the specific project information. <br>
+
+                            The variable <code>plugins</code> must contain the plugins that we want to use
+                            directly and without modifications from the page of wordpress. <br>
+                            The variable <code>custom_plugins</code> contains the plugins that we have modified
+                            or that are not in the official repository of wordpress and should be
+                            available in <code>src/plugins/</code>
                         </p>
                         <p>
-                            Una vez modificados los archivos a nuestra convenencia sólo se debe iniciar la instalación de wordpress
-                            ejecutando la tarea <code>bootstrap</code>
+                            Once you have changed the files to our convenience, you should only start the installation of wordpress 
+                            running the <code>bootstrap</code> task
                         </p>
                         <pre>
 $ fab environment:vagrant bootstrap
                         </pre>
                         <p>
-                            Una vez hecho esto el proyecto estará disponible en <code>http://wordpress.local</code>
+                            At this point the project should be available in <code>http://wordpress.local</code>
                         </p>
                     </div>
                 </div>

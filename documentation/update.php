@@ -41,11 +41,12 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1> Actualización </h1>
+                        <h1> Update </h1>
                         <p> 
-                            Para obtener las nuevas características del proyecto
-                            sólo se debe actualizar el submódulo por lo tanto
-                            con estos comandos será suficiente:
+                            To get the new features of the wordpress-workflow project
+                            you only should update the sub-module therefore
+                            with these commands will suffice:
+
                         </p>
                         <pre>
 $ cd wordpress-workflow

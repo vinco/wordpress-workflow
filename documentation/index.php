@@ -43,27 +43,26 @@
                     <div class="col-lg-12">
                         <h1 name="wordpress-workflow">Wordpress-workflow</h1>
                         <p>
-                            Workpress-workflow es una herramienta que se ha diseñado para mantener separado la generación
-                            de código propio de los proyectos de wordpress del core y archivos fuentes de plugins de
-                            terceros.
+                            Wordpress-workflow is a tool that has been designed to keep the code of wordpress projects isolated
+                            of the core and source files from third party plugins.
                         </p>
                         <h1>Objetivo</h1>
                         <p>
-                            Proporcionar las herramientas y procedimientos para poder llevar un correcto control de versiones
-                            y cambios de proyectos hechos en wordpress.
+                            Provide tools and procedures to carry out a proper versions control and changes made in wordpress
+                            projects.
                         </p>
                         <p>
-                            El paquete está mantenido por Vinco Orbis y las sugerencias y reportes de errores deberán ser hechos a
+                            The package is maintained by Vinco Orbis, suggestions and bug reports must be made to
                             <a href="https://github.com/vinco/wordpress-workflow">https://github.com/vinco/wordpress-workflow</a>
-                            como un nuevo issue.
+                            as a new issue.
                         </p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1> Estructura </h1>
+                        <h1> Structure </h1>
                         <p>
-                            Wordpress-workflow una vez instalado deberá tener la siguiente estructura:
+                            Once installed Wordpress-workflow should have the following structure:
                         </p>
                         <pre>
 .
@@ -79,18 +78,22 @@
 └── wordpress-workflow
                         </pre>
                         <p> 
-                            Todo el código que se genere para el proyecto deberá ir en la carpeta src, esta carpeta
-                            es la que se sincroniza con los servidores por lo que es muy importante mencionar que
-                            <strong> Cualquier código en otra sección no será sincronizado con los servidores </strong>
+                            All the code that is generated for the project should go in the src folder, this folder is
+                            the one that syncs with the servers so it is very important to mention that <strong>Any
+                            code in other section will not be synchronized with the servers</strong>.
                         </p>
                         <p>
-                          Sólo se deberá escribir el código de los plugins que escribamos, si es un plugin que se usa
-                          pero se encuentra listado como plugin de wordpress no deberemos agregar el código a la carpeta
+                          There are only two situations in which the code of the plugins should be added to the repository
                         </p>   
-                        <h1> Ambientes y configuraciones </h1>
+                        <ol>
+                           <li>The plugin is ours</li>
+                           <li>It is a custom third party plugin</li>
+                        </ol>
+
+                        <h1>Settings and environments</h1>
                         <p>
-                            Los ambientes son los servidores en donde se mostrará la información, cada uno deberá tener un nombre asignado
-                            en el archivo <code>environments.json</code> que tienen la siguiente estructura:
+                            The environments are the servers where information will be displayed, each one should have a
+                            unique name assigned in the <code>environments.json</code> file, which has the following structure:
                         </p>
                         <pre>
 {
@@ -120,8 +123,7 @@
 }
                         </pre>
                         <p> 
-                            Las configuraciones generales de wordpress están en <code> settings.json </code>
-                            y son las siguientes:
+                            Wordpress general settings are located in settings.json and looks as follows:
                         </p>
                         <pre>
 {
@@ -150,44 +152,44 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1> Acciones </h1>
+                        <h1> Actions </h1>
                         <p>
-                            Wordpress-workflow tiene un conjunto de herramientas
-                            que deberán ser usadas para actividades cotidianas del
-                            desarrollo y puesta en producción, para ver la lista completa
-                            se debe usar el siguiente comando en la raíz del proyecto:
+                            Wordpress-workflow has a set of tools
+                            that should be used for day to day activities of the
+                            development and deployment, to see the complete list
+                            you should use the following command in the project root:
                             <br/>
                             <code>fab --list </code>
                         </p>
                         <pre>
 Available commands:
 
-activate_theme       Activa el tema seleccionado en la instalacion de wordpress
-bootstrap            Crea la base de datos, información de prueba y activa rewrite
-environment          Crea la configuración para el entorno en el que correrán las tareas.
-export_data          Exporta la base de datos a database/data.sql
-import_data          Importa la informacion de database/data.sql
-install_plugins      Instala plugins e inicializa segun el archivo settings
-reset_all            Borra toda la instación de wordpress e inicia de cero
-resetdb              Elimina la base de datos y la vuelve a crear
-set_webserver        Cambia el servidor web del proyecto, opciones nginx o apache2
-sync_files           Sincroniza los archivos modificados y establece los permisos necesarios en
-wordpress_downgrade  Descarga la nueva version de wordpress escrita en settings y
-wordpress_install    Descarga la version de wordpress escrita en settings en instala la base
-wordpress_upgrade    Descarga la nueva version de wordpress escrita en settings y hace el upgrade
+activate_theme       Activates the selected theme in the current wordpress installation.
+bootstrap            Creates the database, test information and enables rewrite.
+environment          Creates the configurations for the environment in which tasks will run.
+export_data          Exports the database to given file name. database/data.sql by default.
+import_data          Imports the database to given file name. database/data.sql by default.
+install_plugins      Installs plugins and initialize according to the settings.json file.
+reset_all            Deletes all the wordpress installation and starts over.
+resetdb              Drops the database and recreate it.
+set_webserver        Changes project's web server, nginx or apache2 available, nginx by default.
+sync_files           Sync modified files and establish necessary permissions in selected environment.
+wordpress_downgrade  Downloads the new specified wordpress version in settings.json and downgrade it
+wordpress_install    Downloads the wordpress version specified in settings.json and installs the database.
+wordpress_upgrade    Downloads the new wordpress version specified in settings.json and upgrade it.
                         </pre>
                         <p>
-                            Las tareas se ejecutan seleccionando primero el entorno
-                            y después tantas tareas como sean necesarias para lograr el
-                            objectivo, por ejemplo para actualizar la versión de wordpress
-                            en el entorno de desarrollo. 
+                            The tasks are executed by first selecting the environment
+                            and after as many tasks as are necessary to achieve the
+                            objective, for example to update the wordpress version
+                            in the development environment.
                         </p>
                         <code>
                             fab environment:vagrant wordpress_upgrade
                         </code>
                         <p>
                             <br/>
-                            O para instalar un nuevo plugin personalizado en staging:
+                            Or to install a new custom pluging in staging environment:
                         </p>
                         <code>
                             fab environment:staging sync_files install_plugins
@@ -195,8 +197,8 @@ wordpress_upgrade    Descarga la nueva version de wordpress escrita en settings 
 
                         <p>
                             <br/>
-                            Para más ejemplos revisar la
-                            <a href="#"> Sección de casos de uso </a>
+                            for more examples, take a look at the 
+                            <a href="#">use cases section </a>
                         </p>
                     </div>
                 </div>
