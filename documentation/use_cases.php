@@ -79,6 +79,9 @@ $ fab environment:[environment_name] sync_files activate_theme
                             Modify the <code> settings.json </code> file adding the new plugin,
                             then you need to install it in the local environment.
                         </p>
+                        <pre>
+$ fab environment:vagrant install_plugins
+                        </pre>
                         <p>
                             Once you are sure that the new plugin works correctly you can do
                             deployment with the next command:
@@ -106,7 +109,7 @@ $ fab environment:[environment_name] install_plugins
 $ fab environment:[environment_name] install_plugins
                         </pre>
                         <p>
-                            Once you have been verified that it works correctly you can do deployment as follows:
+                            Once you have verified that it works correctly you can do deployment as follows:
                         </p>
                         <pre>
 $ fab environment:[environment_name] sync_files install_plugins
@@ -116,17 +119,27 @@ $ fab environment:[environment_name] sync_files install_plugins
                 <div class="row">
                     <div class="col-lg-12" id="backup" name="backup">
                         <h2>Backup information</h2>
-                        <p> 
-                            To make information backups, you need to run the
-                            <code> export_data</code> command, that will generate a
-                            <code>src/database/data.sql</code> file in the selected environment.
-
-                            To download the information backup to any other environment, you should use a tool
-                            as can be scp, for example:
+                        <p>
+                            To make a backup that contains database and uploads information, 
+                            wordpress-workflow provides the <code>backup</code> command, that receives
+                            two arguments: 
                         </p>
+                        <ol>
+                            <li><strong>tallbar_name</strong> In which you can specify the custom name 
+                                for the generated tallbar <i>("backup" by default)</i></li>
+
+                            <li><strong>just_data</strong> Specifies if CREATE TABLE statements should be 
+                            excluded in the generated dump file <i>(False by default)</i></li>
+                        </ol>
+
+                        <p>
+                            You can use it as follows:
+                        </p>
+
                         <pre>
-$ fab environment:production export_data
-$ scp user@server:/home/user/wpworkflow/src/database/data.sql /home/local/respaldo.sql
+$ fab environment:[environment_name] backup:[custom_name],True
+$ fab environment:[environment_name] backup:[custom_name]
+$ fab environment:[environment_name] backup
                         </pre>
                     </div>
                 </div>
@@ -155,7 +168,7 @@ $ fab environment:vagrant reset_db import_data
 $ fab environment:vagrant wordpress_upgrade
                         </pre>
                         <p>
-                            Once you have been check that everything works correctly, you can
+                            Once you have check that everything works correctly, you can
                             do deployment as follows:
                         </p>
                         <pre>
@@ -172,7 +185,7 @@ $ fab environment:[environment_name] wordpress_upgrade
                             the command <code> set_webserver:server</code>.
                         </p>
                         <p>
-                            you must notice that this configuration is not permanent, and you should
+                            You must notice that this configuration is not permanent, and you should
                             run the command every time you need it, when the virtual machine turns on.
                         </p>
                         <p>

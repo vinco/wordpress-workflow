@@ -46,9 +46,9 @@
                             Wordpress-workflow is a tool that has been designed to keep the code of wordpress projects isolated
                             of the core and source files from third party plugins.
                         </p>
-                        <h1>Objetivo</h1>
+                        <h1>Objective</h1>
                         <p>
-                            Provide tools and procedures to carry out a proper versions control and changes made in wordpress
+                            Provide tools and procedures to carry out a proper versions control made in wordpress
                             projects.
                         </p>
                         <p>
@@ -90,11 +90,19 @@
                            <li>It is a custom third party plugin</li>
                         </ol>
 
-                        <h1>Settings and environments</h1>
+                        <h1>Environments</h1>
                         <p>
                             The environments are the servers where information will be displayed, each one should have a
-                            unique name assigned in the <code>environments.json</code> file, which has the following structure:
+                            unique name assigned in the <code>environments.json</code> file.
                         </p>
+
+                        <p>This file contains the description of the environments where your project will be running. 
+                        By default, it is populated with the <code>vagrant</code> environment that defines all the required paramaters 
+                        to interact with the development Vagrant VM.</p>
+
+                        <p>You must append the definition of your live devel, staging, production and any environment that 
+                        you require. Initially <code>environments.json</code> should have the following structure:</p>
+
                         <pre>
 {
     "vagrant": {
@@ -122,8 +130,37 @@
     ...
 }
                         </pre>
+
+                        <p>
+                            Note that:
+                        </p>
+
+                        <ul>
+                            <li>You must define a user, group and an array of hosts for your environment.</li>
+                            <li>Every directory path must end with a slash (/).</li>
+                            <li>You can define an array of command prefixes that should be activated before a 
+                            command is run in an environment. You must only list the path to your prefix scripts.</li>
+                        </ul>
+
+                        <p>
+                            To run a task in an environment you must call the facbric's environment task specifying 
+                            with a colon the name of the environment.
+                        </p>
+
+                        <pre>
+<i># To run a task in the Vagrant VM</i>
+$ fab environment:vagrant ...
+
+<i># To run a task in the statging environment</i>
+$ fab environment:devel ...
+                        </pre>
+
+
+                        <h1>Settings</h1>
                         <p> 
-                            Wordpress general settings are located in settings.json and looks as follows:
+                            Wordpress general settings are located in <code>settings.json</code>, this file contains 
+                            the general project configuration, you need to set it before installing wordpress or 
+                            running the fabric commands, the file looks as follows:
                         </p>
                         <pre>
 {
@@ -147,20 +184,84 @@
 }
                         </pre>
 
+                        <p>
+                            You need to have the <code>theme</code> in <code>src/themes/</code> 
+                            otherwise the installation will fail.
+                        </p>
+
+                        <p>
+                            Every plugin you specify in <code>plugins</code> must be a official 
+                            plugin in wordpress.org/plugins, and will be installed for you.
+                        </p>
+                        
+                        <p>
+                            Any plugin in <code>custom_plugins</code> must be placed on <code>src/plugins/</code> 
+                            sinces the plugins won't be downloaded and are intended for your code.
+                        </p>
+                        
+                        <p>
+                            (You can set the version and locale to whatever you need for your project)
+                        </p>
+
 
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <h1> Actions </h1>
+
                         <p>
-                            Wordpress-workflow has a set of tools
-                            that should be used for day to day activities of the
-                            development and deployment, to see the complete list
-                            you should use the following command in the project root:
+                            Wordpress-workflow has a set of tools that can be used for 
+                            development and deployment of wordpress projects.
+                        </p>
+
+                        <p>
+                            Tasks are executed by first selecting the environment
+                            and after as many tasks as are necessary to achieve the
+                            objective.
+                        </p>
+
+                        <p>
+                            <strong>General syntax</strong>
+                        </p>
+
+                        <code>
+                            $ fab environment:[environment_name] task1 task2 ... task3
+                        </code>
+                        
+                        <p>
+                        <br/>
+                            For example to update the wordpress version
+                            in the development environment.
+                        </p>
+
+                        <code>
+                            fab environment:vagrant wordpress_upgrade
+                        </code>
+
+                        <p>
+                            <br/>   
+                            Or to install a new custom pluging in staging environment:
+                        </p>
+                        <code>
+                            fab environment:staging sync_files install_plugins
+                        </code>
+
+                        <p>
                             <br/>
+                            for more examples, take a look at the 
+                            <a href="#">use cases section </a>
+                        </p>
+
+                        <p>
+                            You can see all the available actions by running the following command
+                            in the project's root:
+                        </p>
+
+                        <p>
                             <code>fab --list </code>
                         </p>
+
                         <pre>
 Available commands:
 
@@ -178,28 +279,6 @@ wordpress_downgrade  Downloads the new specified wordpress version in settings.j
 wordpress_install    Downloads the wordpress version specified in settings.json and installs the database.
 wordpress_upgrade    Downloads the new wordpress version specified in settings.json and upgrade it.
                         </pre>
-                        <p>
-                            The tasks are executed by first selecting the environment
-                            and after as many tasks as are necessary to achieve the
-                            objective, for example to update the wordpress version
-                            in the development environment.
-                        </p>
-                        <code>
-                            fab environment:vagrant wordpress_upgrade
-                        </code>
-                        <p>
-                            <br/>
-                            Or to install a new custom pluging in staging environment:
-                        </p>
-                        <code>
-                            fab environment:staging sync_files install_plugins
-                        </code>
-
-                        <p>
-                            <br/>
-                            for more examples, take a look at the 
-                            <a href="#">use cases section </a>
-                        </p>
                     </div>
                 </div>
             </div>
