@@ -102,9 +102,10 @@ hr {
 }
 pre {
   overflow: auto;
-  font-family: sans-serif;
+  letter-spacing: 1px;
 }
 pre i{color:gray;}
+.args{color:#3B5CA3;}
 code,
 kbd,
 pre,
@@ -1543,7 +1544,7 @@ pre {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.42857143;
   color: #333;
   word-break: break-all;

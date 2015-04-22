@@ -52,35 +52,36 @@
                         <h2>environment</h2>
                         <p>
                             Creates the configurations for the environment in which tasks will run, 
-                            <strong>you should always use this command before any other one.</strong>
+                            <strong>most of cases you will need to use this command before other one.</strong>
                         </p>
                         <pre>
-$ fab <strong>environment:env_name,[debug]</strong>
+$ fab <strong>environment:<span class="args">env_name[,debug]</strong></span>
                         </pre>
 
                         <h4>Arguments</h4>
                         <ol>
-                            <li><strong>env_name</strong> <i>(string)</i> environment name to create configurations</li>
-                            <li><strong>debug</strong> <i>(boolean)</i> defines if fabric output should be displayed, <i>defaulty False</i></li>
+                            <li><strong><span class="args">env_name</span></strong> <i>(string)</i> environment name to create configurations 
+                                <i>(<strong>Required</strong>).</i></li>
+                            <li><strong><span class="args">debug</span></strong> <i>(boolean)</i> defines if fabric output should be displayed, 
+                                <i>(False by default).</i></li>
                         </ol>
                         
                         <h4>Examples</h4>
                         <pre>
-$ fab <strong>environment:vagrant</strong>
-$ fab <strong>environment:stage,True</strong>
-$ fab <strong>environment:production,true</strong>
+$ fab <strong>environment:<span class="args">vagrant</span></strong>
+$ fab <strong>environment:<span class="args">stage,True</span></strong>
+$ fab <strong>environment:<span class="args">production,true</span></strong>
                         </pre>
 
-                        <h4>Common combinations</h4>
                         <p><code>environment</code> command is required to excecute most commands, general syntax is as follows:</p>
                         
                         <pre>
-$ fab <strong>environment:env_name,[debug]</strong> task1 task2 ... task3
+$ fab <strong>environment:<span class="args">env_name[,debug]</span></strong> task1 task2 ... task3
                         </pre>
                         <p>for example:</p>
                         <pre>
-$ fab <strong>environment:vagrant</strong> wordpress_upgrade
-$ fab <strong>environment:staging,True</strong> sync_files install_plugins
+$ fab <strong>environment:<span class="args">vagrant</span></strong> wordpress_upgrade
+$ fab <strong>environment:<span class="args">staging,True</span></strong> sync_files install_plugins
                         </pre>
 
 
@@ -91,7 +92,7 @@ $ fab <strong>environment:staging,True</strong> sync_files install_plugins
                             Creates the database, test information and enables rewrite.
                         </p>
                         <pre>
-$ fab environment:[env_name][,debug] <strong>bootstrap</strong>
+$ fab environment:env_name[,debug] <strong>bootstrap</strong>
                         </pre>
 
                         <h4>Arguments</h4>
@@ -103,42 +104,388 @@ $ fab environment:vagrant <strong>bootstrap</strong>
                         </pre>
 
                    </div>
-                    <div class="col-lg-12" id="crete_config" name="crete_config">
-                        <h2>crete_config</h2>
+                    <div class="col-lg-12" id="create_config" name="create_config">
+                        <h2>create_config</h2>
                         <p>
                             Writes wordpress configurations
                         </p>
                         <pre>
-$ fab <strong>environment:env_name,[debug]</strong>
+$ fab environment:env_name[,debug] <strong>create_config<span class="args">[:debug]</span></strong>
                         </pre>
 
                         <h4>Arguments</h4>
                         <ol>
-                            <li><strong>env_name</strong> <i>(string)</i> environment name to create configurations</li>
-                            <li><strong>debug</strong> <i>(boolean)</i> defines if fabric output should be displayed, <i>defaulty False</i></li>
+                            <li><strong><span class="args">debug</span></strong> <i>(boolean)</i> defines if wordpress should be configurated as debug mode 
+                                <i>(False by default).</i></li>
                         </ol>
                         
                         <h4>Examples</h4>
                         <pre>
-$ fab <strong>environment:vagrant</strong>
-$ fab <strong>environment:stage,True</strong>
-$ fab <strong>environment:production,true</strong>
+$ fab environment:vagrant <strong>create_config</strong>
+$ fab environment:vagrant <strong>create_config:<span class="args">True</span></strong>
+$ fab environment:vagrant <strong>create_config:<span class="args">False</span></strong>
                         </pre>
-
-                        <h4>Common combinations</h4>
-                        <p><code>environment</code> command is required to excecute most commands, general syntax is as follows:</p>
-                        
-                        <pre>
-$ fab <strong>environment:env_name,[debug]</strong> task1 task2 ... task3
-                        </pre>
-                        <p>for example:</p>
-                        <pre>
-$ fab <strong>environment:vagrant</strong> wordpress_upgrade
-$ fab <strong>environment:staging,True</strong> sync_files install_plugins
-                        </pre>
-
-
                    </div>
+                    <div class="col-lg-12" id="set_debug_mode" name="set_debug_mode">
+                        <h2>set_debug_mode</h2>
+                        <p>
+                            Changes debug mode
+                        </p>
+                        <pre>
+$ fab environment:env_name[,debug] <strong>set_debug_mode<span class="args">[:debug]</span></strong>
+                        </pre>
+
+                        <h4>Arguments</h4>
+                        <ol>
+                            <li><strong><span class="args">debug</span></strong> <i>(boolean)</i> defines if wordpress should be configurated as debug mode 
+                                <i>(False by default)</i>.</li>
+                        </ol>
+                        
+                        <h4>Examples</h4>
+                        <pre>
+$ fab environment:vagrant <strong>set_debug_mode</strong>
+$ fab environment:vagrant <strong>set_debug_mode:<span class="args">True</span></strong>
+$ fab environment:vagrant <strong>set_debug_mode:<span class="args">False</span></strong>
+                        </pre>
+                   </div>
+                    <div class="col-lg-12" id="wordpress_install" name="wordpress_install">
+                        <h2>wordpress_install</h2>
+                        <p>
+                            Downloads the wordpress version specified in <code>settings.json</code> and installs the database.
+                        </p>
+                        <pre>
+$ fab environment:env_name[,debug] <strong>wordpress_install</strong>
+                        </pre>
+
+                        <h4>Arguments</h4>
+                        <p>None</p>
+                        
+                        <h4>Examples</h4>
+                        <pre>
+$ fab environment:vagrant <strong>wordpress_install</strong>
+                        </pre>
+                   </div>
+                   <div class="col-lg-12" id="activate_theme" name="activate_theme">
+                        <h2>activate_theme</h2>
+                        <p>
+                            Activates the selected theme in the current wordpress installation.
+                        </p>
+                        <pre>
+$ fab environment:env_name[,debug] <strong>activate_theme</strong>
+                        </pre>
+
+                        <h4>Arguments</h4>
+                        <p>None</p>
+                        
+                        <h4>Examples</h4>
+                        <pre>
+$ fab environment:vagrant <strong>activate_theme</strong>
+                        </pre>
+                   </div>
+                   <div class="col-lg-12" id="install_plugins" name="install_plugins">
+                        <h2>install_plugins</h2>
+                        <p>
+                            Installs plugins and initialize according to the <code>settings.json</code> file.
+                        </p>
+                        <pre>
+$ fab environment:env_name[,debug] <strong>install_plugins</strong>
+                        </pre>
+
+                        <h4>Arguments</h4>
+                        <p>None</p>
+                        
+                        <h4>Examples</h4>
+                        <pre>
+$ fab environment:vagrant <strong>install_plugins</strong>
+                        </pre>
+                   </div>
+                
+                    <div class="col-lg-12" id="import_data" name="import_data">
+                            <h2>import_data</h2>
+                            <p>
+                                Imports the database from given file name that must be placed in <code>database/</code> path
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>import_data<span class="args">[:file_name]</span></strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                                <li><strong><span class="args">file_name</span></strong> <i>(string)</i> dump file name to import. 
+                                    <i>("data.sql" by default)</i>.</li>
+                            </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>import_data</strong>
+$ fab environment:vagrant <strong>import_data:<span class="args">backup.sql</span></strong>
+                            </pre>
+                       </div>
+
+                       <div class="col-lg-12" id="export_data" name="export_data">
+                            <h2>export_data</h2>
+                            <p>
+                                Exports the database to given file name. Generated dump will be placed in <code>database/</code> path
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>export_data<span class="args">[:file_name]</span></strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                                <li><strong><span class="args">file_name</span></strong> <i>(string)</i> dump file name to export. 
+                                    <i>("data.sql" by default)</i>.</li>
+                            </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>export_data</strong>
+$ fab environment:vagrant <strong>export_data:<span class="args">backup.sql</span></strong>
+                            </pre>
+                       </div>
+                        
+                        <div class="col-lg-12" id="resetdb" name="resetdb">
+                            <h2>resetdb</h2>
+                            <p>
+                                Drops the database and recreate it.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>resetdb</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>resetdb</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="reset_all" name="reset_all">
+                            <h2>reset_all</h2>
+                            <p>
+                                Deletes all the wordpress installation and starts over.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>reset_all</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>reset_all</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="sync_files" name="sync_files">
+                            <h2>sync_files</h2>
+                            <p>
+                                Sync modified files and establish necessary permissions in selected environment.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>sync_files</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>sync_files</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="wordpress_upgrade" name="wordpress_upgrade">
+                            <h2>wordpress_upgrade</h2>
+                            <p>
+                                Downloads the new wordpress version specified in <code>settings.json</code> and upgrades it.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>wordpress_upgrade</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>wordpress_upgrade</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="wordpress_downgrade" name="wordpress_downgrade">
+                            <h2>wordpress_downgrade</h2>
+                            <p>
+                                Downloads the new specified wordpress version in <code>settings.json</code> and downgrades it
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>wordpress_downgrade</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>wordpress_downgrade</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="set_webserver" name="set_webserver">
+                            <h2>set_webserver</h2>
+                            <p>
+                                Changes project's web server, nginx or apache2 available, nginx by default.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>set_webserver<span class="args">[:webserver]</span></strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                                <li><strong><span class="args">webserver</span></strong> <i>(string)</i> webserver name that will be used 
+                                    <i>("nginx" by default)</i>.</li>
+                            </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>set_webserver</strong>
+$ fab environment:vagrant <strong>set_webserver:<span class="args">nginx</span></strong>
+$ fab environment:vagrant <strong>set_webserver:<span class="args">apache2</span></strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="upgrade_plugin" name="upgrade_plugin">
+                            <h2>upgrade_plugin</h2>
+                            <p>
+                                Updates a plugin to specified version in <code>settings.json</code>.
+                            </p>
+                            <p>
+                                <strong>Must be an official plugin in wordpress.org/plugins</strong>
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>upgrade_plugin<span class="args">:plugin_name</span></strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                                <li><strong><span class="args">plugin_name</span></strong> <i>(string)</i> plugin name to update 
+                                    <i>(<strong>Required</strong>)</i>.</li>
+                            </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>upgrade_plugin:<span class="args">wordpress-seo</span></strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="check_plugins" name="check_plugins">
+                            <h2>check_plugins</h2>
+                            <p>
+                               Verifies installed versions of plugins.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>check_plugins</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>check_plugins</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="clean_plugins" name="clean_plugins">
+                            <h2>clean_plugins</h2>
+                            <p>
+                               Checks for installed plugins and removes the unused.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>clean_plugins</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>clean_plugins</strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="make_tarball" name="make_tarball">
+                            <h2>make_tarball</h2>
+                            <p>
+                                Generates a tarball to upload to servers without ssh.
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>make_tarball:<span class="args">target_environment[,tar_name</span>]</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                                <li><strong><span class="args">target_environment</span></strong> <i>(string)</i> Environment that will be used to generate tallbar
+                                    <i>(<strong>Required</strong>)</i>.</li>
+
+                                <li><strong><span class="args">tar_name</span></strong> <i>(string)</i> Name for generated tallbar
+                                    <i>("wordpress-dist" by default)</i>.</li>
+                            </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>make_tarball:<span class="args">development</span></strong>
+$ fab environment:vagrant <strong>make_tarball:<span class="args">production,production_tarball</span></strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="backup" name="backup">
+                            <h2>backup</h2>
+                            <p>
+                                Generates a backup copy of database and uploads
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>backup<span class="args">[:tarball_name][,just_data]</span></strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                            <li><strong><span class="args">tarball_name</span></strong> In which you can specify the custom name 
+                                for the generated tarball. <i>("backup" by default)</i>.</li>
+
+                            <li><strong><span class="args">just_data</span></strong> Specifies if CREATE TABLE statements should be 
+                            excluded in the generated dump file. <i>(False by default)</i>.</li>
+                        </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>backup</strong>
+$ fab environment:vagrant <strong>backup:<span class="args">database_backup,True</span></strong>
+$ fab environment:vagrant <strong>backup:<span class="args">database_backup,False</span></strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12" id="wordpress_workflow_upgrade" name="wordpress_workflow_upgrade">
+                            <h2>wordpress_workflow_upgrade</h2>
+                            <p>
+                                Upgrades wordpress-workflow
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>wordpress_workflow_upgrade<span class="args">[:repository][,branch]</span></strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <ol>
+                            <li><strong><span class="args">repository</span></strong> Repository name to use in wordpress-workflow upgrade. 
+                                <i>("origin" by default)</i>.</li>
+
+                            <li><strong><span class="args">branch</span></strong> Branch name to use in wordpress-workflow upgrade. 
+                                <i>("master" by default)</i>.</li>
+                        </ol>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>wordpress_workflow_upgrade</strong>
+$ fab environment:vagrant <strong>wordpress_workflow_upgrade:<span class="args">origin,master</span></strong>
+$ fab environment:vagrant <strong>wordpress_workflow_upgrade:<span class="args">upstream</span></strong>
+$ fab environment:vagrant <strong>wordpress_workflow_upgrade:<span class="args">upstream,develop</span></strong>
+$ fab environment:vagrant <strong>wordpress_workflow_upgrade:<span class="args">origin,develop</span></strong>
+                            </pre>
+                       </div>
+
+                    </div>
                 </div>
 
         </div>

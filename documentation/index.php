@@ -191,7 +191,7 @@ $ fab environment:devel ...
                         </p>
 
                         <p>
-                            Every plugin you specify in <code>plugins</code> must be a official 
+                            Every plugin you specify in <code>plugins</code> must be an official 
                             plugin in wordpress.org/plugins, and will be installed for you.
                         </p>
                         
@@ -263,23 +263,99 @@ $ fab environment:devel ...
                             <code>fab --list </code>
                         </p>
 
-                        <pre>
-Available commands:
-
-activate_theme       Activates the selected theme in the current wordpress installation.
-bootstrap            Creates the database, test information and enables rewrite.
-environment          Creates the configurations for the environment in which tasks will run.
-export_data          Exports the database to given file name. database/data.sql by default.
-import_data          Imports the database to given file name. database/data.sql by default.
-install_plugins      Installs plugins and initialize according to the settings.json file.
-reset_all            Deletes all the wordpress installation and starts over.
-resetdb              Drops the database and recreate it.
-set_webserver        Changes project's web server, nginx or apache2 available, nginx by default.
-sync_files           Sync modified files and establish necessary permissions in selected environment.
-wordpress_downgrade  Downloads the new specified wordpress version in settings.json and downgrade it
-wordpress_install    Downloads the wordpress version specified in settings.json and installs the database.
-wordpress_upgrade    Downloads the new wordpress version specified in settings.json and upgrade it.
-                        </pre>
+                        <p>Available commands:</p>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Command</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td><a href="commands.php#environment">environment</a></td>
+                                <td>Creates the configurations for the environment in which tasks will run.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#bootstrap">bootstrap</a></td>
+                                <td>Creates the database, test information and enables rewrite.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#create_config">create_config</a></td>
+                                <td>Writes wordpress configurations</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#set_debug_mode">set_debug_mode</a> </td>
+                                <td>Changes debug mode, false by default</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#wordpress_install">wordpress_install</a></td>
+                                <td>Downloads the wordpress version specified in settings.json and installs the database.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#activate_theme">activate_theme</a> </td>
+                                <td>Activates the selected theme in the current wordpress installation.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#install_plugins">install_plugins</a></td>
+                                <td>Installs plugins and initialize according to the settings.json file.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#import_data">import_data</a> </td>
+                                <td>Imports the database from given file name. database/data.sql by default.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#export_data">export_data</a></td>
+                                <td>Exports the database to given file name. database/data.sql by default.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#resetdb">resetdb</a></td>
+                                <td>Drops the database and recreate it.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#reset_all">reset_all</a></td>
+                                <td>Deletes all the wordpress installation and starts over.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#sync_files">sync_files</a> </td>
+                                <td>Sync modified files and establish necessary permissions in selected environment.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#wordpress_upgrade">wordpress_upgrade</a> </td>
+                                <td>Downloads the new wordpress version specified in settings.json and upgrade it.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#wordpress_downgrade">wordpress_downgrade</a></td>
+                                <td>Downloads the new specified wordpress version in settings.json and downgrade it</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#set_webserver">set_webserver</a></td>
+                                <td>Changes project's web server, nginx or apache2 available, nginx by default.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#upgrade_plugin">upgrade_plugin</a></td>
+                                <td>Updates a plugin to specified version in settings.json.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#check_plugins">check_plugins</a></td>
+                                <td>Verifies installed versions of plugins.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#clean_plugins">clean_plugins</a></td>
+                                <td>Checks for installed plugins and removes the unused.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#make_tarball">make_tarball</a> </td>
+                                <td>Generates a tallbar to upload to servers without ssh.</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#backup">backup</a></td>
+                                <td>Generates a backup copy of database and uploads</td>
+                            </tr>
+                            <tr>
+                                <td><a href="commands.php#wordpress_workflow_upgrade">wordpress_workflow_upgrade</a></td>
+                                <td>Upgrades wordpress-workflow</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

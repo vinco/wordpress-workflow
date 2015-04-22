@@ -193,11 +193,6 @@
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <a href="commands.php#search_plugin">
-                        search_plugin
-                    </a>
-                </li>
-                <li class="list-group-item">
                     <a href="commands.php#make_tarball">
                         make_tarball
                     </a>
@@ -205,6 +200,11 @@
                 <li class="list-group-item">
                     <a href="commands.php#backup">
                         backup
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="commands.php#wordpress_workflow_upgrade">
+                        wordpress_workflow_upgrade
                     </a>
                 </li>
             </ul>
