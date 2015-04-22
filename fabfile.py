@@ -70,7 +70,7 @@ def bootstrap():
 @task
 def create_config(debug=False):
     """
-    Writes wordpress' configurations
+    Writes wordpress configurations
     """
     require('public_dir', 'dbname', 'dbuser', 'dbpassword')
 

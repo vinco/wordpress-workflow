@@ -12,7 +12,7 @@
     <title>Wordpress-workflow Documentation</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/simple-sidebar.css" rel="stylesheet">
@@ -32,7 +32,9 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-        <?php echo file_get_contents("menu.html") ?>
+        <?php 
+            include("menu.php");
+        ?>
         </div>
         <!-- /#sidebar-wrapper -->
 
@@ -41,7 +43,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12" id="change_theme">
-                        <h1> Casos de uso</h1>
+                        <h1>Use cases</h1>
                         <hr/>
                     </div>
                 </div>
