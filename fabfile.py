@@ -508,7 +508,6 @@ def clean_plugins():
             sys.exit(0)
 
 
-@task
 def search_plugin(plugin_searched, search_list=None):
     """
     Looks for a plugin in settings.json.
@@ -531,7 +530,7 @@ def search_plugin(plugin_searched, search_list=None):
 
 
 @task
-def make_tarball(target_environment="test", tar_name="wordpress-dist"):
+def make_tarball(target_environment, tar_name="wordpress-dist"):
     """
     Generates a tallbar to upload to servers without ssh.
     """
