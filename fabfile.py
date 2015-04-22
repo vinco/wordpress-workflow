@@ -704,3 +704,20 @@ def backup(tarball_name='backup', just_data=False):
             +
             ' ./backup/{tarball_name}.tar.gz'.  format(**env)
         )
+
+
+@task
+def wordpress_workflow_upgrade(repository='origin', branch='master'):
+    """
+    Upgrades wordpress-workflow
+    """
+    #upgrades code to current master
+    os.chdir('wordpress-workflow')
+    ulocal('git fetch origin')
+    ulocal('git pull {0} {1}'.format(repository, branch))
+
+    os.chdir('../')
+    #Updates vagrant provision
+    ulocal('wordpress-workflow/startProject.sh')
+    ulocal('vagrant provision')
+    print green('wordpress-workflow upgraded', bold=True)

@@ -43,18 +43,16 @@
                     <div class="col-lg-12">
                         <h1> Update </h1>
                         <p> 
-                            To get the new features of the wordpress-workflow project
-                            you only should update the sub-module therefore
-                            with these commands will suffice:
-
+                            To get the new features of the wordpress-workflow project, you must run the <code>wordpress_workflow_upgrade</code> command 
                         </p>
                         <pre>
-$ cd wordpress-workflow
-$ git fetch origin
-$ git pull origin master
-$ cd ..
-$ git add wordpress-workflow
-$ git commit -m "Update Wordpress Workflow to the last version"
+$ fab wordpress_workflow_upgrade
+                        </pre>
+                        <p>
+                            The command allows you to specify the repository and branch to use, for example:
+                        </p>
+                        <pre>
+$ fab wordpress_workflow_upgrade:vinco,development
                         </pre>
                     </div>
                 </div>

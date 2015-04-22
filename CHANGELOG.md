@@ -1,3 +1,8 @@
+# Version 0.2.4 (2015-04-20)
+    * Adds gitignore entries
+    * Add warning to bakcup overwrite
+    * Adds upgrade command
+
 # Version 0.2.3 (2015-04-13)
 
     * Fixes nginx cache files
