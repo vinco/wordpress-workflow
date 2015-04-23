@@ -70,7 +70,7 @@ $ fab environment:vagrant activate_theme
                             the needed commits in git, you can do deployment as follows:
                         </p>
                         <pre>
-$ fab environment:[environment_name] sync_files activate_theme
+$ fab environment:env_name sync_files activate_theme
                         </pre>
                    </div>
                 </div>
@@ -89,7 +89,7 @@ $ fab environment:vagrant install_plugins
                             deployment with the next command:
                         </p>
                         <pre>
-$ fab environment:[environment_name] install_plugins
+$ fab environment:env_name install_plugins
                         </pre>
                     </div>
                 </div>
@@ -108,13 +108,13 @@ $ fab environment:[environment_name] install_plugins
                         </p>
 
                         <pre>
-$ fab environment:[environment_name] install_plugins
+$ fab environment:env_name install_plugins
                         </pre>
                         <p>
                             Once you have verified that it works correctly you can do deployment as follows:
                         </p>
                         <pre>
-$ fab environment:[environment_name] sync_files install_plugins
+$ fab environment:env_name sync_files install_plugins
                         </pre>
                     </div>
                 </div>
@@ -139,9 +139,9 @@ $ fab environment:[environment_name] sync_files install_plugins
                         </p>
 
                         <pre>
-$ fab environment:[environment_name] backup:[custom_name],True
-$ fab environment:[environment_name] backup:[custom_name]
-$ fab environment:[environment_name] backup
+$ fab environment:env_name backup:custom_name,True
+$ fab environment:env_name backup:custom_name
+$ fab environment:env_name backup
                         </pre>
                     </div>
                 </div>
@@ -174,7 +174,7 @@ $ fab environment:vagrant wordpress_upgrade
                             do deployment as follows:
                         </p>
                         <pre>
-$ fab environment:[environment_name] wordpress_upgrade
+$ fab environment:env_name wordpress_upgrade
                         </pre>
                     </div>
                 </div>

@@ -340,7 +340,7 @@ $ fab environment:env_name[,debug] <strong>set_webserver<span class="args">[:web
 
                             <h4>Arguments</h4>
                             <ol>
-                                <li><strong><span class="args">webserver</span></strong> <i>(string)</i> webserver name that will be used 
+                                <li><strong><span class="args">webserver</span></strong> webserver name that will be used, you can switch between nginx and apache2
                                     <i>("nginx" by default)</i>.</li>
                             </ol>
                             
