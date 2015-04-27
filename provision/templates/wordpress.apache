@@ -1,15 +1,15 @@
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
 
-    ServerName wordpress.local
-    DocumentRoot /home/vagrant/public_www
+    ServerName wordpress-workflow.local
+    DocumentRoot /home/vagrant/workflow-documentation
     <Directory />
         Options FollowSymLinks
         AllowOverride None
     </Directory>
-    <Directory /home/vagrant/public_www/ >
+    <Directory /home/vagrant/workflow-documentation/ >
         Options Indexes FollowSymLinks MultiViews
-        AllowOverride All
+        AllowOverride None
         Order allow,deny
         allow from all
     </Directory>
@@ -41,15 +41,14 @@
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
 
-    ServerName wordpress-workflow.local
-    DocumentRoot /home/vagrant/workflow-documentation
+    DocumentRoot /home/vagrant/public_www
     <Directory />
         Options FollowSymLinks
         AllowOverride None
     </Directory>
-    <Directory /home/vagrant/workflow-documentation/ >
+    <Directory /home/vagrant/public_www/ >
         Options Indexes FollowSymLinks MultiViews
-        AllowOverride None
+        AllowOverride All
         Order allow,deny
         allow from all
     </Directory>

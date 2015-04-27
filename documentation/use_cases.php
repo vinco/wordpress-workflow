@@ -12,7 +12,7 @@
     <title>Wordpress-workflow Documentation</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/simple-sidebar.css" rel="stylesheet">
@@ -32,7 +32,9 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-        <?php echo file_get_contents("menu.html") ?>
+        <?php 
+            include("menu.php");
+        ?>
         </div>
         <!-- /#sidebar-wrapper -->
 
@@ -41,101 +43,115 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12" id="change_theme">
-                        <h1> Casos de uso</h1>
+                        <h1>Use cases</h1>
                         <hr/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12" id="change_theme" name="change_theme">
-                        <h2> Cambiar de tema </h2>
+                        <h2> Change theme </h2>
                         <p>
-                            Aseguramos que el nuevo tema este colocado
-                            en <code>src/themes</code><br/>
-                            
-                            Modificamos <code>settings.json</code>
-                            Asegurádonos que el nombre se ajuste al nuevo tema en el
-                            sitiio<br/>
-                            
-                            Instalamos el nuevo sitio en desarrollo
+                            Make sure that the new theme is placed in
+                            <code>src/themes</code>.
                         </p>
+                        <p>
+                            Modify <code>settings.json</code> and make sure that
+                            the name fits with the new theme in the site.
+                        </p>
+                        <p>
+                            Then activate the new theme by running the following command:
+                        </p>
+
                         <pre>
 $ fab environment:vagrant activate_theme
                         </pre>
                         <p>
-                            Una vez comprobado que el tema funciona y realizar
-                            los commits necesarios en git podemos hacer deployment de la
-                            siguiente manera:
+                            Once you have verified that the theme works and perform
+                            the needed commits in git, you can do deployment as follows:
                         </p>
                         <pre>
-$ fab environment:ambiente sync_files activate_theme
+$ fab environment:env_name sync_files activate_theme
                         </pre>
                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12" id="add_plugin" name="add_plugin">
-                        <h2> Agregar plugin </h2>
+                        <h2> Add plugin </h2>
                         <p>
-                            Modificamos el archivo <code> settings.json </code>
-                            agregando el plugin a agregar y lo instalamos en el entorno local
+                            Modify the <code> settings.json </code> file adding the new plugin,
+                            then you need to install it in the local environment.
                         </p>
                         <pre>
 $ fab environment:vagrant install_plugins
                         </pre>
                         <p>
-                            Una vez se ha comprobado que funciona de manera correcta podemos
-                            hacer deployment de la siguiente manera
+                            Once you are sure that the new plugin works correctly you can do
+                            deployment with the next command:
                         </p>
                         <pre>
-$ fab environment:ambiente install_plugins
+$ fab environment:env_name install_plugins
                         </pre>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-lg-12" id="add_custom_plugin" name="add_custom_plugin">
-                        <h2> Agregar plugin personalizado </h2>
+                        <h2> Add a custom plugin </h2>
                         <p>
-                            Creamos la carpeta del plugin junto con su código en
-                            <code> src/plugins</code>, lo agregamos al arreglo <code>custom_plugins</code> 
-                            en el archivo <code>settings.json</code>y lo instalamos en el entorno
-                            local de la siguiente manera:
+                            To use custom plugins, you need to add the code in <code>src/plugins</code> folder,
+                            also you need to add it to the <code>custom_plugins</code> array inside of
+                            <code>settings.json</code> file.
                         </p>
+
+                        <p>
+                            Then install it by running the following command:
+                        </p>
+
                         <pre>
-$ fab environment:ambiente install_plugins
+$ fab environment:env_name install_plugins
                         </pre>
                         <p>
-                            Una vez se ha comprobado que funciona de manera correcta podemos
-                            hacer deployment de la siguiente manera
+                            Once you have verified that it works correctly you can do deployment as follows:
                         </p>
                         <pre>
-$ fab environment:ambiente sync_files install_plugins
+$ fab environment:env_name sync_files install_plugins
                         </pre>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12" id="backup" name="backup">
-                        <h2> Respaldar información </h2>
-                        <p> 
-                            Para respaldar la información se ejecuta el comando
-                            <code> export_data</code> que generá un archivo 
-                            <code>src/database/data.sql</code> en el entorno selccionado.<br/>
-
-                            Para descargar esta información a algún otro entorno se debe usar otra herramienta
-                            como puede ser scp, por ejemplo:
+                        <h2>Backup information</h2>
+                        <p>
+                            To make a backup that contains database and uploads information, 
+                            wordpress-workflow provides the <code>backup</code> command, that receives
+                            two arguments: 
                         </p>
+                        <ol>
+                            <li><strong>tallbar_name</strong> In which you can specify the custom name 
+                                for the generated tallbar <i>("backup" by default)</i></li>
+
+                            <li><strong>just_data</strong> Specifies if CREATE TABLE statements should be 
+                            excluded in the generated dump file <i>(False by default)</i></li>
+                        </ol>
+
+                        <p>
+                            You can use it as follows:
+                        </p>
+
                         <pre>
-$ fab environment:production export_data
-$ scp user@server:/home/user/wpworkflow/src/database/data.sql /home/local/respaldo.sql
+$ fab environment:env_name backup:custom_name,True
+$ fab environment:env_name backup:custom_name
+$ fab environment:env_name backup
                         </pre>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12" id="install_info" name="install_info">
-                        <h2> Instalar información </h2>
+                        <h2>Restore information</h2>
                         <p>
-                            Para instalar información en el servidor local
-                            sólo debemos tener el archivo a cargar en <code>src/database/data.sql</code>
-                            y ejecutar la instrucción <code> import_data </code>
+                            To restore information in the local server, you only need to have the backup file
+                            in <code>src/database/data.sql</code> and excecute the <code> import_data </code>
+                            command, as follows:
                         </p>
                         <pre>
 $ fab environment:vagrant reset_db import_data
@@ -144,20 +160,21 @@ $ fab environment:vagrant reset_db import_data
                 </div>
                 <div class="row">
                     <div class="col-lg-12" id="upgrade_wordpress" name="upgrade_wordpress">
-                        <h2> Actualizar wordpress </h2>
+                        <h2> Update wordpress </h2>
                         <p>
-                            Sólo debemos cambiar en el archivo <code>settings.json</code> la versión
-                            de wordpress a la que queremos actualizar y ejecutamos:
+                            You only need to change the <code>version</code> variable that is located inside
+                            <code>settings.json</code> file to the wordpress version that you need to
+                            update, then run the next command:
                         </p>
                         <pre>
 $ fab environment:vagrant wordpress_upgrade
                         </pre>
                         <p>
-                            Una vez se ha comprobado que funciona de manera correcta podemos
-                            hacer deployment de la siguiente manera
+                            Once you have check that everything works correctly, you can
+                            do deployment as follows:
                         </p>
                         <pre>
-$ fab environment:ambiente wordpress_upgrade
+$ fab environment:env_name wordpress_upgrade
                         </pre>
                     </div>
                 </div>
@@ -165,20 +182,22 @@ $ fab environment:ambiente wordpress_upgrade
                     <div class="col-lg-12" id="use_apache2_nginx" name="use_apache2_nginx">
                         <h2> Usar apache2/nginx </h2>
                         <p>
-                            Wordpress-workflow por default viene instalado con nginx, si se desea
-                            probar el código en una instalación de apache se puede hacer ejecutando
-                            el comando <code> set_webserver:server</code>. <br/>
-                            Se debe de tomar en cuenta que esta configuración no es persistente y se deberá
-                            ejecutar el comando cada vez que se encienda la máquina virtual. 
+                            Wordpress-workflow by default comes installed with nginx, if you want to
+                            test the code with apache server, it can be done by running
+                            the command <code> set_webserver:server</code>.
                         </p>
                         <p>
-                            Para usar apache2
+                            You must notice that this configuration is not permanent, and you should
+                            run the command every time you need it, when the virtual machine turns on.
+                        </p>
+                        <p>
+                            To use apache2
                         </p>
                         <pre>
 $ fab environment:vagrant set_webserver:apache2
                         </pre>
                         <p>
-                            Para activar nginx sin necesidad de reiniciar el entorno virtual:
+                            To enable nginx without the need to restart the virtual environment:
                         </p>
                         <pre>
 $ fab environment:vagrant set_webserver:nginx

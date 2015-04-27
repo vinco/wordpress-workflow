@@ -2,7 +2,7 @@
 import sys
 import json
 import os
-from fabric.api import cd, env, run, task, require, sudo
+from fabric.api import cd, env, run, task, require, sudo, local
 from fabric.colors import green, red, white, yellow, blue
 from fabric.contrib.console import confirm
 from fabric.contrib.files import exists
@@ -70,7 +70,7 @@ def bootstrap():
 @task
 def create_config(debug=False):
     """
-    Writes wordpress' configurations
+    Writes wordpress configurations
     """
     require('public_dir', 'dbname', 'dbuser', 'dbpassword')
 
@@ -217,12 +217,35 @@ def install_plugins():
 
 
 @task
+def change_domain():
+    """
+    Changes the project's domain according to the url configuration from
+    environment.json
+    """
+    require('url')
+
+    print ("Making actions to change project's url to: "
+        + blue(env.url, bold=True) + "...")
+
+    with cd(env.public_dir):
+        print "Reloading vagrant virtual machine..."
+        local("vagrant halt")
+        local("vagrant up")
+
+        print "Changing project url configuration..."
+        run("""
+            wp option update home http://{url} &&\
+            wp option update siteurl http://{url}
+            """.format(**env))
+
+
+@task
 def import_data(file_name="data.sql"):
     """
     Imports the database to given file name. database/data.sql by default.
     """
     require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbhost')
-    require('admin_user', 'admin_password', 'admin_email', 'url')
+    require('admin_user', 'admin_password', 'admin_email')
 
     env.file_name = file_name
 
@@ -231,11 +254,10 @@ def import_data(file_name="data.sql"):
         mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <\
         {wpworkflow_dir}database/{file_name} """.format(**env))
 
-    with cd(env.public_dir):  # Changes the domain
-        run("""
-            wp option update home http://{url} &&\
-            wp option update siteurl http://{url}
-            """.format(**env))
+    change_domain()
+
+    with cd(env.public_dir):
+
         #changes the user
         run("""
             wp user update {admin_user} --user_pass={admin_password}\
@@ -508,7 +530,6 @@ def clean_plugins():
             sys.exit(0)
 
 
-@task
 def search_plugin(plugin_searched, search_list=None):
     """
     Looks for a plugin in settings.json.
@@ -531,7 +552,7 @@ def search_plugin(plugin_searched, search_list=None):
 
 
 @task
-def make_tarball(target_environment="test", tar_name="wordpress-dist"):
+def make_tarball(target_environment, tar_name="wordpress-dist"):
     """
     Generates a tallbar to upload to servers without ssh.
     """

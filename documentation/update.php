@@ -12,7 +12,7 @@
     <title>Wordpress-workflow Documentation</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/simple-sidebar.css" rel="stylesheet">
@@ -32,7 +32,7 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-        <?php echo file_get_contents("menu.html") ?>
+        <?php include("menu.php")  ?>
         </div>
         <!-- /#sidebar-wrapper -->
 
@@ -41,15 +41,15 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1> Actualización </h1>
+                        <h1> Update </h1>
                         <p> 
-                            Para obtener las nuevas características del proyecto se debe ejecutar el comando wordpress_workflow_upgrade
+                            To get the new features of the wordpress-workflow project, you must run the <code>wordpress_workflow_upgrade</code> command 
                         </p>
                         <pre>
 $ fab wordpress_workflow_upgrade
                         </pre>
                         <p>
-                            El comando permite indicar el repositorio y branch a utilizar, por ejemplo
+                            The command allows you to specify the repository and branch to use, for example:
                         </p>
                         <pre>
 $ fab wordpress_workflow_upgrade:vinco,development

@@ -3,6 +3,9 @@
 
 Vagrant.configure("2") do |config|
 
+  environments_json_path = "environments.json"
+  vagrant_config = (JSON.parse(File.read(environments_json_path)))['vagrant']
+
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
@@ -16,7 +19,7 @@ Vagrant.configure("2") do |config|
 
   # Hosts
   config.vm.hostname = "www.wordpress-workflow.local"
-  config.hostsupdater.aliases = ["wordpress-workflow.local", "wordpress.local"]
+  config.hostsupdater.aliases = ["wordpress-workflow.local", vagrant_config['url']]
 
   # Shared folders.
   config.vm.synced_folder "src", "/home/vagrant/wordpress-workflow"
