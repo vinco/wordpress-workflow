@@ -208,16 +208,12 @@ $ fab environment:vagrant <strong>install_plugins</strong>
                             <code>vagrant</code> environment.
                         </p>
                         <pre>
-$ fab environment:env_name[,debug] <strong>change_domain</strong>
+$ fab environment:vagrant <strong>change_domain</strong>
                         </pre>
 
                         <h4>Arguments</h4>
                         <p>None</p>
 
-                        <h4>Examples</h4>
-                        <pre>
-$ fab environment:vagrant <strong>change_domain</strong>
-                        </pre>
                     </div>
 
                     <div class="col-lg-12" id="import_data" name="import_data">
