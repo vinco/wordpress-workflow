@@ -1,3 +1,7 @@
+#Version 0.2.5
+    * Improves documentation
+    * Adds change_domain command
+
 # Version 0.2.4 (2015-04-20)
     * Adds gitignore entries
     * Add warning to bakcup overwrite
