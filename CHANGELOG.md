@@ -1,4 +1,4 @@
-#Version 0.2.5
+#Version 0.2.5 (2015-04-28)
     * Improves documentation
     * Adds change_domain command
 
