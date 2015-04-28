@@ -300,6 +300,10 @@ $ fab environment:devel ...
                                 <td>Installs plugins and initialize according to the settings.json file.</td>
                             </tr>
                             <tr>
+                                <td><a href="commands.php#change_domain">change_domain</a> </td>
+                                <td>Changes the project's domain according to the url configuration from environment.json</td>
+                            </tr>
+                            <tr>
                                 <td><a href="commands.php#import_data">import_data</a> </td>
                                 <td>Imports the database from given file name. database/data.sql by default.</td>
                             </tr>

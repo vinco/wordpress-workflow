@@ -1,7 +1,6 @@
 <VirtualHost *:80>
     ServerAdmin webmaster@localhost
 
-    ServerName wordpress.local
     DocumentRoot /home/vagrant/public_www
     <Directory />
         Options FollowSymLinks

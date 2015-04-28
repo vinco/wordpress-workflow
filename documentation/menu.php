@@ -138,6 +138,11 @@
                     </a>
                 </li>
                 <li class="list-group-item">
+                    <a href="commands.php#change_domain">
+                        change_domain
+                    </a>
+                </li>
+                <li class="list-group-item">
                     <a href="commands.php#import_data">
                         import_data
                     </a>
