@@ -1,20 +1,17 @@
 
 
-<div class="panel-group text-center" id="accordion" role="tablist" aria-multiselectable="true">
-  
-    <div class="panel panel-default">
-        <div class="panel-heading logo text-center">
-          <h4 class="panel-title">
-            <a href="index.php">
-               <img src="images/wwc.png" alt="wordpress-workflow logo" />
-               <span>Wordpress-workflow</span>
-            </a>
-          </h4>
-        </div>
-    </div>
-        
-
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <a href="index.php">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                  Dashboard 
+              </h4>
+            </div>
+        </div>
+    </a>
+
+    <a href="summary.php">
         <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
@@ -48,6 +45,7 @@
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingTwo">
           <h4 class="panel-title">
+              <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
               Use cases
           </h4>
         </div>
@@ -97,6 +95,7 @@
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingThree">
           <h4 class="panel-title">
+              <span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span>
               Commands
           </h4>
         </div>
