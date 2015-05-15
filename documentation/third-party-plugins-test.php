@@ -52,66 +52,26 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 name="wordpress-workflow">Dashboard</h1>
+                        <h1 name="wordpress-workflow">Tests</h1>
                         <hr>
-						<h2>Tests</h2>
                        	<section id="tests" class="row">
 
-                       		<article class="col-md-6">
-                       			<div id="project_test" class="test-section">
-				                    <div class="test-header row">
-				                   		<div class="col-sm-8">
-				                   			<h3>
-				                   				Project code
-				                   				<span class="label label-warning test-never-runned">
-				                   					<span class="glyphicon glyphicon-warning-sign"></span>
-				                   					You had never run this test!
-				                   				</span>
-				                   			</h3>
-				                   			
-				                   		</div>
-				                   		<div class="col-sm-4 text-right">
-				                    		<a href="project-code-test.php" class="btn btn-danger" role="button">
-				                    			<span class="glyphicon glyphicon-dashboard"></span> Go to test
-				                    		</a>
-				                   		</div>
-				                    </div>
-
-				                    <div class="test-content">
-					                    <div class="row">
-					                    	<div class="col-md-6">
-					                    		<canvas></canvas>
-					                    	</div>
-					                    	<div class="col-md-6">
-					                    		<div class="quick_stats"></div>
-					                    	</div>
-					                    </div>
-	                   				</div>
-				                    <div class="text-center spinner">
-	                       				<img src="images/loading.gif" alt="loading imgs">
-	                       				This test may take a while...
-				                    </div>
-
-                   				</div>
-                       		</article>
-
-                       		<article class="col-md-6">
+                       		<article class="col-xs-12">
                        			<div id="third_party_test" class="test-section">
 				                    <div class="test-header row">
 				                   		<div class="col-sm-8">
 				                   			<h3>
-				                   				Third party plugins
-				                   				<span class="label label-warning test-never-runned">
-				                   					<span class="glyphicon glyphicon-warning-sign"></span>
-				                   					You had never run this test!
-				                   				</span>
-				                   			</h3>
-				                   			
+                                                Third party plugins
+				                   			    <span class="label label-warning test-never-runned">
+			                   					    <span class="glyphicon glyphicon-warning-sign"></span>
+			                   				    	You had never run this test!
+			                   				    </span>
+                                            </h3>
 				                   		</div>
 				                   		<div class="col-sm-4 text-right">
-				                    		<a href="third-party-plugins-test.php" class="btn btn-danger" role="button">
-				                    			<span class="glyphicon glyphicon-dashboard"></span> Go to test
-				                    		</a>
+				                    		<button class="btn btn-danger">
+				                    			<span class='glyphicon glyphicon-play'></span> Run test
+				                    		</button>
 				                   		</div>
 				                    </div>
 
@@ -129,7 +89,6 @@
 	                       				<img src="images/loading.gif" alt="loading imgs">
 	                       				This test may take a while...
 				                    </div>
-
                    				</div>
                        		</article>
 

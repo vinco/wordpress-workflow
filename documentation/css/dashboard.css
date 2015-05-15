@@ -1,0 +1,169 @@
+.spinner img{
+  width: 20px;
+}
+
+.test-content{
+  background: #F0F0F0;
+  border-radius: 5px;
+  margin: 15px 0;
+}
+
+.dashboard-test-section,
+.test-section {
+  background: #ECECE8;
+  padding: 15px;
+  border: solid 1px rgb(229, 229, 229);
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.dashboard-test-section .btn {
+  margin-top: 10px;
+}
+
+.dashboard-test-section .dashboard-icon,
+.test-section .dashboard-icon{
+  font-size: 52px;
+}
+
+.dashboard-test-section canvas,
+.test-section canvas,
+.dashboard-test-section .quick_stats,
+.test-section .quick_stats {
+  margin: 25px;
+}
+
+.score span {
+  font-size: 13px;
+}
+
+.test-header {
+  margin: 0 0 15px 0;
+}
+
+.test-header h3{
+  margin: 0;
+}
+
+.light-red-text{
+  color: red;
+}
+
+.red-text{
+  color: #C03E3E;
+}
+
+.orange-text{
+  color: #D88312;
+}
+
+.green-text{
+  color: #269326;
+}
+
+.blue-text{
+  color: #17B3C7;
+}
+
+.test-details > h4{
+  margin-left: 20px;
+}
+
+.test-details .panel-group .panel-heading{
+  background: #EDEDED;
+  padding: 10px 18px;
+}
+
+.test-details .panel-group .panel-heading:hover{
+  background: #D5D5D5;
+}
+
+.test-details .panel-group .list-group-item {
+    background-color: #E0E0E0;
+}
+
+.test-details .panel-group .panel-heading .panel-title{
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.test-never-runned{
+  display: inline-block;
+  font-size: 16px;
+}
+
+.test-file:hover{
+  text-decoration: underline;
+}
+
+.file-correct,
+.file-warnings,
+.file-errors{
+  padding: 5px;
+  display: inline-block;
+  color: white;
+  /*width: 35px;*/
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.file-correct{
+  background: #17B3C7;
+}
+
+.file-warnings{
+  background: #D88312;
+}
+
+.file-errors{
+  background: #C03E3E;
+}
+
+/*#file-details-list td{
+    padding: 0;
+}*/
+
+.table-details-code {
+  padding: 0 !important;
+}
+
+.table-details-code pre{
+  margin: 0;
+}
+.table-details-nline{
+  font-size: 10px;
+  padding: 0 5px !important;
+  background: #D8D8D8;
+}
+
+.table-details-code pre code{
+  padding: 0 10px;
+  min-height: 14px;
+}
+
+.table-details-code pre code:hover{
+  background: rgb(47, 47, 47);
+}
+
+code.error {
+  background: #2D1414;
+  cursor: pointer;
+}
+
+code.error:hover {
+  background: #380E0E !important;
+}
+
+code.warning{
+  background: #382600;
+  cursor: pointer;
+}
+
+code.warning:hover{
+  background: #4A3001 !important;
+
+}
+
+.pointable {
+    cursor: pointer;   
+}

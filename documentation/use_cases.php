@@ -1,34 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-    <title>Wordpress-workflow Documentation</title>
+        <title>Wordpress-workflow Documentation</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+        <!-- Bootstrap Core CSS -->
+        <link href="css/bootstrap.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="css/simple-sidebar.css" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link href="css/simple-sidebar.css" rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-</head>
+    </head>
 
-<body>
-
-    <div id="wrapper">
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              
+              <a class="navbar-brand" href="index.php">
+                <img src="images/wwb.png" alt="">
+                <span>Wordpress-<strong>Workflow</strong></span>
+              </a>
+            </div>
+          </div><!-- /.container-fluid -->
+        </nav>
+        <div id="wrapper">
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
@@ -75,7 +86,7 @@ $ fab environment:env_name sync_files activate_theme
                    </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12" id="add_plugin" name="add_plugin">
+                    <div class="col-lg-12 anchor" id="add_plugin" name="add_plugin">
                         <h2> Add plugin </h2>
                         <p>
                             Modify the <code> settings.json </code> file adding the new plugin,
@@ -95,7 +106,7 @@ $ fab environment:env_name install_plugins
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-12" id="add_custom_plugin" name="add_custom_plugin">
+                    <div class="col-lg-12 anchor" id="add_custom_plugin" name="add_custom_plugin">
                         <h2> Add a custom plugin </h2>
                         <p>
                             To use custom plugins, you need to add the code in <code>src/plugins</code> folder,
@@ -119,7 +130,7 @@ $ fab environment:env_name sync_files install_plugins
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12" id="backup" name="backup">
+                    <div class="col-lg-12 anchor" id="backup" name="backup">
                         <h2>Backup information</h2>
                         <p>
                             To make a backup that contains database and uploads information, 
@@ -146,7 +157,7 @@ $ fab environment:env_name backup
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12" id="install_info" name="install_info">
+                    <div class="col-lg-12 anchor" id="install_info" name="install_info">
                         <h2>Restore information</h2>
                         <p>
                             To restore information in the local server, you only need to have the backup file
@@ -159,7 +170,7 @@ $ fab environment:vagrant reset_db import_data
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12" id="upgrade_wordpress" name="upgrade_wordpress">
+                    <div class="col-lg-12 anchor" id="upgrade_wordpress" name="upgrade_wordpress">
                         <h2> Update wordpress </h2>
                         <p>
                             You only need to change the <code>version</code> variable that is located inside
@@ -179,7 +190,7 @@ $ fab environment:env_name wordpress_upgrade
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-12" id="use_apache2_nginx" name="use_apache2_nginx">
+                    <div class="col-lg-12 anchor" id="use_apache2_nginx" name="use_apache2_nginx">
                         <h2> Usar apache2/nginx </h2>
                         <p>
                             Wordpress-workflow by default comes installed with nginx, if you want to
@@ -217,8 +228,6 @@ $ fab environment:vagrant set_webserver:nginx
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-
-
 </body>
 
 </html>
