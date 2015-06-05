@@ -264,7 +264,7 @@ def import_data(file_name="data.sql"):
 
         # changes the user
         run("""
-            wp user update {admin_user} --user_pass={admin_password}\
+            wp user update {admin_user} --user_pass=\"{admin_password}\"\
             --user_email={admin_email}
             """.format(**env))
 
