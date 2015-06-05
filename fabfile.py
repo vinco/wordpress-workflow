@@ -96,7 +96,7 @@ def create_config(debug=False):
 
     run("""
         wp core config --dbname={dbname} --dbuser={dbuser} \
-        --dbpass={dbpassword} --path={public_dir} {extra_php}
+        --dbpass={dbpassword} --path={public_dir} --dbhost={dbhost} {extra_php}
         """.format(**env))
 
 
