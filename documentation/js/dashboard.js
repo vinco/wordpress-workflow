@@ -4,8 +4,42 @@ $(".test-content").hide();
 var path_name = window.location.pathname;
 var scripts_path = "../scripts/";
 var app_token = "";
-var project_src_test_json_string;
-var third_party_plugins_test_json_string;
+var PROJECT_TYPE = 'project_src_test';
+var PLUGIN_TYPE = 'third_party_plugins_test';
+
+var model = {
+    init_project_model: function()
+    {
+        $.ajax({
+            async: true,
+            url : scripts_path + "get_file_project_json.php",
+            method: 'GET'
+        })
+        .done(function(json_string){
+            generate_test(
+                  "#project_test", 
+                  json_string, 
+                  PROJECT_TYPE
+                  );
+        });
+    },
+    init_third_party_model: function()
+    {
+        $.ajax({
+            async: true,
+            url : scripts_path + "get_file_plugin_json.php",
+            method: 'GET'
+        })
+        .done(function(json_string){
+            generate_test(
+                  "#third_party_test", 
+                  json_string, 
+                  PLUGIN_TYPE
+                  );
+        });
+    }
+}
+
 
 function check_for_saved_tests(){
 
@@ -13,59 +47,28 @@ function check_for_saved_tests(){
     $.get(scripts_path + "app_token", function(token){
 
         app_token = token;
-
-        //gets json strings from local storage
-        project_src_test_json_string = localStorage.getItem('project_src_test_' + app_token);
-        third_party_plugins_test_json_string = localStorage.getItem('third_party_plugins_test_' + app_token);
-
-
+        
         // initialize dashboard functions when windows.location.pathname is equals to index page
         if(path_name === '/index.php' || path_name === '/'){
 
-          if(project_src_test_json_string !== null){
-              generate_test(
-                  "#project_test", 
-                  project_src_test_json_string, 
-                  'project_src_test'
-                  );
-          }
-
-          if(third_party_plugins_test_json_string !== null){
-              generate_test(
-                  "#third_party_test", 
-                  third_party_plugins_test_json_string, 
-                  'third_party_plugins_test'
-                  );
-          }
+          model.init_project_model();
+          model.init_third_party_model();
 
         }
 
         // initialize dashboard functions when windows.location.pathname is equals to project-code-test.php
-        else if(project_src_test_json_string !== null && 
-            path_name === '/project-code-test.php'){
-
-        generate_test(
-            "#project_test", 
-            project_src_test_json_string, 
-            'project_src_test'
-            );
+        else if(path_name === '/project-code-test.php'){
+            model.init_project_model();
         }
         // initialize dashboard functions when windows.location.pathname is equals to project-code-test.php
-        else if(third_party_plugins_test_json_string !== null && 
-            path_name === '/third-party-plugins-test.php'){
-
-            generate_test(
-                "#third_party_test", 
-                third_party_plugins_test_json_string, 
-                'third_party_plugins_test'
-                );
+        else if(path_name === '/third-party-plugins-test.php'){
+            model.init_third_party_model();
         }
         // initialize dashboard functions when windows.location.pathname is equals to file-details.php
         else if(path_name === '/file-details.php'){
             render_file_details();
             hljs.initHighlighting();
             $('[data-toggle="popover"]').popover();
-
             $(".file-warnings, .file-errors").addClass("pointable");
 
             $(".file-warnings").on("click",function(){
@@ -91,7 +94,7 @@ $("#project_test button").on("click", function(){
 
     test_button_event_on_click(
         parent_name,
-        'project_src_test'
+        PROJECT_TYPE
         );
 });
 
@@ -102,38 +105,30 @@ $("#third_party_test button").on("click", function(){
 
     test_button_event_on_click(
         parent_name,
-        'third_party_plugins_test'
+        PLUGIN_TYPE
         );
 });
 
 
 //on click action for run test buttons
+// source
 function test_button_event_on_click(parent_name, report_type){
     $(parent_name + " .test-content").hide();
 
     $(parent_name + " .spinner").show();
     $(parent_name + " button").attr("disabled", true);
 
-    $.get( 
-        scripts_path + "get_tests_json.php",
-        {
-            report_type: report_type
-        })
+    $.ajax({
+            async: true,
+            url : scripts_path + "get_tests_json.php",
+            method: 'GET',
+            data: {
+                report_type: report_type
+            }
+    })
     .done(function(json_string) {
-
-        json = JSON.parse(json_string);
-
-        //apending lines information for tested files
-        json = append_lines_tested_information(json);
-
-        json_string = JSON.stringify(json);
-
         var now = new Date();
-        localStorage.setItem(report_type + "_" + app_token, json_string);
-        localStorage.setItem(report_type + "_datetime_" + app_token, now.toString());
-
         generate_test(parent_name, json_string, report_type);
-
     })
     .fail(function() {
         $(parent_name + " .quick_stats").html("Error while runing the test").fadeIn();
@@ -147,6 +142,7 @@ function test_button_event_on_click(parent_name, report_type){
 function generate_test(parent_name, json_string, report_type){
 
     json = JSON.parse(json_string);
+    json = append_lines_tested_information(json);
 
     var quick_stats = generate_quick_stats_information(json);
 
@@ -205,6 +201,7 @@ function render_quick_stats(quick_stats, report_type){
         qualitative_score = "You're the best!";
     }
 
+    //source
     var saved_report_date = localStorage.getItem(report_type + '_datetime');
 
     if(saved_report_date != null){
@@ -277,15 +274,49 @@ function render_details_template(json_files, report_type){
     return template;
 }
 
-function render_file_details(){
-    var json;
+function highliting()
+{
+    hljs.initHighlighting();
+    $('[data-toggle="popover"]').popover();
+    $(".file-warnings, .file-errors").addClass("pointable");
 
-    if(report_type === 'project_src_test'){
-        json = JSON.parse(project_src_test_json_string);
+    $(".file-warnings").on("click",function(){
+        $("html body").animate({
+            scrollTop: $("code.warning").offset().top - 75
+        },1000);
+    });
+
+    $(".file-errors").on("click",function(){
+        $("html body").animate({
+            scrollTop: $("code.error").offset().top - 75
+        },1000);
+    });
+}
+
+function render_file_details(){
+
+    if(report_type === PROJECT_TYPE ){
+        $.get(scripts_path + "get_file_project_json.php")
+        .done(function(json_string){
+            prepare_render_details(json_string);
+            highliting();
+        });
+            
     }
-    else if(report_type === 'third_party_plugins_test'){
-        json = JSON.parse(third_party_plugins_test_json_string);
+    else if(report_type === PLUGIN_TYPE){
+        $.get(scripts_path + "get_file_plugin_json.php")
+        .done(function(json_string){
+            prepare_render_details(json_string);
+            highliting();
+        });
     }
+
+}
+
+function prepare_render_details(json_string)
+{
+    json = JSON.parse(json_string);
+    json = append_lines_tested_information(json);
 
     var file_info = _.find(json.files, function(file_info, file_name){
         return file_name == file_path;
@@ -352,7 +383,6 @@ function render_file_details(){
 
 function render_file_stats(file_info){
     var template = "";
-
     var warnings_tag = "";
     var errors_tag = "";
     var correct_tag = "";
@@ -562,7 +592,6 @@ function append_lines_tested_information(json){
             }
         ).done(function(file_lines_count) {
             lines_count = parseInt(file_lines_count);
-
             file_content.lines_count = lines_count;
             total_lines+=lines_count;
             total_files++;
