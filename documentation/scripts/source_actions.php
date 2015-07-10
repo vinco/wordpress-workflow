@@ -28,12 +28,13 @@
 
     public function resetSrc()
     {
-      $pathFile = $_SESSION[$this->tmpSessionName];
-      $file = fopen($pathFile, 'r');
-      if(isset($_SESSION[$this->tmpSessionName])):
+      if(isset($_SESSION[$this->tmpSessionName]))
+      {
+        $pathFile = $_SESSION[$this->tmpSessionName];
+        $file = fopen($pathFile, 'r');
         fclose($file);
         unset($_SESSION[$this->tmpSessionName]);
-      endif;
+      }
     }
   }
 ?>

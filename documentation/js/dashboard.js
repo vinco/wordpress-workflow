@@ -50,12 +50,9 @@ function check_for_saved_tests(){
         
         // initialize dashboard functions when windows.location.pathname is equals to index page
         if(path_name === '/index.php' || path_name === '/'){
-
           model.init_project_model();
           model.init_third_party_model();
-
         }
-
         // initialize dashboard functions when windows.location.pathname is equals to project-code-test.php
         else if(path_name === '/project-code-test.php'){
             model.init_project_model();
@@ -67,7 +64,6 @@ function check_for_saved_tests(){
         // initialize dashboard functions when windows.location.pathname is equals to file-details.php
         else if(path_name === '/file-details.php'){
             render_file_details();
-            hljs.initHighlighting();
             $('[data-toggle="popover"]').popover();
             $(".file-warnings, .file-errors").addClass("pointable");
 
@@ -276,6 +272,7 @@ function render_details_template(json_files, report_type){
 
 function highliting()
 {
+    hljs.configure({tabReplace: '    '});
     hljs.initHighlighting();
     $('[data-toggle="popover"]').popover();
     $(".file-warnings, .file-errors").addClass("pointable");
@@ -378,7 +375,7 @@ function prepare_render_details(json_string)
     template +="</tbody>                                                                                                                    \
         </table>";
 
-    $("#file-details-list").html(template);
+    $("#file-details-list .table-responsive").html(template);
 }
 
 function render_file_stats(file_info){
