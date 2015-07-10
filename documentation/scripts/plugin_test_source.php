@@ -8,7 +8,7 @@
     {
       $this->tmpSessionName = "plugin_src_tmp_file";
       $this->tmpName = "plugin_src";
-      $this->path = "/home/vagrant/wordpress-workflow/plugins/";
+      $this->path = "/home/vagrant/public_www/wp-content/plugins";
       $this->command = 'phpcs --standard=WordPress-Core '.
             '--report=json '.
             $this->path;

@@ -59,16 +59,17 @@
 
                         <section id="file-details-content">
                         	<article id="file-details-list" >
-                        		
+                        		<div class="table-responsive">
+                              
+                            </div>
                         	</article>
                         </section>
                         
                     </div>
                 </div>
-        </div>
+            </div>
         <!-- /#page-content-wrapper -->
-
-    </div>
+        </div>
     <!-- /#wrapper -->
     
     <!-- jQuery -->
