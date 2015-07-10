@@ -1,34 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
 
-    <title>Wordpress-workflow Documentation</title>
+        <title>Wordpress-workflow Documentation</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet">
+        <!-- Bootstrap Core CSS -->
+        <link href="css/bootstrap.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="css/simple-sidebar.css" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link href="css/simple-sidebar.css" rel="stylesheet">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-</head>
+    </head>
 
-<body>
-
-    <div id="wrapper">
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              
+              <a class="navbar-brand" href="index.php">
+                <img src="images/wwb.png" alt="">
+                <span>Wordpress-<strong>Workflow</strong></span>
+              </a>
+            </div>
+          </div><!-- /.container-fluid -->
+        </nav>
+        <div id="wrapper">
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
@@ -86,7 +97,7 @@ $ fab <strong>environment:<span class="args">staging,True</span></strong> sync_f
 
 
                    </div>
-                   <div class="col-lg-12" id="bootstrap" name="bootstrap">
+                   <div class="col-lg-12 anchor" id="bootstrap" name="bootstrap">
                         <h2>bootstrap</h2>
                         <p>
                             Creates the database, test information and enables rewrite.
@@ -104,7 +115,7 @@ $ fab environment:vagrant <strong>bootstrap</strong>
                         </pre>
 
                    </div>
-                    <div class="col-lg-12" id="create_config" name="create_config">
+                    <div class="col-lg-12 anchor" id="create_config" name="create_config">
                         <h2>create_config</h2>
                         <p>
                             Writes wordpress configurations
@@ -126,7 +137,7 @@ $ fab environment:vagrant <strong>create_config:<span class="args">True</span></
 $ fab environment:vagrant <strong>create_config:<span class="args">False</span></strong>
                         </pre>
                    </div>
-                    <div class="col-lg-12" id="set_debug_mode" name="set_debug_mode">
+                    <div class="col-lg-12 anchor" id="set_debug_mode" name="set_debug_mode">
                         <h2>set_debug_mode</h2>
                         <p>
                             Changes debug mode
@@ -148,7 +159,7 @@ $ fab environment:vagrant <strong>set_debug_mode:<span class="args">True</span><
 $ fab environment:vagrant <strong>set_debug_mode:<span class="args">False</span></strong>
                         </pre>
                    </div>
-                    <div class="col-lg-12" id="wordpress_install" name="wordpress_install">
+                    <div class="col-lg-12 anchor" id="wordpress_install" name="wordpress_install">
                         <h2>wordpress_install</h2>
                         <p>
                             Downloads the wordpress version specified in <code>settings.json</code> and installs the database.
@@ -165,7 +176,7 @@ $ fab environment:env_name[,debug] <strong>wordpress_install</strong>
 $ fab environment:vagrant <strong>wordpress_install</strong>
                         </pre>
                    </div>
-                   <div class="col-lg-12" id="activate_theme" name="activate_theme">
+                   <div class="col-lg-12 anchor" id="activate_theme" name="activate_theme">
                         <h2>activate_theme</h2>
                         <p>
                             Activates the selected theme in the current wordpress installation.
@@ -182,7 +193,7 @@ $ fab environment:env_name[,debug] <strong>activate_theme</strong>
 $ fab environment:vagrant <strong>activate_theme</strong>
                         </pre>
                    </div>
-                   <div class="col-lg-12" id="install_plugins" name="install_plugins">
+                   <div class="col-lg-12 anchor" id="install_plugins" name="install_plugins">
                         <h2>install_plugins</h2>
                         <p>
                             Installs plugins and initialize according to the <code>settings.json</code> file.
@@ -200,7 +211,7 @@ $ fab environment:vagrant <strong>install_plugins</strong>
                         </pre>
                    </div>
 
-                    <div class="col-lg-12" id="change_domain" name="change_domain">
+                    <div class="col-lg-12 anchor" id="change_domain" name="change_domain">
                         <h2>change_domain</h2>
                         <p>
                             Changes the project's domain according to the url configuration from
@@ -216,7 +227,7 @@ $ fab environment:vagrant <strong>change_domain</strong>
 
                     </div>
 
-                    <div class="col-lg-12" id="import_data" name="import_data">
+                    <div class="col-lg-12 anchor" id="import_data" name="import_data">
                             <h2>import_data</h2>
                             <p>
                                 Imports the database from given file name that must be placed in <code>database/</code> path
@@ -238,7 +249,7 @@ $ fab environment:vagrant <strong>import_data:<span class="args">backup.sql</spa
                             </pre>
                        </div>
 
-                       <div class="col-lg-12" id="export_data" name="export_data">
+                       <div class="col-lg-12 anchor" id="export_data" name="export_data">
                             <h2>export_data</h2>
                             <p>
                                 Exports the database to given file name. Generated dump will be placed in <code>database/</code> path
@@ -260,7 +271,7 @@ $ fab environment:vagrant <strong>export_data:<span class="args">backup.sql</spa
                             </pre>
                        </div>
                         
-                        <div class="col-lg-12" id="resetdb" name="resetdb">
+                        <div class="col-lg-12 anchor" id="resetdb" name="resetdb">
                             <h2>resetdb</h2>
                             <p>
                                 Drops the database and recreate it.
@@ -277,7 +288,7 @@ $ fab environment:env_name[,debug] <strong>resetdb</strong>
 $ fab environment:vagrant <strong>resetdb</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="reset_all" name="reset_all">
+                       <div class="col-lg-12 anchor" id="reset_all" name="reset_all">
                             <h2>reset_all</h2>
                             <p>
                                 Deletes all the wordpress installation and starts over.
@@ -294,7 +305,7 @@ $ fab environment:env_name[,debug] <strong>reset_all</strong>
 $ fab environment:vagrant <strong>reset_all</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="sync_files" name="sync_files">
+                       <div class="col-lg-12 anchor" id="sync_files" name="sync_files">
                             <h2>sync_files</h2>
                             <p>
                                 Sync modified files and establish necessary permissions in selected environment.
@@ -311,7 +322,7 @@ $ fab environment:env_name[,debug] <strong>sync_files</strong>
 $ fab environment:vagrant <strong>sync_files</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="wordpress_upgrade" name="wordpress_upgrade">
+                       <div class="col-lg-12 anchor" id="wordpress_upgrade" name="wordpress_upgrade">
                             <h2>wordpress_upgrade</h2>
                             <p>
                                 Downloads the new wordpress version specified in <code>settings.json</code> and upgrades it.
@@ -328,7 +339,7 @@ $ fab environment:env_name[,debug] <strong>wordpress_upgrade</strong>
 $ fab environment:vagrant <strong>wordpress_upgrade</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="wordpress_downgrade" name="wordpress_downgrade">
+                       <div class="col-lg-12 anchor" id="wordpress_downgrade" name="wordpress_downgrade">
                             <h2>wordpress_downgrade</h2>
                             <p>
                                 Downloads the new specified wordpress version in <code>settings.json</code> and downgrades it
@@ -345,7 +356,7 @@ $ fab environment:env_name[,debug] <strong>wordpress_downgrade</strong>
 $ fab environment:vagrant <strong>wordpress_downgrade</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="set_webserver" name="set_webserver">
+                       <div class="col-lg-12 anchor" id="set_webserver" name="set_webserver">
                             <h2>set_webserver</h2>
                             <p>
                                 Changes project's web server, nginx or apache2 available, nginx by default.
@@ -367,7 +378,7 @@ $ fab environment:vagrant <strong>set_webserver:<span class="args">nginx</span><
 $ fab environment:vagrant <strong>set_webserver:<span class="args">apache2</span></strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="upgrade_plugin" name="upgrade_plugin">
+                       <div class="col-lg-12 anchor" id="upgrade_plugin" name="upgrade_plugin">
                             <h2>upgrade_plugin</h2>
                             <p>
                                 Updates a plugin to specified version in <code>settings.json</code>.
@@ -390,7 +401,7 @@ $ fab environment:env_name[,debug] <strong>upgrade_plugin<span class="args">:plu
 $ fab environment:vagrant <strong>upgrade_plugin:<span class="args">wordpress-seo</span></strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="check_plugins" name="check_plugins">
+                       <div class="col-lg-12 anchor" id="check_plugins" name="check_plugins">
                             <h2>check_plugins</h2>
                             <p>
                                Verifies installed versions of plugins.
@@ -407,7 +418,7 @@ $ fab environment:env_name[,debug] <strong>check_plugins</strong>
 $ fab environment:vagrant <strong>check_plugins</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="clean_plugins" name="clean_plugins">
+                       <div class="col-lg-12 anchor" id="clean_plugins" name="clean_plugins">
                             <h2>clean_plugins</h2>
                             <p>
                                Checks for installed plugins and removes the unused.
@@ -424,7 +435,7 @@ $ fab environment:env_name[,debug] <strong>clean_plugins</strong>
 $ fab environment:vagrant <strong>clean_plugins</strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="make_tarball" name="make_tarball">
+                       <div class="col-lg-12 anchor" id="make_tarball" name="make_tarball">
                             <h2>make_tarball</h2>
                             <p>
                                 Generates a tarball to upload to servers without ssh.
@@ -448,7 +459,7 @@ $ fab environment:vagrant <strong>make_tarball:<span class="args">development</s
 $ fab environment:vagrant <strong>make_tarball:<span class="args">production,production_tarball</span></strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="backup" name="backup">
+                       <div class="col-lg-12 anchor" id="backup" name="backup">
                             <h2>backup</h2>
                             <p>
                                 Generates a backup copy of database and uploads
@@ -473,7 +484,7 @@ $ fab environment:vagrant <strong>backup:<span class="args">database_backup,True
 $ fab environment:vagrant <strong>backup:<span class="args">database_backup,False</span></strong>
                             </pre>
                        </div>
-                       <div class="col-lg-12" id="wordpress_workflow_upgrade" name="wordpress_workflow_upgrade">
+                       <div class="col-lg-12 anchor" id="wordpress_workflow_upgrade" name="wordpress_workflow_upgrade">
                             <h2>wordpress_workflow_upgrade</h2>
                             <p>
                                 Upgrades wordpress-workflow

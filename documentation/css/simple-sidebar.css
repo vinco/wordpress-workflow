@@ -8,10 +8,7 @@
 
 #wrapper {
     padding-left: 0;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
+    margin-top: 52px;
 }
 
 #wrapper.toggled {
@@ -26,11 +23,12 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: #000;
+    background: #F2F2EA;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    box-shadow: 2px 0px 2px #D4D5D0;
 }
 
 #wrapper.toggled #sidebar-wrapper {
