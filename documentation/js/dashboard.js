@@ -9,9 +9,8 @@ var PLUGIN_TYPE = 'third_party_plugins_test';
 
 var model = {
     init_project_model: function()
-    {
+    {   
         $.ajax({
-            async: true,
             url : scripts_path + "get_file_project_json.php",
             method: 'GET'
         })
@@ -21,12 +20,13 @@ var model = {
                   json_string, 
                   PROJECT_TYPE
                   );
+            $(".spinner").hide();
         });
     },
     init_third_party_model: function()
     {
+        
         $.ajax({
-            async: true,
             url : scripts_path + "get_file_plugin_json.php",
             method: 'GET'
         })
@@ -35,7 +35,8 @@ var model = {
                   "#third_party_test", 
                   json_string, 
                   PLUGIN_TYPE
-                  );
+            );
+            $(".spinner").hide();
         });
     }
 }
@@ -136,7 +137,7 @@ function test_button_event_on_click(parent_name, report_type){
 
 //generates information for test
 function generate_test(parent_name, json_string, report_type){
-
+    $(".spinner").show();
     json = JSON.parse(json_string);
     json = append_lines_tested_information(json);
 
@@ -291,10 +292,13 @@ function highliting()
 }
 
 function render_file_details(){
-
+    $(".spinner").show();
+    $(".test-content").show();
     if(report_type === PROJECT_TYPE ){
         $.get(scripts_path + "get_file_project_json.php")
         .done(function(json_string){
+            $(".spinner").hide();
+            $(".test-content").hide();
             prepare_render_details(json_string);
             highliting();
         });
@@ -303,6 +307,8 @@ function render_file_details(){
     else if(report_type === PLUGIN_TYPE){
         $.get(scripts_path + "get_file_plugin_json.php")
         .done(function(json_string){
+            $(".spinner").hide();
+            $(".test-content").hide();
             prepare_render_details(json_string);
             highliting();
         });
@@ -336,7 +342,7 @@ function prepare_render_details(json_string)
 
     $.each(file_json, function(i, message_info) {
 
-        if(message_info.line_content !== ''){
+        if(escapeHtml(message_info.line_content) !== ''){
             var message_class = "";
             var background_color = "";
             var popover = "";
@@ -617,6 +623,18 @@ function switch_run_test_button(parent_name, was_runned){
         }
         $(parent_name + ' .test-never-runned').hide();
     }
+}
+
+function escapeHtml(text) {
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
 check_for_saved_tests();
