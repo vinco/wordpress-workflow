@@ -60,7 +60,7 @@ def bootstrap():
     # Creates database
     run("""
         echo "DROP DATABASE IF EXISTS {dbname}; CREATE DATABASE {dbname};
-        "|mysql --batch --user={dbuser} --password={dbpassword} --host={dbhost}
+        "|mysql --batch --user={dbuser} --password=\"{dbpassword}\" --host={dbhost}
         """.format(**env))
     # Enables apache module
     run('sudo a2enmod rewrite')
@@ -96,7 +96,7 @@ def create_config(debug=False):
 
     run("""
         wp core config --dbname={dbname} --dbuser={dbuser} \
-        --dbpass={dbpassword} --path={public_dir} --dbhost={dbhost} {extra_php}
+        --dbpass=\"{dbpassword}\" --path={public_dir} --dbhost={dbhost} {extra_php}
         """.format(**env))
 
 
@@ -251,7 +251,7 @@ def import_data(file_name="data.sql"):
 
     print "Importing data from file: " + blue(file_name, bold=True) + "..."
     run("""
-        mysql -u {dbuser} -p{dbpassword} {dbname} --host={dbhost} <\
+        mysql -u {dbuser} -p\"{dbpassword}\" {dbname} --host={dbhost} <\
         {wpworkflow_dir}database/{file_name} """.format(**env))
 
     with cd(env.public_dir):
@@ -297,7 +297,7 @@ def export_data(file_name="data.sql", just_data=False):
         print "Exporting data to file: " + blue(file_name, bold=True) + "..."
         run(
             """
-            mysqldump -u {dbuser} -p{dbpassword} {dbname} --host={dbhost}\
+            mysqldump -u {dbuser} -p\"{dbpassword}\" {dbname} --host={dbhost}\
             {just_data} > {wpworkflow_dir}database/{file_name}
             """.format(**env)
         )
@@ -316,7 +316,7 @@ def resetdb():
     run("""
         echo "DROP DATABASE IF EXISTS {dbname};
         CREATE DATABASE {dbname};
-        "|mysql --batch --user={dbuser} --password={dbpassword} --host={dbhost}
+        "|mysql --batch --user={dbuser} --password=\"{dbpassword}\" --host={dbhost}
         """.format(**env))
 
 
@@ -588,7 +588,7 @@ def make_tarball(target_environment, tar_name="wordpress-dist"):
         db_config = json.load(json_file)[target_environment]
         db_config['tmp_dir'] = env.tmp_dir
         urun('wp core config --dbname={dbname} --dbuser={dbuser} '
-             '--dbpass={dbpassword} --skip-check --path={tmp_dir}'.format(**db_config))
+             '--dbpass=\"{dbpassword}\" --skip-check --path={tmp_dir}'.format(**db_config))
 
     # Configure temp database
     create_database_command = '''
@@ -602,7 +602,7 @@ def make_tarball(target_environment, tar_name="wordpress-dist"):
     print "Configurating temporary database..."
     urun(
         create_database_command +
-        '|mysql --batch --user={dbuser} --password={dbpassword}'.format(**env)
+        '|mysql --batch --user={dbuser} --password=\"{dbpassword}\"'.format(**env)
     )
 
     # Install wodpress
@@ -652,7 +652,7 @@ def make_tarball(target_environment, tar_name="wordpress-dist"):
         "'''.format(**db_config)
     urun(
         clean_database_command +
-        '|mysql --batch --user={dbuser} --password={dbpassword}'.format(**env)
+        '|mysql --batch --user={dbuser} --password=\"{dbpassword}\"'.format(**env)
     )
     urun('rm -rf {tmp_dir}'.format(**env))
     print green("Packaging generated in dist/{tar_name}.tar.gz".format(**env))
