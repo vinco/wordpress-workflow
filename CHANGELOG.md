@@ -1,4 +1,8 @@
-#Version 0.2.5 (2015-04-28)
+# Version 0.3.0 (2015-06-13)
+    * Add code verification
+    * Fixes password quotation
+
+# Version 0.2.5 (2015-04-28)
     * Improves documentation
     * Adds change_domain command
 
