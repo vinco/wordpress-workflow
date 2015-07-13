@@ -54,21 +54,26 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 name="wordpress-workflow">File details</h1>
+                        <div class="text-center spinner">
+                            <img src="images/loading.gif" alt="loading imgs">
+                            This file may take a while...
+                        </div>
                         <h4 id="file-name-title"></h4>
                         <hr>
 
                         <section id="file-details-content">
                         	<article id="file-details-list" >
-                        		
+                        		<div class="table-responsive">
+                              
+                            </div>
                         	</article>
                         </section>
                         
                     </div>
                 </div>
-        </div>
+            </div>
         <!-- /#page-content-wrapper -->
-
-    </div>
+        </div>
     <!-- /#wrapper -->
     
     <!-- jQuery -->
