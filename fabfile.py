@@ -29,10 +29,12 @@ def environment(env_name, debug=False):
             env_name,
             schemas_dir + "environment_schema.json"
         )
+        env.is_vagrant = False
         if env_name == "vagrant":
             result = ulocal('vagrant ssh-config | grep IdentityFile',
                             capture=True)
             env.key_filename = result.split()[1].replace('"', '')
+            env.is_vagrant = True
 
     except ValueError:
         print red("environments.json has wrong format.", bold=True)
@@ -225,12 +227,13 @@ def change_domain():
     require('url')
 
     print ("Making actions to change project's url to: "
-        + blue(env.url, bold=True) + "...")
+           + blue(env.url, bold=True) + "...")
 
     with cd(env.public_dir):
-        print "Reloading vagrant virtual machine..."
-        local("vagrant halt")
-        local("vagrant up")
+        if env.is_vagrant:
+            print "Reloading vagrant virtual machine..."
+            local("vagrant halt")
+            local("vagrant up")
 
         print "Changing project url configuration..."
         run("""
