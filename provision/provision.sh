@@ -9,7 +9,7 @@ apt-get update
 
 PACKAGES="php5 mysql-client mysql-server php5-mysql apache2 tree vim curl"
 PACKAGES="$PACKAGES nginx-full php5-fpm php5-cgi spawn-fcgi php-pear php5-gd"
-PACKAGES="$PACKAGES php-apc php5-curl php5-mcrypt php5-memcached fcgiwrap"
+PACKAGES="$PACKAGES php-apc php5-curl php5-mcrypt php5-memcached fcgiwrap php5-mcrypt"
 
 APP_TOKEN="/home/vagrant/workflow-documentation/scripts/app_token"
 PUBLIC_DIRECTORY="/home/vagrant/public_www"
@@ -73,3 +73,4 @@ rm  /etc/nginx/sites-enabled/*
 ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 service php5-fpm restart
 service nginx restart
+export WP_ENV=production
