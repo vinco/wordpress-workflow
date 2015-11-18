@@ -10,6 +10,7 @@ apt-get update
 PACKAGES="php5 mysql-client mysql-server php5-mysql apache2 tree vim curl"
 PACKAGES="$PACKAGES nginx-full php5-fpm php5-cgi spawn-fcgi php-pear php5-gd"
 PACKAGES="$PACKAGES php-apc php5-curl php5-mcrypt php5-memcached fcgiwrap php5-mcrypt"
+PACKAGES="$PACKAGES git"
 
 APP_TOKEN="/home/vagrant/workflow-documentation/scripts/app_token"
 PUBLIC_DIRECTORY="/home/vagrant/public_www"
@@ -39,7 +40,7 @@ curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp
 
-Installing composer
+echo "Installing composer"
 curl -sS https://getcomposer.org/installer | php
 chmod +x composer.phar
 mv composer.phar /usr/local/bin/composer
