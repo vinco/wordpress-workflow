@@ -12,6 +12,7 @@ from fabutils import boolean
 
 from fabutils.env import set_env_from_json_file
 from fabutils.tasks import ursync_project, ulocal, urun
+import customfab
 
 
 @task
