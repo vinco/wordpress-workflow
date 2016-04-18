@@ -216,7 +216,43 @@ def install_plugins():
                 activate,
                 plugin['name']
                 ))
+@task
+def install_plugin( name, **kwargs ):
+    """
+    Install a specific plugin with a specific version, install_plugin:[name],version=[version | stable by default],status=[True | False by default]
+    """
+    env.version = kwargs.get('version') if kwargs.get('version') else 'stable'
+    env.name = name
+    env.status = kwargs.get('status') if kwargs.get('status') else False
 
+    print "Installing : " + blue(name, bold=True) + " version " + red(env.version, bold=True) +" activate? = "+ green(env.status, bold=True) + " ..."
+
+    with cd(env.public_dir):
+
+        activate = "activate"
+
+        if env.version != 'stable':
+            env.version = ' --version=' + env.version
+
+        run("""
+            if ! wp plugin is-installed {0};
+            then
+            wp plugin install {0} {1};
+            fi
+            """.format(
+                env.name,
+                env.version
+            ))
+
+        if not env.status:
+            activate = "deactivate"
+
+        run("""
+            wp plugin {0} {1}
+            """.format(
+                activate,
+                env.name
+            ))
 
 @task
 def change_domain():
