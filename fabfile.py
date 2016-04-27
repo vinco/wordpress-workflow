@@ -155,7 +155,7 @@ def activate_theme():
 
 
 @task
-def install_plugins():
+def install_plugins( name='' ):
     """
     Installs plugins and initialize according to the settings.json file.
     """
@@ -163,96 +163,72 @@ def install_plugins():
 
     check_plugins()
     print "Installing plugins..."
-    for custom_plugin in env.get("custom_plugins", []):
-        print "Installing : " + blue(custom_plugin['name'], bold=True) + "..."
+    if( not name ):
+        for custom_plugin in env.get("custom_plugins", []):
+            print "Installing : " + blue(custom_plugin['name'], bold=True) + "..."
+            with cd(env.public_dir):
+                run("""
+                    if ! wp plugin is-installed {0};
+                    then
+                        ln -s {1}plugins/{0} {2}wp-content/plugins/;
+                    fi
+                    """.format(
+                    custom_plugin['name'],
+                    env.wpworkflow_dir,
+                    env.public_dir
+                    ))
+
+                activate = "activate"
+                if not custom_plugin['active']:
+                    activate = "deactivate"
+
+                run("""
+                    wp plugin {0} {1}
+                    """.format(
+                    activate,
+                    custom_plugin['name']
+                    ))
+        # Installs 3rd party plugins
         with cd(env.public_dir):
-            run("""
-                if ! wp plugin is-installed {0};
-                then
-                    ln -s {1}plugins/{0} {2}wp-content/plugins/;
-                fi
-                """.format(
-                custom_plugin['name'],
-                env.wpworkflow_dir,
-                env.public_dir
-                ))
+            for plugin in env.get("plugins", []):
+                print "Installing : " + blue(plugin['name'], bold=True) + "..."
+                version = ""
+                activate = "activate"
 
-            activate = "activate"
-            if not custom_plugin['active']:
-                activate = "deactivate"
+                if plugin['version'] != 'stable':
+                    version = ' --version=' + plugin['version']
 
-            run("""
-                wp plugin {0} {1}
-                """.format(
-                activate,
-                custom_plugin['name']
-                ))
-    # Installs 3rd party plugins
-    with cd(env.public_dir):
-        for plugin in env.get("plugins", []):
-            print "Installing : " + blue(plugin['name'], bold=True) + "..."
-            version = ""
-            activate = "activate"
+                run("""
+                    if ! wp plugin is-installed {0};
+                    then
+                        wp plugin install {0} {1};
+                    fi
+                    """.format(
+                    plugin['name'],
+                    version
+                    ))
 
-            if plugin['version'] != 'stable':
-                version = ' --version=' + plugin['version']
+                if not plugin['active']:
+                    activate = "deactivate"
 
-            run("""
-                if ! wp plugin is-installed {0};
-                then
-                    wp plugin install {0} {1};
-                fi
-                """.format(
-                plugin['name'],
-                version
-                ))
-
-            if not plugin['active']:
-                activate = "deactivate"
-
-            run("""
-                wp plugin {0} {1}
-                """.format(
-                activate,
-                plugin['name']
-                ))
+                run("""
+                    wp plugin {0} {1}
+                    """.format(
+                    activate,
+                    plugin['name']
+                    ))
+    else:
+        if check_if_plugin_exist:name
 @task
-def install_plugin( name, **kwargs ):
-    """
-    Install a specific plugin with a specific version, install_plugin:[name],version=[version | stable by default],status=[True | False by default]
-    """
-    env.version = kwargs.get('version') if kwargs.get('version') else 'stable'
-    env.name = name
-    env.status = kwargs.get('status') if kwargs.get('status') else False
+def check_if_plugin_exist( name ):
+    print "Check if " + name + " exists in settings.json"
 
-    print "Installing : " + blue(name, bold=True) + " version " + red(env.version, bold=True) +" activate? = "+ green(env.status, bold=True) + " ..."
+    flag = False
+    for custom_plugin in env.get("custom_plugins", []):
+        if name == custom_plugin['name']:
+            flag = True
 
-    with cd(env.public_dir):
-
-        activate = "activate"
-
-        if env.version != 'stable':
-            env.version = ' --version=' + env.version
-
-        run("""
-            if ! wp plugin is-installed {0};
-            then
-            wp plugin install {0} {1};
-            fi
-            """.format(
-                env.name,
-                env.version
-            ))
-
-        if not env.status:
-            activate = "deactivate"
-
-        run("""
-            wp plugin {0} {1}
-            """.format(
-                activate,
-                env.name
-            ))
+    return flag
 
 @task
 def change_domain():
