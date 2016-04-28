@@ -157,78 +157,133 @@ def activate_theme():
 @task
 def install_plugins( name='' ):
     """
-    Installs plugins and initialize according to the settings.json file.
+    Installs plugins and initialize according to the settings.json file. :param name: This is an argument for install one specific plugin, if this is null install all plugins
     """
     require('public_dir', 'wpworkflow_dir')
 
     check_plugins()
-    print "Installing plugins..."
+
+    # Install all plugins
     if( not name ):
+        print "Installing plugins..."
         for custom_plugin in env.get("custom_plugins", []):
-            print "Installing : " + blue(custom_plugin['name'], bold=True) + "..."
-            with cd(env.public_dir):
-                run("""
-                    if ! wp plugin is-installed {0};
-                    then
-                        ln -s {1}plugins/{0} {2}wp-content/plugins/;
-                    fi
-                    """.format(
-                    custom_plugin['name'],
-                    env.wpworkflow_dir,
-                    env.public_dir
-                    ))
+            install_custom_plugin( custom_plugin )
 
-                activate = "activate"
-                if not custom_plugin['active']:
-                    activate = "deactivate"
-
-                run("""
-                    wp plugin {0} {1}
-                    """.format(
-                    activate,
-                    custom_plugin['name']
-                    ))
         # Installs 3rd party plugins
         with cd(env.public_dir):
             for plugin in env.get("plugins", []):
-                print "Installing : " + blue(plugin['name'], bold=True) + "..."
-                version = ""
-                activate = "activate"
+                install_plugin( plugin )
 
-                if plugin['version'] != 'stable':
-                    version = ' --version=' + plugin['version']
-
-                run("""
-                    if ! wp plugin is-installed {0};
-                    then
-                        wp plugin install {0} {1};
-                    fi
-                    """.format(
-                    plugin['name'],
-                    version
-                    ))
-
-                if not plugin['active']:
-                    activate = "deactivate"
-
-                run("""
-                    wp plugin {0} {1}
-                    """.format(
-                    activate,
-                    plugin['name']
-                    ))
+    # Install one plugin
     else:
-        if check_if_plugin_exist:name
-@task
+        flag, plugin_type, plugin_data = check_if_plugin_exist( name )
+        if flag:
+            if plugin_type == 1: # Custom plugin install
+                install_custom_plugin( plugin_data )
+            if plugin_type == 2: # Plugin install
+                install_plugin( plugin_data )
+        else:
+            print "The plugin: " + blue( name, bold=True) + "does not find in setting.json ..."
+
+
+
 def check_if_plugin_exist( name ):
     print "Check if " + name + " exists in settings.json"
-
+    """
+    This function chek if a plugin exist within settings.json file
+    This function returns:
+        bolean True if plugin exists
+        integer 0 for null | 1 for custom_plugin | 2 for plugin
+        dic setings.json plugin data
+    """
     flag = False
-    for custom_plugin in env.get("custom_plugins", []):
+    plugin_type = 0
+    plugin_data = ""
+
+    custom_plugins = env.get("custom_plugins", [])
+    plugins = env.get("plugins")
+
+    for custom_plugin in custom_plugins:
         if name == custom_plugin['name']:
             flag = True
+            plugin_type = 1
+            plugin_data = custom_plugin
 
-    return flag
+
+    for custom_plugin in plugins:
+        if name == custom_plugin['name']:
+            flag = True
+            plugin_type = 2
+            plugin_data = custom_plugin
+
+    return ( flag, plugin_type, plugin_data )
+
+def install_custom_plugin( custom_plugin ):
+    """
+    This function install a custom plugin from settings.json file
+    :param custom_plugin: A dictionary with custom_plugin data
+    """
+    print "Installing : " + blue( custom_plugin["name"], bold=True) + "..."
+
+    require('public_dir', 'wpworkflow_dir')
+    with cd(env.public_dir):
+        run("""
+            if ! wp plugin is-installed {0};
+            then
+                ln -s {1}plugins/{0} {2}wp-content/plugins/;
+            fi
+            """.format(
+            custom_plugin["name"],
+            env.wpworkflow_dir,
+            env.public_dir
+            ))
+
+        activate = "activate"
+        if not custom_plugin['active']:
+            activate = "deactivate"
+
+        run("""
+            wp plugin {0} {1}
+            """.format(
+            activate,
+            custom_plugin['name']
+            ))
+
+
+def install_plugin( plugin ):
+    """
+    This function install a plugin from settings.json file
+    :param custom_plugin: A dictionary with plugin data
+    """
+    print "Installing : " + blue(plugin['name'], bold=True) + "..."
+
+    require('public_dir', 'wpworkflow_dir')
+    version = ""
+    activate = "activate"
+
+    if plugin['version'] != 'stable':
+        version = ' --version=' + plugin['version']
+
+    with cd(env.public_dir):
+        run("""
+            if ! wp plugin is-installed {0};
+            then
+                wp plugin install {0} {1};
+            fi
+            """.format(
+            plugin['name'],
+            version
+            ))
+
+        if not plugin['active']:
+            activate = "deactivate"
+
+        run("""
+            wp plugin {0} {1}
+            """.format(
+            activate,
+            plugin['name']
+            ))
 
 @task
 def change_domain():
