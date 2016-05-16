@@ -157,7 +157,9 @@ def activate_theme():
 @task
 def install_plugins( name='' ):
     """
-    Installs plugins and initialize according to the settings.json file. :param name: This is an argument for install one specific plugin, if this is null install all plugins
+    Installs plugins and initialize according to the settings.json file.
+    :param name: This is an argument for install one specific plugin
+    if this is null install all plugins
     """
     require('public_dir', 'wpworkflow_dir')
 
