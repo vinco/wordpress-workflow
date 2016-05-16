@@ -30,6 +30,8 @@ def environment(env_name, debug=False):
             env_name,
             schemas_dir + "environment_schema.json"
         )
+        env.env_name = env_name
+        env.confirm_task = True
         env.is_vagrant = False
         if env_name == "vagrant":
             result = ulocal('vagrant ssh-config | grep IdentityFile',
@@ -59,6 +61,7 @@ def bootstrap():
     Creates the database, test information and enables rewrite.
     """
     require('dbname', 'dbuser', 'dbpassword', 'dbhost')
+    confirm_task()
     print "Creating local environment."
     # Creates database
     run("""
@@ -119,6 +122,7 @@ def wordpress_install():
     require('wpworkflow_dir', 'public_dir', 'dbname', 'dbuser', 'dbpassword')
     require('url', 'title', 'admin_user', 'admin_password', 'admin_email')
 
+    confirm_task()
     print "Downloading wordpress..."
     #Downloads wordpress
     run('wp core download --version={version} --path={public_dir} '
@@ -318,6 +322,7 @@ def import_data(file_name="data.sql"):
     require('wpworkflow_dir', 'dbuser', 'dbpassword', 'dbhost')
     require('admin_user', 'admin_password', 'admin_email', 'url')
 
+    confirm_task()
     env.file_name = file_name
 
     print "Importing data from file: " + blue(file_name, bold=True) + "..."
@@ -383,6 +388,7 @@ def resetdb():
     Drops the database and recreate it.
     """
     require('dbname', 'dbuser', 'dbpassword', 'dbhost')
+    confirm_task()
     print "Dropping database..."
     run("""
         echo "DROP DATABASE IF EXISTS {dbname};
@@ -397,6 +403,7 @@ def reset_all():
     Deletes all the wordpress installation and starts over.
     """
     require('public_dir')
+    confirm_task()
     print "Deleting directory content: " + blue(env.public_dir, bold=True) + "..."
     run("""rm -rf {0}*""".format(env.public_dir))
     resetdb()
@@ -432,6 +439,7 @@ def wordpress_upgrade():
     Downloads the new wordpress version specified in settings.json and upgrade it.
     """
     require('public_dir', 'wpworkflow_dir', 'version', 'locale')
+    confirm_task()
     with cd(env.public_dir):
         current_ver = run(""" wp core version""")
         request_ver = env.version
@@ -456,6 +464,7 @@ def wordpress_downgrade():
     Downloads the new specified wordpress version in settings.json and downgrade it
     """
     require('version', 'public_dir', 'locale')
+    confirm_task()
 
     with cd(env.public_dir):
         current_ver = run(""" wp core version""")
@@ -800,6 +809,16 @@ def backup(tarball_name='backup', just_data=False):
             +
             ' ./backup/{tarball_name}.tar.gz'.  format(**env)
         )
+
+
+def confirm_task(error_message = "Environment is not equals"):
+    if not env.is_vagrant and env.confirm_task :
+        env_name = raw_input("Confirm environment:")
+        if env.env_name != env_name :
+            print error_message
+            sys.exit(0)
+        else:
+            env.confirm_task = False
 
 
 @task
