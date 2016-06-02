@@ -448,10 +448,11 @@ def wordpress_upgrade():
 
     if request_ver > current_ver:
         run("""
-            wp core update --version={version} --path={public_dir}
-            --locale={locale} """.format(**env))
+            wp core update --version={version} --path={public_dir} --locale={locale}
+            """.format(**env))
 
-        print green('Upgrade to versión ' + request_ver + ' sucessfull.')
+
+        print green('Upgrade to version ' + request_ver + ' sucessfull.')
 
     else:
         print red("""
@@ -474,10 +475,10 @@ def wordpress_downgrade():
 
     if request_ver < current_ver:
         run("""
-            wp core update --version={version} --path={public_dir}
-            --locale={locale} --force """.format(**env))
+            wp core update --version={version} --path={public_dir} --locale={locale} --force
+            """.format(**env))
 
-        print green('Downgrade to versión ' + request_ver + ' success.')
+        print green('Downgrade to version ' + request_ver + ' success.')
     else:
         print red("""
                   The wordpress version in settings.json {0}
