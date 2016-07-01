@@ -839,3 +839,28 @@ def wordpress_workflow_upgrade(repository='origin', branch='master'):
     ulocal('wordpress-workflow/startProject.sh')
     ulocal('vagrant provision')
     print green('wordpress-workflow upgraded', bold=True)
+
+
+@task
+def verify_checksums():
+    """
+    Veify checksum and fix if fail
+    """
+    require('public_dir', 'theme')
+
+    state.output['stdout'] = True
+    print "Veify checksums."
+    with cd(env.public_dir):
+        run("""
+            vers=$(wp core version)
+            for f in $(wp core verify-checksums --no-color 2>&1 >/dev/null | cut -d: -f3)
+            do
+            if [[ `curl -Is http://core.svn.wordpress.org/tags/$vers/$f | grep "200 OK"` ]]
+            then
+                echo "Fetching $f"
+                curl -so $f http://core.svn.wordpress.org/tags/$vers/$f
+            else
+                echo "Could not fetch: http://core.svn.wordpress.org/tags/$vers/$f"
+            fi
+            done
+            """.format(**env))
