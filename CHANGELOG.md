@@ -1,3 +1,12 @@
+# Version 0.3.1 (2016-07-01)
+    * Add verification checksums from core files
+    * Fixes password with dollar sign
+    * Fix error locale to upgrade and downgrade wordpress
+    * Add confirm task to delete database
+    * Set group www-data to vagrant share files
+    * Add task to install only one plugin
+    * Add possibility to create custom tasks
+
 # Version 0.3.0 (2015-06-13)
     * Add code verification
     * Fixes password quotation

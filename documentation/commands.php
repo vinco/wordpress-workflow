@@ -196,18 +196,22 @@ $ fab environment:vagrant <strong>activate_theme</strong>
                    <div class="col-lg-12 anchor" id="install_plugins" name="install_plugins">
                         <h2>install_plugins</h2>
                         <p>
-                            Installs plugins and initialize according to the <code>settings.json</code> file.
+                            Installs plugins and initialize according to the <code>settings.json</code> file. Also this function does can install a specific plugin when pass plugin name as argument.
                         </p>
                         <pre>
 $ fab environment:env_name[,debug] <strong>install_plugins</strong>
                         </pre>
 
                         <h4>Arguments</h4>
-                        <p>None</p>
+                        <p><code>@param String name</code> This param refers to specific plugin's name that we require install, this param is default null, if this param is null the command does install all plugins from <code>settings.json</code>.</p>
                         
                         <h4>Examples</h4>
                         <pre>
 $ fab environment:vagrant <strong>install_plugins</strong>
+                        </pre>
+                        <p>If we require install only <code>all-in-one-seo-pack</code> plugin, we type:</p>
+                        <pre>
+$ fab environment:vagrant <strong>install_plugins</strong>:<strong>"all-in-one-seo-pack"</strong>  // If <code>settings.json</code> does not have "all-in-one-seo-pack" this command show an error
                         </pre>
                    </div>
 
@@ -482,6 +486,22 @@ $ fab environment:env_name[,debug] <strong>backup<span class="args">[:tarball_na
 $ fab environment:vagrant <strong>backup</strong>
 $ fab environment:vagrant <strong>backup:<span class="args">database_backup,True</span></strong>
 $ fab environment:vagrant <strong>backup:<span class="args">database_backup,False</span></strong>
+                            </pre>
+                       </div>
+                       <div class="col-lg-12 anchor" id="verify-checksums" name="verify-checksums">
+                            <h2>verify checksums</h2>
+                            <p>
+                                Verify checksums from wordpress core and the repair if it fails
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>verify-checksums</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>verify-checksums</strong>
                             </pre>
                        </div>
                        <div class="col-lg-12 anchor" id="wordpress_workflow_upgrade" name="wordpress_workflow_upgrade">

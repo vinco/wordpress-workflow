@@ -22,7 +22,10 @@ Vagrant.configure("2") do |config|
   config.hostsupdater.aliases = ["wordpress-workflow.local", vagrant_config['url']]
 
   # Shared folders.
-  config.vm.synced_folder "src", "/home/vagrant/wordpress-workflow"
+  config.vm.synced_folder "src", "/home/vagrant/wordpress-workflow",
+    owner: "vagrant",
+    group: "www-data",
+    mount_options: ["dmode=775,fmode=764"]
   config.vm.synced_folder "wordpress-workflow/documentation", "/home/vagrant/workflow-documentation"
 
   # Provider
