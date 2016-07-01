@@ -488,6 +488,22 @@ $ fab environment:vagrant <strong>backup:<span class="args">database_backup,True
 $ fab environment:vagrant <strong>backup:<span class="args">database_backup,False</span></strong>
                             </pre>
                        </div>
+                       <div class="col-lg-12 anchor" id="verify-checksums" name="verify-checksums">
+                            <h2>verify checksums</h2>
+                            <p>
+                                Verify checksums from wordpress core and the repair if it fails
+                            </p>
+                            <pre>
+$ fab environment:env_name[,debug] <strong>verify-checksums</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>verify-checksums</strong>
+                            </pre>
+                       </div>
                        <div class="col-lg-12 anchor" id="wordpress_workflow_upgrade" name="wordpress_workflow_upgrade">
                             <h2>wordpress_workflow_upgrade</h2>
                             <p>

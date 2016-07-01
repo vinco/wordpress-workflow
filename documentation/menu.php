@@ -207,6 +207,11 @@
                     </a>
                 </li>
                 <li class="list-group-item">
+                    <a href="commands.php#verify-checksums">
+                        verify_checksums
+                    </a>
+                </li>
+                <li class="list-group-item">
                     <a href="commands.php#wordpress_workflow_upgrade">
                         wordpress_workflow_upgrade
                     </a>
