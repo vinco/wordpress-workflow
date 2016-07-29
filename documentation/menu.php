@@ -142,6 +142,11 @@
                     </a>
                 </li>
                 <li class="list-group-item">
+                    <a href="commands.php#change_prefix">
+                        change_prefix
+                    </a>
+                </li>
+                <li class="list-group-item">
                     <a href="commands.php#import_data">
                         import_data
                     </a>
