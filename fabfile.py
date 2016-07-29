@@ -102,7 +102,8 @@ def create_config(debug=False):
 
     run("""
         wp core config --dbname={dbname} --dbuser={dbuser} \
-        --dbpass='{dbpassword}' --path={public_dir} --dbhost={dbhost} {extra_php}
+        --dbpass='{dbpassword}' --path={public_dir} --dbhost={dbhost} \
+        --dbprefix={dbprefix} {extra_php}
         """.format(**env))
 
 
@@ -129,7 +130,7 @@ def wordpress_install():
         '--locale={locale} --force'.format(**env))
 
     print "Creating wordpress configurations..."
-    #creates config
+    #Creates config
     create_config()
 
     print "Installing wordpress..."
@@ -314,6 +315,34 @@ def change_domain():
             wp option update home http://{url} &&\
             wp option update siteurl http://{url}
             """.format(**env))
+
+
+@task
+def change_prefix(old_prefix="wp_"):
+    """
+    Changes the database table prefix according to the dbprefix configuration from
+    environment.json
+    """
+    require('dbprefix', 'dbname', 'dbuser', 'dbpassword', 'dbhost')
+
+    confirm_task()
+    if not confirm( yellow("Are you sure?", False) ) :
+        sys.exit(0)
+
+    print ("Making actions to change table prefix: "
+           + blue(env.dbprefix, bold=True) + "...")
+
+    # Rename prefix
+    env.old_prefix = old_prefix
+    run("""
+        mysql -u{dbuser} -p{dbpassword} {dbname} --host={dbhost} --execute="SELECT \
+        Concat('ALTER TABLE ', TABLE_NAME, ' RENAME TO ', TABLE_NAME, ';') \
+        FROM information_schema.tables WHERE table_schema = 'wordpress_workflow'" \
+        | grep ^ALTER | sed "s/RENAME TO {old_prefix}/RENAME TO {dbprefix}/g" \
+        | mysql -uroot -ppassword wordpress_workflow
+        """.format(**env))
+    #Creates config with new prefix
+    create_config()
 
 
 @task
