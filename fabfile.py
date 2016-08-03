@@ -71,6 +71,12 @@ def bootstrap():
     # Enables apache module
     run('sudo a2enmod rewrite')
     wordpress_install()
+    # Set permissions by vagrant
+    if env.is_vagrant:
+        run('sudo chmod -R o-rwx {0}'.format(env.wpworkflow_dir))
+        run('sudo chmod -R o-rwx {0}'.format(env.public_dir))
+        run('sudo chgrp -R {0} {1}'.format(env.group, env.wpworkflow_dir))
+        run('sudo chgrp -R {0} {1}'.format(env.group, env.public_dir))
 
 
 @task
