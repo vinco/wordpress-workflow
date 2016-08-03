@@ -231,6 +231,28 @@ $ fab environment:vagrant <strong>change_domain</strong>
 
                     </div>
 
+                    <div class="col-lg-12 anchor" id="change_prefix" name="change_prefix">
+                        <h2>change_prefix</h2>
+                        <p>
+                            Changes the database table prefix according to the dbprefix
+                            configuration from <code>environment.json</code>.
+                        </p>
+                        <pre>
+$ fab environment:vagrant <strong>change_prefix</strong>
+                        </pre>
+
+                        <h4>Arguments</h4>
+                        <ol>
+                            <li><strong><span class="args">old_prefix</span></strong> <i>(string)</i> current prefix.
+                                <i>("wp_" by default)</i>.</li>
+                        </ol>
+                            <h4>Examples</h4>
+                            <pre>
+$ fab environment:vagrant <strong>change_prefix:wp_</strong>
+                            </pre>
+
+                    </div>
+
                     <div class="col-lg-12 anchor" id="import_data" name="import_data">
                             <h2>import_data</h2>
                             <p>

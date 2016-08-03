@@ -67,6 +67,10 @@
             "description": "wordpress' datbase host",
             "type": "string"
         },
+        "dbprefix": {
+            "description": "wordpress' database table prefix",
+            "type": "string"
+        },
         "command_prefixes": {
             "description": "command prefixes' list",
             "type": "array",
@@ -79,6 +83,6 @@
     "required": [
         "title", "url", "user", "group", "hosts", "public_dir", "wpworkflow_dir",
         "command_prefixes", "admin_user", "admin_password", "admin_email",
-        "dbname", "dbuser", "dbpassword", "dbhost"
+        "dbname", "dbuser", "dbpassword", "dbhost", "dbprefix"
     ]
 }

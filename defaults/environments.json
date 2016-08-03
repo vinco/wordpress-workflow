@@ -16,6 +16,7 @@
         "dbname": "wordpress_workflow",
         "dbuser": "root",
         "dbpassword": "password",
-        "dbhost": "localhost"
+        "dbhost": "localhost",
+        "dbprefix": "wp_"
     }
 }
