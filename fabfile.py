@@ -341,6 +341,19 @@ def change_prefix(old_prefix="wp_"):
     # Rename prefix
     env.old_prefix = old_prefix
     run("""
+        mysql -u{dbuser} -p{dbpassword} {dbname} --host={dbhost} --execute=\"
+            UPDATE {old_prefix}options SET option_name='{dbprefix}user_roles' WHERE option_name='{old_prefix}user_roles';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}autosave_draft_ids' WHERE meta_key='{old_prefix}autosave_draft_ids';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}capabilities' WHERE meta_key='{old_prefix}capabilities';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}metaboxorder_post' WHERE meta_key='{old_prefix}metaboxorder_post';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}user_level' WHERE meta_key='{old_prefix}user_level';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}usersettings' WHERE meta_key='{old_prefix}usersettings';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}usersettingstime' WHERE meta_key='{old_prefix}usersettingstime';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}user-settings' WHERE meta_key='{old_prefix}user-settings';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}user-settings-time' WHERE meta_key='{old_prefix}user-settings-time';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}dashboard_quick_press_last_post_id' WHERE meta_key='{old_prefix}dashboard_quick_press_last_post_id';\"
+        """.format(**env))
+    run("""
         mysql -u{dbuser} -p{dbpassword} {dbname} --host={dbhost} --execute="SELECT \
         Concat('ALTER TABLE ', TABLE_NAME, ' RENAME TO ', TABLE_NAME, ';') \
         FROM information_schema.tables WHERE table_schema = 'wordpress_workflow'" \
