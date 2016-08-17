@@ -71,6 +71,12 @@ def bootstrap():
     # Enables apache module
     run('sudo a2enmod rewrite')
     wordpress_install()
+    # Set permissions by vagrant
+    if env.is_vagrant:
+        run('sudo chmod -R o-rwx {0}'.format(env.wpworkflow_dir))
+        run('sudo chmod -R o-rwx {0}'.format(env.public_dir))
+        run('sudo chgrp -R {0} {1}'.format(env.group, env.wpworkflow_dir))
+        run('sudo chgrp -R {0} {1}'.format(env.group, env.public_dir))
 
 
 @task
@@ -102,7 +108,8 @@ def create_config(debug=False):
 
     run("""
         wp core config --dbname={dbname} --dbuser={dbuser} \
-        --dbpass='{dbpassword}' --path={public_dir} --dbhost={dbhost} {extra_php}
+        --dbpass='{dbpassword}' --path={public_dir} --dbhost={dbhost} \
+        --dbprefix={dbprefix} {extra_php}
         """.format(**env))
 
 
@@ -129,7 +136,7 @@ def wordpress_install():
         '--locale={locale} --force'.format(**env))
 
     print "Creating wordpress configurations..."
-    #creates config
+    #Creates config
     create_config()
 
     print "Installing wordpress..."
@@ -314,6 +321,47 @@ def change_domain():
             wp option update home http://{url} &&\
             wp option update siteurl http://{url}
             """.format(**env))
+
+
+@task
+def change_prefix(old_prefix="wp_"):
+    """
+    Changes the database table prefix according to the dbprefix configuration from
+    environment.json
+    """
+    require('dbprefix', 'dbname', 'dbuser', 'dbpassword', 'dbhost')
+
+    confirm_task()
+    if not confirm( yellow("Are you sure?", False) ) :
+        sys.exit(0)
+
+    print ("Making actions to change table prefix: "
+           + blue(env.dbprefix, bold=True) + "...")
+
+    # Rename prefix
+    env.old_prefix = old_prefix
+    run("""
+        mysql -u{dbuser} -p{dbpassword} {dbname} --host={dbhost} --execute=\"
+            UPDATE {old_prefix}options SET option_name='{dbprefix}user_roles' WHERE option_name='{old_prefix}user_roles';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}autosave_draft_ids' WHERE meta_key='{old_prefix}autosave_draft_ids';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}capabilities' WHERE meta_key='{old_prefix}capabilities';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}metaboxorder_post' WHERE meta_key='{old_prefix}metaboxorder_post';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}user_level' WHERE meta_key='{old_prefix}user_level';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}usersettings' WHERE meta_key='{old_prefix}usersettings';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}usersettingstime' WHERE meta_key='{old_prefix}usersettingstime';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}user-settings' WHERE meta_key='{old_prefix}user-settings';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}user-settings-time' WHERE meta_key='{old_prefix}user-settings-time';
+            UPDATE {old_prefix}usermeta SET meta_key='{dbprefix}dashboard_quick_press_last_post_id' WHERE meta_key='{old_prefix}dashboard_quick_press_last_post_id';\"
+        """.format(**env))
+    run("""
+        mysql -u{dbuser} -p{dbpassword} {dbname} --host={dbhost} --execute="SELECT \
+        Concat('ALTER TABLE ', TABLE_NAME, ' RENAME TO ', TABLE_NAME, ';') \
+        FROM information_schema.tables WHERE table_schema = 'wordpress_workflow'" \
+        | grep ^ALTER | sed "s/RENAME TO {old_prefix}/RENAME TO {dbprefix}/g" \
+        | mysql -uroot -ppassword wordpress_workflow
+        """.format(**env))
+    #Creates config with new prefix
+    create_config()
 
 
 @task

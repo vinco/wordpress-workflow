@@ -1,3 +1,8 @@
+
+# Version 0.3.2 (2016-08-17)
+    * Add prefix table wordpress
+    * Fix permissions uploads folder
+    
 # Version 0.3.1 (2016-07-01)
     * Add verification checksums from core files
     * Fixes password with dollar sign
