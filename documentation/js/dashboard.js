@@ -512,7 +512,7 @@ function generate_canvas_configurations() {
 
 //fix file path that will be showed
 function generate_fixed_file_name(file_path){
-    return file_path.replace("/home/vagrant/", "");
+    return file_path.replace("/home/ubuntu/", "");
 }
 
 

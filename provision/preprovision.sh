@@ -1,5 +1,5 @@
 #!/bin/bash
 
-if [ -d "/home/vagrant/templates" ]; then
-    rm -rf /home/vagrant/templates/
+if [ -d "/home/ubuntu/templates" ]; then
+    rm -rf /home/ubuntu/templates/
 fi
