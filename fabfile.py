@@ -69,12 +69,11 @@ def bootstrap():
         "|mysql --batch --user={dbuser} --password='{dbpassword}' --host={dbhost}
         """.format(**env))
     # Enables apache module
-    run('sudo a2enmod rewrite')
+    if env.is_vagrant:
+        run('sudo a2enmod rewrite')
     wordpress_install()
     # Set permissions by vagrant
     if env.is_vagrant:
-        run('sudo chmod -R o-rwx {0}'.format(env.wpworkflow_dir))
-        run('sudo chmod -R o-rwx {0}'.format(env.public_dir))
         run('sudo chgrp -R {0} {1}'.format(env.group, env.wpworkflow_dir))
         run('sudo chgrp -R {0} {1}'.format(env.group, env.public_dir))
 
@@ -456,6 +455,7 @@ def reset_all():
     confirm_task()
     print "Deleting directory content: " + blue(env.public_dir, bold=True) + "..."
     run("""rm -rf {0}*""".format(env.public_dir))
+    run("""ln -s /usr/share/phpmyadmin  {0}phpmyadmin""".format(env.public_dir))
     resetdb()
 
 
@@ -692,7 +692,7 @@ def make_tarball(target_environment, tar_name="wordpress-dist"):
     Generates a tallbar to upload to servers without ssh.
     """
     environment('vagrant')
-    env.tmp_dir = "/home/vagrant/wordpress-dist/"
+    env.tmp_dir = "/home/ubuntu/wordpress-dist/"
     env.tmp_dir_name = "wordpress-dist"
     env.host_string = env.hosts[0]
 

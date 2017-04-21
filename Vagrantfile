@@ -6,15 +6,14 @@ Vagrant.configure("2") do |config|
   environments_json_path = "environments.json"
   vagrant_config = (JSON.parse(File.read(environments_json_path)))['vagrant']
 
-  config.vm.box = "precise32"
-  config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+  config.vm.box = "ubuntu/xenial32"
 
   #provisioning
   config.vm.provision "shell", path: "wordpress-workflow/provision/preprovision.sh"
-  config.vm.provision "file", source:"wordpress-workflow/provision/templates/", destination: "/home/vagrant/templates/"
+  config.vm.provision "file", source:"wordpress-workflow/provision/templates/", destination: "/home/ubuntu/templates/"
   config.vm.provision "shell", path: "wordpress-workflow/provision/provision.sh"
 
-  # Private IP  
+  # Private IP
   config.vm.network :private_network, ip: "192.168.33.77"
 
   # Hosts
@@ -22,11 +21,11 @@ Vagrant.configure("2") do |config|
   config.hostsupdater.aliases = ["wordpress-workflow.local", vagrant_config['url']]
 
   # Shared folders.
-  config.vm.synced_folder "src", "/home/vagrant/wordpress-workflow",
-    owner: "vagrant",
+  config.vm.synced_folder "src", "/home/ubuntu/wordpress-workflow",
+    owner: "ubuntu",
     group: "www-data",
     mount_options: ["dmode=775,fmode=764"]
-  config.vm.synced_folder "wordpress-workflow/documentation", "/home/vagrant/workflow-documentation"
+  config.vm.synced_folder "wordpress-workflow/documentation", "/home/ubuntu/workflow-documentation"
 
   # Provider
   config.vm.provider "virtualbox" do |v|

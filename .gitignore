@@ -2,6 +2,7 @@
 *.sublime*
 .DS_Store
 .idea
+*.swp
 
 # Because this really is a working directory, ignore vagrant's files
 /.vagrant

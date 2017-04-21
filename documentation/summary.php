@@ -122,8 +122,8 @@
         "user": "vagrant",
         "group": "vagrant",
         "hosts": ["127.0.0.1:2222"],
-        "public_dir": "/home/vagrant/public_www/",
-        "wpworkflow_dir": "/home/vagrant/wordpress-workflow/",
+        "public_dir": "/home/ubuntu/public_www/",
+        "wpworkflow_dir": "/home/ubuntu/wordpress-workflow/",
         "command_prefixes": [],
 
         "title": "wordpress workflow",

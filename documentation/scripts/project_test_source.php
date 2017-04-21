@@ -9,7 +9,7 @@
     {
       $this->tmpSessionName = "project_src_tmp_file";
       $this->tmpName = "project_src";
-      $this->path = "/home/vagrant/public_www/wp-content/";
+      $this->path = "/home/ubuntu/public_www/wp-content/";
       $this->command = 'phpcs --standard=WordPress-Core '.
             '--report=json '.
             $this->path;
