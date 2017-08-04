@@ -337,15 +337,21 @@ $ fab environment:vagrant <strong>reset_all</strong>
                                 Sync modified files and establish necessary permissions in selected environment.
                             </p>
                             <pre>
-$ fab environment:env_name[,debug] <strong>sync_files</strong>
+$ fab environment:env_name[,debug] <strong>sync_files<span class="args">[:set_permisions]</span></strong>
                             </pre>
 
                             <h4>Arguments</h4>
-                            <p>None</p>
+                            <ol>
+                                <li><strong><span class="args">set_permisions</span></strong> <i>(boolean)</i> defines if set default permission of wordpress to synchronized files.
+                                    <i>("False" by default)</i>.</li>
+                            </ol>
                             
                             <h4>Examples</h4>
                             <pre>
 $ fab environment:vagrant <strong>sync_files</strong>
+                            </pre>
+                            <pre>
+$ fab environment:vagrant <strong>sync_files:True</strong>
                             </pre>
                        </div>
                        <div class="col-lg-12 anchor" id="wordpress_upgrade" name="wordpress_upgrade">
