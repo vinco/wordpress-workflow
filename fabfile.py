@@ -460,7 +460,7 @@ def reset_all():
 
 
 @task
-def sync_files():
+def sync_files(set_permisions=False):
     """
     Sync modified files and establish necessary permissions in selected environment.
     """
@@ -474,11 +474,12 @@ def sync_files():
         default_opts='-chrtvzP'
     )
 
-    print white("Estableciendo permisos...", bold=True)
-    run('chmod -R o-rwx {0}'.format(env.wpworkflow_dir))
-    run('chmod -R o-rwx {0}'.format(env.public_dir))
-    run('chgrp -R {0} {1}'.format(env.group, env.wpworkflow_dir))
-    run('chgrp -R {0} {1}'.format(env.group, env.public_dir))
+    if boolean(set_permisions):
+        print white("Estableciendo permisos...", bold=True)
+        run('chmod -R o-rwx {0}'.format(env.wpworkflow_dir))
+        run('chmod -R o-rwx {0}'.format(env.public_dir))
+        run('chgrp -R {0} {1}'.format(env.group, env.wpworkflow_dir))
+        run('chgrp -R {0} {1}'.format(env.group, env.public_dir))
 
     print green(u'Successfully sync.')
 
