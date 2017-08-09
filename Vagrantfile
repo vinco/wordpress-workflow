@@ -7,6 +7,7 @@ Vagrant.configure("2") do |config|
   vagrant_config = (JSON.parse(File.read(environments_json_path)))['vagrant']
 
   config.vm.box = "ubuntu/xenial32"
+  config.vm.box_version = "20170803.0.0"
 
   #provisioning
   config.vm.provision "shell", path: "wordpress-workflow/provision/preprovision.sh"
