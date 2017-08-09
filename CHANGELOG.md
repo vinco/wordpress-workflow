@@ -1,4 +1,9 @@
 
+# Version 0.3.4 (2017-08-09)
+    * Rename site-available wordpress file to wordpress.conf.
+    * Fix template enviroment.json, set corret value from user.
+    * Remove provision/templates/httpd.conf
+
 # Version 0.3.3 (2017-08-04)
     * Make it optional to set permissions when synchronizing
     
