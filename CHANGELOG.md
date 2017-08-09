@@ -1,4 +1,7 @@
 
+# Version 0.3.5 (2017-08-09)
+    * Add task version to show wordpress workflow version.
+
 # Version 0.3.4 (2017-08-09)
     * Rename site-available wordpress file to wordpress.conf.
     * Fix template enviroment.json, set corret value from user.

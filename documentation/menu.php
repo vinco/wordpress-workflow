@@ -221,6 +221,11 @@
                         wordpress_workflow_upgrade
                     </a>
                 </li>
+                <li class="list-group-item">
+                    <a href="commands.php#version">
+                        version
+                    </a>
+                </li>
             </ul>
         </div>
       </div>

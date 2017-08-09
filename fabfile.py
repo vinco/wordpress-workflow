@@ -14,7 +14,6 @@ from fabutils.env import set_env_from_json_file
 from fabutils.tasks import ursync_project, ulocal, urun
 import customfab
 
-
 @task
 def environment(env_name, debug=False):
     """
@@ -913,3 +912,11 @@ def verify_checksums():
             fi
             done
             """.format(**env))
+
+@task
+def version():
+    """
+    Print Wordpress Workflow version.
+    """
+    print "Wordpress Workflow version 0.3.5"
+

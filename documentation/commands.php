@@ -559,6 +559,22 @@ $ fab environment:vagrant <strong>wordpress_workflow_upgrade:<span class="args">
 $ fab environment:vagrant <strong>wordpress_workflow_upgrade:<span class="args">origin,develop</span></strong>
                             </pre>
                        </div>
+                       <div class="col-lg-12 anchor" id="version" name="version">
+                            <h2>version</h2>
+                            <p>
+                                Print Wordpress Workflow version.
+                            </p>
+                            <pre>
+$ fab <strong>version</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab <strong>version</strong>
+                            </pre>
 
                     </div>
                 </div>
