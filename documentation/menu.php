@@ -222,6 +222,11 @@
                     </a>
                 </li>
                 <li class="list-group-item">
+                    <a href="commands.php#import_backup">
+                        import_backup
+                    </a>
+                </li>
+                <li class="list-group-item">
                     <a href="commands.php#version">
                         version
                     </a>

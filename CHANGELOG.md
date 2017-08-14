@@ -1,4 +1,7 @@
 
+# Version 0.3.6 (2017-08-14)
+    * Add task import_backup to wordpress workflow.
+
 # Version 0.3.5 (2017-08-09)
     * Add task version to show wordpress workflow version.
 
