@@ -4,6 +4,11 @@
     "theme": "twentyfourteen",
     "plugins": [
         {
+            "name": "wps-hide-login",
+            "active": true,
+            "version": "stable"
+        },
+        {
             "name": "wordpress-seo",
             "active": true,
             "version": "stable"
