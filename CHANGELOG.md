@@ -12,6 +12,7 @@
 
 # Version 0.3.3 (2017-08-04)
     * Make it optional to set permissions when synchronizing
+    * Change vagrant box to "ubuntu/xenial32"
     
 # Version 0.3.2 (2016-08-17)
     * Add prefix table wordpress

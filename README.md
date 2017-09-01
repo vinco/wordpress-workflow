@@ -206,3 +206,14 @@ Use the username and password from your settings.py file to access the admin des
 
 Just after `startProject.sh` has finished you can enter to http://wordpress-workflow.local to see the entire
 project documentation.
+
+## Migrate to wordpress workflow version 0.3.3 or later
+In file environment.json:
+
++ Change vagrant user to ```ubuntu```.
++ Change vagrant group to ```www-data```.
++ Change vagrant public_dir to ```/home/ubuntu/public_www/```.
++ Change vagrant wordpress_dir to ```/home/ubuntu/wordpress-workflow/```.
++ Change vagrant dbuser to ```wordpress```.
++ Change vagrant dbpassword to ```password```.
++ Add new value : ```"dbprefix": "wp_"``` to all enviroments
