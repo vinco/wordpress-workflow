@@ -1,0 +1,38 @@
+machine:
+  php:
+    version: 5.6.22
+  python:
+    version: 2.7.11
+dependencies:
+  cache_directories:
+    - "wpcs/vendor/"
+  pre:
+    - pip install vo-fabutils
+  override:
+    - git submodule update --init --recursive
+    - cd wordpress-workflow/ci/wpcs/ && composer install
+    - bundle install
+test:
+  pre:
+    - mkdir -p $CIRCLE_ARTIFACTS/phpcs/ $CIRCLE_TEST_REPORTS/phpcs/
+  post:
+    - wordpress-workflow/ci/wpcs/vendor/bin/phpcs -d memory_limit=1024M -s --report=full --extensions=php --report-file=$CIRCLE_ARTIFACTS/phpcs/full.txt --standard=Wordpress-Core --extensions=php ./src/themes
+    - wordpress-workflow/ci/wpcs/vendor/bin/phpcs -d memory_limit=1024M -s --report=summary --extensions=php --report-file=$CIRCLE_ARTIFACTS/phpcs/summary.txt --standard=Wordpress-Core --extensions=php ./src/themes
+    - wordpress-workflow/ci/wpcs/vendor/bin/phpcs -d memory_limit=1024M -s --report=xml --extensions=php --report-file=$CIRCLE_ARTIFACTS/phpcs/xml.xml --standard=Wordpress-Core --extensions=php ./src/themes
+    - wordpress-workflow/ci/wpcs/vendor/bin/phpcs -d memory_limit=1024M -s --report=junit --extensions=php --report-file=$CIRCLE_TEST_REPORTS/phpcs/junit.xml --standard=Wordpress-Core --extensions=php ./src/themes
+    - bundle exec danger
+deployment:
+  staging:
+    branch: staging
+    owner: vinco
+    commands:
+      - fab environment:staging,true sync_files
+      - fab environment:staging,true export_data:circleci_backup.sql
+      - fab environment:staging,true install_plugins
+  production:
+    branch: production
+    owner: vinco
+    commands:
+      - fab environment:production,true sync_files
+      - fab environment:production,true export_data:circleci_backup.sql
+      - fab environment:production,true install_plugins

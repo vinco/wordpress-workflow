@@ -980,9 +980,20 @@ def verify_checksums():
             """.format(**env))
 
 @task
+def configure_circle_ci():
+    """
+    Write continuous integration configuration by circleci.
+    """
+    print "Creanting configuration..."
+    local("cp wordpress-workflow/ci/circle.yml circle.yml")
+    local("ln -s wordpress-workflow/ci/Dangerfile Dangerfile")
+    local("ln -s wordpress-workflow/ci/Gemfile Gemfile")
+
+
+@task
 def version():
     """
     Print Wordpress Workflow version.
     """
-    print blue("Wordpress Workflow version 0.3.6")
+    print blue("Wordpress Workflow version 0.3.7")
 

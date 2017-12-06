@@ -1,0 +1,186 @@
+require 'ox'
+
+TESTING_REPORT = "#{ENV['CIRCLE_TEST_REPORTS']}/phpcs/junit.xml"
+TESTING_REPORT_ARTIFACT = {:message => "html coverage report", :path => "#{ENV['CIRCLE_TEST_REPORTS']}/phpcs/junit.xml"}
+
+PHPCS_SUMMARY_REPORT = "#{ENV['CIRCLE_ARTIFACTS']}/phpcs/summary.txt"
+PHPCS_SUMMARY_REPORT_ARTIFACT = {:message => "PHPCS summary report", :path => "#{ENV['CIRCLE_ARTIFACTS']}/phpcs/summary.txt"}
+
+PHPCS_XML_REPORT = "#{ENV['CIRCLE_ARTIFACTS']}/phpcs/xml.xml"
+PHPCS_XML_REPORT_ARTIFACT = {:message => "PHPCS XML report", :path => "artifacts/phpcs/summary.txt"}
+
+PHPCS_FULL_REPORT = "#{ENV['CIRCLE_TEST_REPORTS']}/full.txt"
+PHPCS_FULL_REPORT_ARTIFACT = {:message => "PHPCS full report", :path => "#{ENV['CIRCLE_TEST_REPORTS']}/full.txt"}
+
+artifacts = []
+phpcs_summary_data = ""
+
+if File.zero?(PHPCS_XML_REPORT)
+    message('Everithing OK with the Static Code Analysis')
+    artifacts << PHPCS_XML_REPORT_ARTIFACT
+    artifacts << PHPCS_FULL_REPORT_ARTIFACT
+    artifacts << PHPCS_SUMMARY_REPORT_ARTIFACT
+else
+    xml_string = File.read(PHPCS_XML_REPORT)
+    @doc = Ox.parse(xml_string)
+    summary = @doc.nodes.first
+    summary_md = ""
+
+    if summary.nodes[0] != "\n"
+
+        summary_md << "## Static Code Analysis \n\n"
+        summary_md << "### Summary \n\n"
+
+        attributes = ["File", "Errors", "Warnings"]
+        summary_md << attributes.join(' | ') + "|\n"
+        summary_md << attributes.map { |_| '---' }.join(' | ') + "|\n"
+
+        summary.nodes.each do |files|
+            filename = files['name']
+            errors = files['errors']
+            warnings = files['warnings']
+            summary_md << "#{filename}|"
+            summary_md << "#{errors}|"
+            summary_md << "#{warnings}|"
+            summary_md << "\n"
+        end
+    end
+
+    markdown summary_md
+end
+
+if File.file?(TESTING_REPORT)
+    xml_string = File.read(TESTING_REPORT)
+    @doc = Ox.parse(xml_string)
+    summary = @doc.nodes.first.locate("testsuite").first
+    packages = summary.nodes
+    tests_md = ""
+
+    if summary.nodes[0] != "\n"
+        tests = summary['tests']
+        assertions = summary['assertions']
+        failures = summary['failures']
+        errors = summary['errors']
+        time = summary['time']
+
+        tests_md << "## Unit testing \n\n"
+        attributes = ["Tests", "Assertions", "Errors", "Failures", "Time"]
+        tests_md << attributes.join(' | ') + "|\n"
+        tests_md << attributes.map { |_| '---' }.join(' | ') + "|\n"
+        tests_md << "#{tests} | #{assertions} | #{errors} | #{failures} | #{time} |\n\n"
+
+        summary.nodes.each do |package|
+            if package['errors'].to_i > 0
+                attributes = ["Type", "Class","Line", "Rule"]
+
+                filename = package['file']
+                tests_md << "\n#### #{filename}\n\n"
+                package.nodes.each do |testcase|
+                    if testcase.nodes.size > 0
+                        testcase.nodes.each do |errors|
+                            if !errors.nodes.nil?
+                                tests_md << attributes.join(' | ') + "|\n"
+                                tests_md << attributes.map { |_| '---' }.join(' | ') + "|\n"
+                                fail_type = errors.value
+                                error_info = errors['type']
+                                error_line= testcase['line']
+                                class_name= package['name']
+                                method_name= testcase['name']
+                                error_desc = errors.nodes[0]
+                                tests_md << "#{fail_type}|"
+                                tests_md << "#{class_name}:#{method_name}|"
+                                tests_md << "#{error_line}|"
+                                tests_md << "#{error_info}|\n"
+                                tests_md << "\n<blockquote>\n#{error_desc}</blockquote>\n\n"
+                            end
+                        end
+                    end
+                end
+                tests_md << "\n"
+            end
+        end
+
+        markdown tests_md
+        artifacts << TESTING_REPORT_ARTIFACT
+    end
+else
+    warn "You are not running tests."
+end
+
+if !artifacts.empty?
+    username = ENV['CIRCLE_PROJECT_USERNAME']
+    project_name = ENV['CIRCLE_PROJECT_REPONAME']
+    build_number = ENV['CIRCLE_BUILD_NUM']
+    node_index = ENV['CIRCLE_NODE_INDEX']
+    should_display_message = username && project_name && build_number && node_index
+
+    if should_display_message
+
+        # build the path to where the circle CI artifacts will be uploaded to
+        circle_ci_artifact_path  = 'https://circleci.com/api/v1/project/'
+        circle_ci_artifact_path += username
+        circle_ci_artifact_path += '/'
+        circle_ci_artifact_path += project_name
+        circle_ci_artifact_path += '/'
+        circle_ci_artifact_path += build_number
+        circle_ci_artifact_path += '/artifacts/'
+        circle_ci_artifact_path += node_index
+        circle_ci_artifact_path += '/$CIRCLE_ARTIFACTS/'
+
+        artifacts.each do |artifact|
+            # create a markdown link that uses the message text and the artifact path
+            message_string = '[' + artifact[:message] + ']'
+            message_string += '(' + circle_ci_artifact_path + artifact[:path] + ')'
+            message(message_string)
+        end
+    end
+end
+
+# Ensure a clean commits history
+if git.commits.any? { |c| c.message =~ /^Merge branch/ }
+    warn "Please consider to do a rebase to get rid of the merge commits in this PR"
+end
+
+# Warm https://github.com/Moya/Aeryn/blob/master/Dangerfile
+has_test_changes = !git.modified_files.grep("/tests/").empty?
+message("You didn't write new tests. Are you refactoring?") unless has_test_changes
+
+
+# Warn summary on pull request
+if github.pr_body.length < 100
+    warn "Please provide a summary in the Pull Request description"
+else
+    prefixes = [
+        /^# Related tasks$/i,
+        /^# Main description$/i,
+        /^# Solution description$/i
+    ]
+    reg = Regexp.union(prefixes)
+    pr_content = github.pr_body
+    if !pr_content.match(reg)
+        warn "Please use de defined format for the Pull Request Description"
+        markdown "### PR Example"
+
+        markdown <<-MARKDOWN
+        Here's an example of the PR description:
+        ```
+        # Related tasks
+        + [Task title](Task link)
+        # Main description
+        “Description”
+        # Solution description
+        “Description”
+        # Evidence
+        “Description or image about changes”
+        # Tests
+        “Related information about unit testing”
+        # Additional information
+        “Description”
+        ```
+        MARKDOWN
+    end
+end
+
+
+# From https://github.com/loadsmart/dangerfile/blob/master/Dangerfile
+message("Good job on cleaning the code") if git.deletions > git.insertions
