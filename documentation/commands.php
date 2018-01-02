@@ -580,6 +580,23 @@ $ fab environment:vagrant <strong>import_backup</strong>
 $ fab environment:vagrant <strong>import_backup:<span class="args">backup2017</span></strong>
                             </pre>
                        </div>
+                       <div class="col-lg-12 anchor" id="configure_circle_ci" name="configure_circle_ci">
+                            <h2>configure_circle_ci</h2>
+                            <p>
+                                Write continuous integration configuration by circleci.
+                            </p>
+                            <pre>
+$ fab <strong>configure_circle_ci</strong>
+                            </pre>
+
+                            <h4>Arguments</h4>
+                            <p>None</p>
+                            
+                            <h4>Examples</h4>
+                            <pre>
+$ fab <strong>configure_circle_ci</strong>
+                            </pre>
+                       </div>
                        <div class="col-lg-12 anchor" id="version" name="version">
                             <h2>version</h2>
                             <p>

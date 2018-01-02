@@ -227,9 +227,16 @@
                     </a>
                 </li>
                 <li class="list-group-item">
+                    <a href="commands.php#configure_circle_ci">
+                        configure_circle_ci
+                    </a>
+                </li>
+                <li class="list-group-item">
                     <a href="commands.php#version">
                         version
                     </a>
+                </li>
+                <li class="list-group-item">
                 </li>
             </ul>
         </div>
