@@ -1,4 +1,7 @@
 
+# Version 0.4.0 (2018-01-10)
+    * Fix text valiator of pull-request in danger #55
+    * Update to php 7.0
 # Version 0.3.8 (2017-12-17)
     * Fix text validator of pull-request in danger.
 # Version 0.3.7 (2017-12-17)
