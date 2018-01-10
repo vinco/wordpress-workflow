@@ -995,5 +995,5 @@ def version():
     """
     Print Wordpress Workflow version.
     """
-    print blue("Wordpress Workflow version 0.3.7")
+    print blue("Wordpress Workflow version 0.4.0")
 
