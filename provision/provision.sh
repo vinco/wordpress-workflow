@@ -4,18 +4,13 @@
 
 apt-get update
 apt-get install python-software-properties --assume-yes
-# Install php5.6
-sudo apt-get purge `dpkg -l | grep php| awk '{print $2}' |tr "\n" " "`
-add-apt-repository ppa:ondrej/php
-apt-get update
-
 
 # Configurations
 
-PACKAGES="php5.6 mariadb-server libdbi-perl mariadb-client-10.0 php5.6-mysql apache2 tree vim curl git"
-PACKAGES="$PACKAGES nginx-full php5.6-fpm php5.6-cgi spawn-fcgi php-pear php5.6-mcrypt "
-PACKAGES="$PACKAGES php5.6-mbstring php5.6-curl php5.6-cli php5.6-gd php5.6-intl"
-PACKAGES="$PACKAGES php5.6-xsl php5.6-zip fcgiwrap phpmyadmin"
+PACKAGES="php7.0 mariadb-server libdbi-perl mariadb-client-10.0 php7.0-mysql apache2 tree vim curl git"
+PACKAGES="$PACKAGES nginx-full php7.0-fpm php7.0-cgi spawn-fcgi php-pear php7.0-mcrypt "
+PACKAGES="$PACKAGES php7.0-mbstring php7.0-curl php7.0-cli php7.0-gd php7.0-intl"
+PACKAGES="$PACKAGES php7.0-xsl php7.0-zip fcgiwrap phpmyadmin"
 
 APP_TOKEN="/home/ubuntu/workflow-documentation/scripts/app_token"
 PUBLIC_DIRECTORY="/home/ubuntu/public_www"
@@ -83,13 +78,13 @@ a2ensite wordpress
 service apache2 stop
 
 # Nginx
-cp /home/ubuntu/templates/www.conf /etc/php/5.6/fpm/pool.d/www.conf
+cp /home/ubuntu/templates/www.conf /etc/php/7.0/fpm/pool.d/www.conf
 cp /home/ubuntu/templates/wordpress.nginx /etc/nginx/sites-available/wordpress
 cp /home/ubuntu/templates/nginx.conf /etc/nginx/nginx.conf
 cp /home/ubuntu/templates/nginx.conf /home/ubuntu/nginx.conf
 rm  /etc/nginx/sites-enabled/*
 ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
-service php5.6-fpm restart
+service php7.0-fpm restart
 service nginx restart
 export WP_ENV=vagrant
 
