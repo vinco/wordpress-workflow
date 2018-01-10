@@ -78,7 +78,7 @@ a2ensite wordpress
 service apache2 stop
 
 # Nginx
-cp /home/ubuntu/templates/www.conf /etc/php/5.6/fpm/pool.d/www.conf
+cp /home/ubuntu/templates/www.conf /etc/php/7.0/fpm/pool.d/www.conf
 cp /home/ubuntu/templates/wordpress.nginx /etc/nginx/sites-available/wordpress
 cp /home/ubuntu/templates/nginx.conf /etc/nginx/nginx.conf
 cp /home/ubuntu/templates/nginx.conf /home/ubuntu/nginx.conf
