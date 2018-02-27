@@ -1,4 +1,5 @@
-
+# Version 0.4.1 (2018-02-27)
+    * Update ubuntu/trusty32 version to 20180222.1.0
 # Version 0.4.0 (2018-01-10)
     * Fix text valiator of pull-request in danger #55
     * Update to php 7.0
