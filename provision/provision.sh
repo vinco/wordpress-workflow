@@ -12,9 +12,9 @@ PACKAGES="$PACKAGES nginx-full php7.0-fpm php7.0-cgi spawn-fcgi php-pear php7.0-
 PACKAGES="$PACKAGES php7.0-mbstring php7.0-curl php7.0-cli php7.0-gd php7.0-intl"
 PACKAGES="$PACKAGES php7.0-xsl php7.0-zip fcgiwrap phpmyadmin"
 
-APP_TOKEN="/home/ubuntu/workflow-documentation/scripts/app_token"
-PUBLIC_DIRECTORY="/home/ubuntu/public_www"
-PHPMYADMIN_DIRECTORY="/home/ubuntu/public_www/phpmyadmin"
+APP_TOKEN="/home/vagrant/workflow-documentation/scripts/app_token"
+PUBLIC_DIRECTORY="/home/vagrant/public_www"
+PHPMYADMIN_DIRECTORY="/home/vagrant/public_www/phpmyadmin"
 
 # Sets mysql pasword
 debconf-set-selections <<< 'mariadb-server mysql-server/root_password password rootpass'
@@ -40,8 +40,8 @@ if [ ! -d "$PUBLIC_DIRECTORY" ]; then
     mkdir $PUBLIC_DIRECTORY
 fi
 
-chown -R ubuntu $PUBLIC_DIRECTORY
-chgrp -R ubuntu $PUBLIC_DIRECTORY
+chown -R vagrant $PUBLIC_DIRECTORY
+chgrp -R vagrant $PUBLIC_DIRECTORY
 
 echo "Installing wp-cli"
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -55,8 +55,8 @@ mv composer.phar /usr/local/bin/composer
 
 # Installing squizlabs/php_codesniffer & WordPress-Coding-Standards
 composer create-project wp-coding-standards/wpcs:dev-master --no-dev
-ln -s /home/ubuntu/wpcs/vendor/bin/phpcs /usr/local/bin/phpcs
-ln -s /home/ubuntu/wpcs/vendor/bin/phpcbf /usr/local/bin/phpcbf
+ln -s /home/vagrant/wpcs/vendor/bin/phpcs /usr/local/bin/phpcs
+ln -s /home/vagrant/wpcs/vendor/bin/phpcbf /usr/local/bin/phpcbf
 
 # Generates unique token for application
 if [ ! -f "$APP_TOKEN" ]; then
@@ -72,16 +72,16 @@ fi
 # Activates site
 
 # Apache
-cp /home/ubuntu/templates/wordpress.apache /etc/apache2/sites-available/wordpress.conf
+cp /home/vagrant/templates/wordpress.apache /etc/apache2/sites-available/wordpress.conf
 a2enmod actions
 a2ensite wordpress
 service apache2 stop
 
 # Nginx
-cp /home/ubuntu/templates/www.conf /etc/php/7.0/fpm/pool.d/www.conf
-cp /home/ubuntu/templates/wordpress.nginx /etc/nginx/sites-available/wordpress
-cp /home/ubuntu/templates/nginx.conf /etc/nginx/nginx.conf
-cp /home/ubuntu/templates/nginx.conf /home/ubuntu/nginx.conf
+cp /home/vagrant/templates/www.conf /etc/php/7.0/fpm/pool.d/www.conf
+cp /home/vagrant/templates/wordpress.nginx /etc/nginx/sites-available/wordpress
+cp /home/vagrant/templates/nginx.conf /etc/nginx/nginx.conf
+cp /home/vagrant/templates/nginx.conf /home/vagrant/nginx.conf
 rm  /etc/nginx/sites-enabled/*
 ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 service php7.0-fpm restart

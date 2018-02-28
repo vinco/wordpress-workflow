@@ -210,10 +210,7 @@ project documentation.
 ## Migrate to wordpress workflow version 0.3.3 or later
 In file environment.json:
 
-+ Change vagrant user to ```ubuntu```.
 + Change vagrant group to ```www-data```.
-+ Change vagrant public_dir to ```/home/ubuntu/public_www/```.
-+ Change vagrant wordpress_dir to ```/home/ubuntu/wordpress-workflow/```.
 + Change vagrant dbuser to ```wordpress```.
 + Change vagrant dbpassword to ```password```.
 + Add new value : ```"dbprefix": "wp_"``` to all enviroments
